@@ -1,0 +1,28 @@
+.redStar{
+	color: red;
+}
+a.btn_search{
+    background: url("../../themes/blue/images/btn_search_default.gif") no-repeat scroll 0 0 transparent;
+    display: inline-block;
+    height: 24px;
+    width: 62px;
+    margin-left: 3px;
+}
+a.add {
+	background: url("../../themes/blue/images/btn-add.gif") no-repeat scroll 0 0 transparent;
+	display: inline-block;
+    height: 23px;
+    width: 51px;
+}
+a.del {
+	background: url("../../themes/blue/images/btn-del.gif") no-repeat scroll 0 0 transparent;
+	display: inline-block;
+    height: 23px;
+    width: 51px;
+}
+a.update {
+	background: url("../../themes/blue/images/btn-edit.gif") no-repeat scroll 0 0 transparent;
+	display: inline-block;
+    height: 23px;
+    width: 51px;
+}

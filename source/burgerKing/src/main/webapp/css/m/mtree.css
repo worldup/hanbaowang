@@ -1,0 +1,33 @@
+﻿/*全局定义*/
+body { text-align: left;margin: 0 auto;font-family:"宋体", Arial, Helvetica, sans-serif;font-size:12px;line-height:18px;color:#4d4d4d; }
+
+a { color:#373737; text-decoration: none;}
+
+a:hover { text-decoration: underline;}
+
+*{margin:0;padding:0;}
+
+#seachWARP{ width:980px; margin:0px auto;}
+
+/* 搜索左侧 */
+
+.seaLEFTbox{ width:162px;float:left; height:100%;display:block;background:url(http://static.m1905.cn/images/vod/hdbg.gif) -274px -532px no-repeat;padding-top:10px;}
+
+.seaLEFTbox .bottom_pic{ background:url(http://static.m1905.cn/images/vod/hdbg.gif) -274px -572px no-repeat; height:10px;}
+
+.seaLEFTbox .boxbg{ overflow:hidden; padding:0px 20px; width:120px; border:1px solid #e9e9e9; background-color:#f1f1f1; border-bottom:0px; border-top:0px; }
+
+.seaLEFTbox .boxbg li,.duFONT div a{ height:26px; line-height:26px; display:block; font-family:"微软雅黑"; }
+
+.seaLEFTbox .boxbg li.line_bott{ border-bottom:1px solid #e9e9e9; padding-bottom:14px; display:block;}
+
+.seaLEFTbox .boxbg li.line_top{ border-top:1px solid #ffffff; padding-top:14px;}
+
+.seaLEFTbox .boxbg li a,.duFONT div.text a{ padding:0px 7px; display:inline-block; color:#4d4d4d; font-weight:normal;}
+
+.seaLEFTbox .boxbg li a.nowBA,.duFONT div.text a.nowBA{ border:1px solid #1a8bd1; border-top:0px; border-bottom:0px; background:url(http://static.m1905.cn/images/vod/hdsmall.gif) left -603px repeat-x; padding:0px 7px; color:#ffffff; text-decoration:none; display: inline-block; }
+
+.seaLEFTbox .boxbg li a.nowBA:hover,.duFONT div.text a.nowBA:hover{ color:#FFF}
+
+.seaLEFTbox .boxbg li a:hover{ color:#1E7ABB; text-decoration:none}
+

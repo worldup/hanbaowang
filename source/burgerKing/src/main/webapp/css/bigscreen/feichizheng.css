@@ -1,0 +1,198 @@
+/*
+Author: hexuxu
+Last Modify:2013/5/7
+*/
+body,div,ol,ul,h1,h2,h3,h4,h5,h6,p,th,td,dl,dd,form,fieldset,legend,input,textarea,select
+	{
+	margin: 0;
+	padding: 0;
+	color: #333;
+}
+
+body {
+	font: 12px Arial, "宋体", "Arial Narrow", HELVETICA;
+	background: #fff;
+	-webkit-text-size-adjust: 100%;
+}
+
+a {
+	color: #333;
+	text-decoration: none
+}
+
+a:hover {
+	color: #333;
+	text-decoration: underline
+}
+
+li {
+	list-style: none
+}
+
+img {
+	border: 0;
+	vertical-align: middle
+}
+
+p {
+	word-wrap: break-word
+}
+
+body {
+	background: #333333;
+}
+
+.body_content {
+	margin: 0px auto;
+	width: 1004px;
+	padding: 0 0 0 20px;
+	height: 768px;
+	background: #404040;
+	position: relative;
+}
+
+.body_content h1 {
+	font-family: "微软雅黑";
+	font-size: 30px;
+	line-height: 60px;
+	height: 60px;
+	color: #fff;
+	text-shadow: 2px 2px 5px #000;
+}
+
+.body_content h2 {
+	font-family: "微软雅黑";
+	font-size: 18px;
+	line-height: 34px;
+	height: 34px;
+	color: #fff;
+	text-shadow: 2px 2px 5px #000;
+}
+
+.box_con h3 {
+	font-family: "微软雅黑";
+	font-size: 14px;
+	line-height: 32px;
+	height: 32px;
+	color: #fff;
+	text-shadow: 2px 2px 5px #000;
+}
+
+.a1box {
+	float: left;
+	border: #fff 2px solid;
+	border-radius: 4px;
+	box-shadow: 2px 2px 5px #000;
+}
+
+.box_con {
+	background: #164b67;
+	display: block;
+	padding: 0 10px;
+	background-image: linear-gradient(-120deg, rgba(0, 0, 0, .1) 0% ,rgba(0, 0, 0, .5) 100% );
+}
+
+.left_topbox p {
+	font-size: 14px;
+	color: #cbcbcb;
+	line-height: 50px;
+	height: 50px;
+	padding-bottom: 10px;
+	margin-bottom: 20px;
+}
+
+.left_topbox b {
+	font-family: "Bernard MT Condensed", "Arial";
+	font-size: 30px;
+	color: #fff99e;
+	text-shadow: 1px 1px 1px #000;
+}
+
+.left_topbox h2 {
+	padding: 3px 0 10px;
+}
+.logo_a_box01 ul{
+	width:1000px;
+}
+.logo_a_box01 li {
+	float: left;
+	width: 170px;
+	height: 95px;
+	margin-left:56px;
+}
+.logo_a_box01 img {
+	width: 170px;
+	height: 95px;
+}
+
+.logo_a_box01 a {
+	float: left;
+	position: relative
+}
+
+.logo_a_box01 a p {
+	width: 170px;
+	bottom: 0;
+	height: 26px;
+	line-height: 26px;
+	text-align: center;
+	color: #fff;
+	background: #000;
+	opacity: 0.5;
+	position: absolute
+}
+
+.sliderbox {
+	width: 910px;
+	height: 95px;
+	overflow: hidden;
+	margin-left:30px;
+	
+}
+
+.slider {
+	width: 898px;
+	overflow: hidden;
+	position: relative;
+	height: 95px;
+	float: left;
+}
+
+.slider ul {
+	position: absolute;
+	width: 1800px;
+	list-style: none;
+	overflow: hidden;
+	height: 120px;
+}
+
+.slider li {
+	float: left;
+	width: 170px;
+	height: 95px;
+	margin-right:73px;
+}
+
+.slider a {
+	text-align: center;
+	position: relative;
+	float: left;
+}
+
+.slider img {
+	width: 170px;
+	display: inline-block !important;
+	height: 95px;
+}
+
+.slider  p {
+	width: 170px;
+	bottom: 0;
+	height: 26px;
+	line-height: 26px;
+	text-align: center;
+	color: #fff;
+	background: #000;
+	opacity: 0.5;
+	position: absolute
+}

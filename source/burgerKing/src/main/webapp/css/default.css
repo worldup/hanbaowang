@@ -1,0 +1,17 @@
+.container {
+	width: 1000px;
+	height: auto;
+	margin: 0px auto;
+	overflow-x: hidden;
+	border: 1px solid #000000;
+}
+
+input.button {
+	width: 100px;
+}
+
+font{
+	font-size: 16px;
+	font-family: inherit;
+	font-weight: normal;
+}

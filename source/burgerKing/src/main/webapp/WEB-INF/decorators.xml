@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<decorators defaultdir="/WEB-INF/layouts/">
+	<excludes>
+		<pattern>/static/*</pattern>
+		<pattern>/login</pattern>
+		<pattern>/index/find</pattern>
+		<pattern>password_form.jsp</pattern>
+	</excludes>
+	
+	<decorator name="default" page="default.jsp">
+		<pattern>/user/index</pattern>
+		<pattern>/message/index</pattern>
+		<pattern>/store/index</pattern>
+		<pattern>/store/mapIndex</pattern>
+		<pattern>/store/getLngLat</pattern>
+		<pattern>/index</pattern>
+		<pattern>/facility/index</pattern>
+		<pattern>/sing/index</pattern>
+		<pattern>/task/index</pattern>
+		<pattern>/work/index</pattern>
+		<pattern>/exam/index</pattern>
+		<pattern>/shopStatistic/index</pattern>
+		<pattern>/statistic/index</pattern>
+		<pattern>/beacon/index</pattern>
+		<pattern>/base/index</pattern>
+		<pattern>/question/index</pattern>
+		<pattern>/examManager/addExamIndex</pattern>
+		<pattern>/examManager/modify</pattern>
+		<pattern>/examManager/index</pattern>
+		<pattern>/examManager/examPageDetail</pattern>
+		<pattern>/examManager/userAnswerInfo</pattern>
+		<pattern>/examManager/testPaperDetail</pattern>
+		<pattern>/update/index</pattern>
+		<pattern>/questionType/index</pattern>
+		<pattern>/examManager/loseSts/index</pattern>
+		<pattern>/date/index</pattern>
+	</decorator>
+	
+</decorators>
