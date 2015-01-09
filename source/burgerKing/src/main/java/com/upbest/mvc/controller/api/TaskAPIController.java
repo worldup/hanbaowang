@@ -319,8 +319,8 @@ public class TaskAPIController {
         	/**
              * 额外数据
              */
-            Map<String, Object> extra = new HashMap<String, Object>();
-        	extra.put("messageId", message.getId());
+            Map<String, String> extra = new HashMap<String, String>();
+        	extra.put("messageId",""+ message.getId());
             pushMessageService.push(message.getId() + "", message.getReceiverId() + "", null
             			,message.getPushTitle(),message.getPushContent(),extra);
         } catch (Exception e) {

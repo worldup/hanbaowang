@@ -113,8 +113,8 @@ public class CheckTodayTask implements SchedulerTask {
         String pushTitle = "任务通知";
         String pushContent = getCurrentDateStr() + ",任务提醒";
         for (BMessage bMessage : messages) {
-        	Map<String, Object> extra = new HashMap<String, Object>();
-        	extra.put("messageId", bMessage.getId());
+        	Map<String, String> extra = new HashMap<String, String>();
+        	extra.put("messageId",""+ bMessage.getId());
             pushMessageService.push(bMessage.getId() + "", bMessage.getReceiverId() + "", null,pushTitle,pushContent,extra);
             break;
         }

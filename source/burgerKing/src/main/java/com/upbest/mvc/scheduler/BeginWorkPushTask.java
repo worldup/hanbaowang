@@ -80,8 +80,8 @@ public class BeginWorkPushTask implements SchedulerTask {
 			/**
              * 额外数据
              */
-            Map<String, Object> extra = new HashMap<String, Object>();
-        	extra.put("messageId", bMessage.getId());
+            Map<String, String> extra = new HashMap<String, String>();
+        	extra.put("messageId", ""+bMessage.getId());
 			pushMessageService.push(bMessage.getId() + "", bMessage.getReceiverId() + "", null,
 							bMessage.getPushTitle(),bMessage.getPushContent(),extra);
 		}

@@ -73,8 +73,8 @@ public class PushMessageController {
             /**
              * 额外数据
              */
-            Map<String, Object> extra = new HashMap<String, Object>();
-        	extra.put("messageId", message.getId());
+            Map<String, String> extra = new HashMap<String, String>();
+        	extra.put("messageId", ""+message.getId());
             String emps = pushMessageServiceI.push(id, ids, buser,message.getPushTitle(),message.getPushContent(),extra);
             if(StringUtils.isEmpty(emps)){
             	map.put("emp", "");

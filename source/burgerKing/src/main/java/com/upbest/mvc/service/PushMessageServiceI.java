@@ -17,5 +17,5 @@ public interface PushMessageServiceI {
      * @param pushContent   推送内容
      * @throws Exception
      */
-	String push(String id, String ids, Buser buser,String pushTitle,String pushContent,Map<String, Object> extra) throws Exception;
+	String push(String id, String ids, Buser buser,String pushTitle,String pushContent,Map<String, String> extra) throws Exception;
 }
