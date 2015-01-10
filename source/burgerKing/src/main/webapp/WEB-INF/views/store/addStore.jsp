@@ -392,7 +392,7 @@ $(function() {
 			$(".storepic_list").after('<a href="javascript:void(0)" class="more_stropic_btn">更多</a>');	
 		}
 		var li = $('<li class='+liclass+'><a title="点击查看大图" class="stopic_wrap" onclick="showpic('+str+')" href="javascript:void(0)"><img lang="'+imagesarr[i]+'"  src="'+iurl+imagesarr[i]+'" /></a>'
-			     +'<div class="del" title="删除"><img alt="删除" src="/images/del.png"></div></li>');
+			     +'<div class="del" title="删除"><img alt="删除" src="${basePath}/images/del.png"></div></li>');
 			
 		$(".storepic_list").append(li);
 	}

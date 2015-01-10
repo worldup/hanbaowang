@@ -64,7 +64,7 @@
 			<!--header begin-->
 			<div class="dz_header">
 				<div class="dz_logo">
-					<img src="/images/tit_gys.png" />
+					<img src="${basePath}/images/tit_gys.png" />
 				</div>
 				<div class="login_user">
 					<span><%=name%>，欢迎访问巡检管理平台</span><a href="/logout">退出</a>
