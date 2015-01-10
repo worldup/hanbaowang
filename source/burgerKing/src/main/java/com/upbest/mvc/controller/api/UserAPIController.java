@@ -69,16 +69,12 @@ public class UserAPIController {
                 picSaveDir.mkdirs();
             FileUtils.copyInputStreamToFile(file.getInputStream(), new File( filePath));
             URL url=new URL(req.getRequestURL().toString());
-            String urlPath="";
-            if(url.getPort()!=-1){
-                urlPath= url.getProtocol()+":"+"//"+url.getHost()+":"+url.getPort()+ "/" + "upload/head_image/"+fileName;
-            }else{
-                urlPath=  url.getProtocol()+":"+"//"+url.getHost()+ "/" + "upload/head_image/"+fileName;
-            }
+            String   urlPath=  "/upload/user_head_image/"+fileName;
+
             System.out.println("hello test!");
             System.out.println(urlPath);
             
-            service.updateHeadImage(userId, filePath);
+            service.updateHeadImage(userId, urlPath);
             
             result.setObj(urlPath);
             result.setCode(Code.SUCCESS_CODE);

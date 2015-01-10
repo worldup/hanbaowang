@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +31,8 @@ import com.upbest.utils.DataType;
 
 @Service
 public class BSingIfnoServiceImpl implements IBSingIfnoService {
-
+    @Value("${database}")
+    private String database;
     @Autowired
     protected SingRespository singRepository;
     
@@ -47,8 +49,14 @@ public class BSingIfnoServiceImpl implements IBSingIfnoService {
         StringBuffer sql = new StringBuffer();
         List<Object> params = new ArrayList<Object>();
         sql.append("  SELECT s.id,                       ");
-        sql.append("         CONVERT(varchar(100), s.sign_in_time, 20) as signInTime,       ");
-        sql.append("         CONVERT(varchar(100), s.sign_out_time, 20) as signOutTime,       ");
+        if("SQL_SERVER".equalsIgnoreCase(database)){
+            sql.append("         CONVERT(varchar(100), s.sign_in_time, 20) as signInTime,       ");
+            sql.append("         CONVERT(varchar(100), s.sign_out_time, 20) as signOutTime,       ");
+        }
+        else{
+            sql.append("         str_to_date(s.sign_in_time ,'%Y-%m-%d %H:%i:%s') as signInTime,       ");
+            sql.append("         str_to_date(s.sign_out_time, '%Y-%m-%d %H:%i:%s') as signOutTime,       ");
+        }
         sql.append("         s.sign_in_longitude,               ");
         sql.append("         s.sign_in_latitude,                ");
         sql.append("         u.name,                 ");

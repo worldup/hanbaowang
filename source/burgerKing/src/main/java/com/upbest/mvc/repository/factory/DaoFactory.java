@@ -9,6 +9,7 @@ import javax.persistence.Query;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +35,8 @@ import org.springframework.util.Assert;
  */
 @Component
 public class DaoFactory<T> {
-
+    @Value("${database}")
+    private String database;
     private static final String HQL_COUNT = "select count(*) ";
 
     @PersistenceContext
@@ -82,7 +84,7 @@ public class DaoFactory<T> {
     protected int getCountQueryBySql() {
         int result = 0;
         Query query = null;
-        if (hsql.indexOf("order by") > -1) {
+        if (hsql.indexOf("order by") > -1&&"SQL_SERVER".equalsIgnoreCase(database)) {
             // 加上top 100 percent，否则不能进行时间排序
             if (hsql.indexOf("distinct") > -1) {
                 hsql = hsql.replaceAll("select distinct", "select distinct top 100 percent ").replaceAll("SELECT distinct", "select distinct top 100 percent ");

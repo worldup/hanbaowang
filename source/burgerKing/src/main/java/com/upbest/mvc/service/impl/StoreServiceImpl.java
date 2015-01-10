@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -60,6 +61,8 @@ import com.upbest.utils.ExcelUtils;
 
 @Service
 public class StoreServiceImpl implements IStoreService {
+    @Value("${database}")
+    private String database;
 
     @Inject
     protected StoreRespository storeRepository;
@@ -789,9 +792,16 @@ public class StoreServiceImpl implements IStoreService {
     	StringBuilder sql = new StringBuilder();
     	sql.append("	select t.storeid,count(t.salesRank) srCount,count(t.tcRank) trCount	")
     		.append("		from 															")
-    		.append("		(																	")
-    		.append("		select DISTINCT dm.storeid storeid,  CONVERT(varchar, dm.salesdate, 120 ) month, ")
-    		.append("		v.PM salesRank,v.TC_COMP_PM tcRank,v.storeid vstoreid 				")
+    		.append("		(																	");
+        if("SQL_SERVER".equalsIgnoreCase(database)){
+            sql.append("		select DISTINCT dm.storeid storeid,  CONVERT(varchar, dm.salesdate, 120 ) month, ");
+
+        }
+    	else{
+            sql.append("		select DISTINCT dm.storeid storeid,  str_to_date( dm.salesdate, '%Y-%m-%d %H:%i:%s' ) month, ");
+
+        }
+        sql.append("		v.PM salesRank,v.TC_COMP_PM tcRank,v.storeid vstoreid 				")
     		.append("		from																")
     		.append("		(select d.storeid, MAX(d.salesdate) salesdate 						")	
     		.append("		from V_TF_Daily_Sales_MONTH_LAST_DAY d 								")	
