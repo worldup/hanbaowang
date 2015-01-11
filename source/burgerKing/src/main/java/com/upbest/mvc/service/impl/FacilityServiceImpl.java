@@ -92,7 +92,7 @@ public class FacilityServiceImpl implements IFacilityService {
         sql.append("         t.Device_os,                ");
         sql.append("         t.Device_os_version,                 ");
         sql.append("         t.Device_resolution,           ");
-        sql.append("         u.name               ");
+        sql.append("         u.real_name              ");
         sql.append("    FROM BK_FACILITY t  left join BK_USER u on  t.user_id = u.id           ");
         sql.append("   where 1 = 1                       ");
         sql.append("   and u.is_del='1'                       ");
