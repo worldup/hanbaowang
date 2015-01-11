@@ -12,13 +12,13 @@
 <div class="dzwidth_960 store">
 	<table class="qjabtn_wrap" id="searchDiv">
 		<tr>
-			<!-- <td>
+			<td>
 				<div class="qjact_btn clearfix">
 					<a class="green" name="addStore" id="addStore" onclick="addStore();" href="javascript:void(0)"><span>新增</span></a>
 					<a href="javascript:void(0)" id="batchImport" class="small_ea"><span>批量导入</span></a>
 					<a href="javascript:void(0)" id="downloadTemp" class="small_ea"><span>下载模板</span></a>
 				</div>
-			</td> -->
+			</td>
 			<td>
 				<label style="font-size:14px;">门店名称：</label>
 			</td>

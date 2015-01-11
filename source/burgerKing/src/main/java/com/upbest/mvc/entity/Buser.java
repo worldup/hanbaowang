@@ -59,7 +59,17 @@ public class Buser implements Serializable{
 	 @Column(name="pic")
      private String pic;
 	 
-	 
+	 @Column(name="area_id")
+	 private Integer areaId;
+
+	public Integer getAreaId() {
+		return areaId;
+	}
+
+	public void setAreaId(Integer areaId) {
+		this.areaId = areaId;
+	}
+
 	public String getPic() {
         return pic;
     }

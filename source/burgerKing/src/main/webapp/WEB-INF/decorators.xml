@@ -32,6 +32,7 @@
 		<pattern>/examManager/testPaperDetail</pattern>
 		<pattern>/update/index</pattern>
 		<pattern>/questionType/index</pattern>
+		<pattern>/toolbox/index</pattern>
 		<pattern>/examManager/loseSts/index</pattern>
 		<pattern>/date/index</pattern>
 	</decorator>

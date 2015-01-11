@@ -2,7 +2,6 @@
 <%@ page pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="basePath" value="${pageContext.request.contextPath}" />
-<c:set var="basePath" value="${pageContext.request.contextPath}" />
 <link rel="stylesheet" href="${basePath}/js/uploadify/uploadify.css"
      rel="stylesheet" type="text/css" />
 <script type="text/javascript"

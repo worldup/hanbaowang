@@ -67,7 +67,7 @@
 					<img src="${basePath}/images/tit_gys.png" />
 				</div>
 				<div class="login_user">
-					<span><%=name%>，欢迎访问巡检管理平台</span><a href="/logout">退出</a>
+					<span><%=name%>，欢迎访问巡检管理平台</span><a href="${basePath}/logout">退出</a>
 				</div>
 			</div>
 			<!--header end-->
@@ -92,6 +92,8 @@
 								<c:if test="${current=='statistic'}"> class="current"</c:if>><b>统计管理</b></a></li>
 							<li class="wj"><a href="javascript:void(0)"
 								<c:if test="${current=='base'||current=='questionManager'||current=='examManager'||current=='addExamination'||current=='examPageDetail'||current=='userAnswerInfo'||current=='questionTypeManager'||current=='exam'||current=='losePerSts'}"> class="current"</c:if>><b>表单管理</b></a></li>
+							<li class="tool"><a href="javascript:void(0)"
+									<c:if test="${current=='toolbox'}"> class="current"</c:if>><b>工具箱</b></a></li>
 							<li class="fbgx"><a href="${basePath}/update/index"
 								<c:if test="${current=='update'}"> class="current"</c:if>><b>发布更新</b></a></li>
 						</c:if>
@@ -105,7 +107,13 @@
 							<c:if test="${current=='task'}"> class="current"</c:if>>任务管理</a></li>
 					</ul>
 				</div>
+				<div class="subchild_menu tool_sbmenu">
+					<ul>
+						<li><a href="${basePath}/toolbox/index"
+								<c:if test="${current=='toolbox'}"> class="current"</c:if>>工具箱上传</a></li>
 
+					</ul>
+				</div>
 				<div class="subchild_menu wj_sbmenu" style="width:118px">
 					<ul>
 						<li><a href="${basePath}/questionType/index"
@@ -130,10 +138,10 @@
 						<li class="last"><a href="${basePath}/shopStatistic/index"
 								<c:if test="${current=='shopStatistic'}"> class="current"</c:if>>门店统计</a></li>
 					</c:if>
-<%-- 					<li class="last"><a href="${basePath}/store/mapIndex"
-							<c:if test="${current=='storeMap'}"> class="current"</c:if>>门店信息</a></li> --%>
-						<%-- <li class="last"><a href="${basePath}/store/getLngLat"
-							<c:if test="${current=='getLngLat'}"> class="current"</c:if>>门店经纬度获取</a></li>  --%>
+					<li class="last"><a href="${basePath}/store/mapIndex"
+							<c:if test="${current=='storeMap'}"> class="current"</c:if>>门店信息</a></li>
+						<li class="last"><a href="${basePath}/store/getLngLat"
+							<c:if test="${current=='getLngLat'}"> class="current"</c:if>>门店经纬度获取</a></li>
 					</ul>
 				</div>
 				<div class="subchild_menu sheb_sbmenu">
