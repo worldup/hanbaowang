@@ -28,7 +28,16 @@ public class BuserVO implements Serializable {
     private String pic;
     
     private String emp;
-    
+    private String areaId;
+
+    public String getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(String areaId) {
+        this.areaId = areaId;
+    }
+
     private List<BuserVO> childList;
 
     

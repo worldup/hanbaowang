@@ -36,6 +36,14 @@
 					<option value="0">超级管理员</option>
 				</select></td>
 			</tr>
+			<tr id="sel_area_idWrap">
+				<td class="title"><b>*</b>所属区域：</td>
+				<td  align="left">
+					<select id="sel_area_id" name="sel_area_id" class="select">
+						<option value="0">---请选择---</option>
+					</select>
+					<input type="hidden" value="${user.areaId}" id="hiddenAreaId"/>
+			</tr>
 			<tr id="pidWrap">
 				<td class="title"><b>*</b>上级：</td>
 				<td align="left">
@@ -68,7 +76,22 @@
 		</table>
 
 <script type="text/javascript">
+$(document).ready(function(){
+	//初始化区域
+	$.post(basePath+"/area/getRootArea",{},function(data){
+		var jsonResult=$.parseJSON(data);
+		$('#sel_area_id').empty();
+		var html='<option value="0">---请选择---</option>';
+		var pidvalue = $("#hiddenAreaId").val();
+		$.each(jsonResult,function(i, value) {
+			var seled = "",val = value.id;
+			if(pidvalue!=""&&val==pidvalue){seled = "selected=selected"}
+			html+="<option "+seled+" value="+val+">"+value.area+"</option>";
+		});
+		$('#sel_area_id').append(html);
 
+	})
+})
 function setPid(role){
 	 var rl = role;
 	 if(role=='1'){
@@ -144,6 +167,7 @@ function user(){
 	var pid;
 	
 	var emp;
+	var areaId;
 }
 var id='${user.id}';
 if(id!=''){
@@ -236,6 +260,7 @@ $("#btn_save").bind("click",function(){
 							vo.role=$.trim($('select[name=role]').val());
 							vo.pid=$.trim($('select[name=pid]').val());
 							vo.emp=$.trim($('input[name=emp]').val());
+							vo.areaId=$.trim($('select[name=sel_area_id]').val());
 							var url = "${basePath}/user/addUser";
 							var oldPwd=$.trim($('input[name=pwdHidden]').val());
 							_obj.addClass("big_ddd").removeClass("big_green");
