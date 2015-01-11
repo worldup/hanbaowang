@@ -60,7 +60,8 @@ public class BSingIfnoServiceImpl implements IBSingIfnoService {
         sql.append("         s.sign_in_longitude,               ");
         sql.append("         s.sign_in_latitude,                ");
         sql.append("         u.name,                 ");
-        sql.append("         s.location                ");
+        sql.append("         s.location             ,   ");
+        sql.append("         u.real_name             ");
         sql.append("    FROM bk_sign_info s left join bk_user u on u.id = s.user_id           ");
         sql.append("   where 1=1                       ");
         sql.append("   and  u.is_del='1'                     ");

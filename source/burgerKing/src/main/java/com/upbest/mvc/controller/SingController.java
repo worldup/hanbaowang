@@ -108,7 +108,7 @@ public class SingController {
                 entity.setSignouttime(DataType.getAsString(obj[2]));
                 entity.setSigninlongitude(DataType.getAsString(obj[3]));
                 entity.setSigninlatitude(DataType.getAsString(obj[4]));
-                entity.setName(DataType.getAsString(obj[5]));
+                entity.setName(DataType.getAsString(obj[7])+"("+DataType.getAsString(obj[5])+")");
                 entity.setLocation(DataType.getAsString(obj[6]));
                 result.add(entity);
             }
