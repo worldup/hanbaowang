@@ -142,6 +142,7 @@
 							<c:if test="${current=='storeMap'}"> class="current"</c:if>>门店信息</a></li>
 						<li class="last"><a href="${basePath}/store/getLngLat"
 							<c:if test="${current=='getLngLat'}"> class="current"</c:if>>门店经纬度获取</a></li>
+
 					</ul>
 				</div>
 				<div class="subchild_menu sheb_sbmenu">
