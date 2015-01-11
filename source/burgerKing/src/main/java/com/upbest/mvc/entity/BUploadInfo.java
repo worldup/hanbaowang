@@ -22,7 +22,14 @@ public class BUploadInfo implements Serializable {
     @Column(name = "id")
     @GeneratedValue
     private Integer id;
-
+	//优先级，优先级高的显示靠前，高中低
+	@Column(name = "priority")
+	private Integer priority;
+	//创建者
+	@Column(name = "createUser" )
+	private Integer createUser;
+	@Column(name = "createUserName")
+	private String createUserName;
 	@Column(name = "original_name")
 	private String originalName;
 	
@@ -31,6 +38,30 @@ public class BUploadInfo implements Serializable {
 	
 	@Column(name = "create_time")
 	private Date createTime;
+
+	public String getCreateUserName() {
+		return createUserName;
+	}
+
+	public void setCreateUserName(String createUserName) {
+		this.createUserName = createUserName;
+	}
+
+	public Integer getPriority() {
+		return priority;
+	}
+
+	public void setPriority(Integer priority) {
+		this.priority = priority;
+	}
+
+	public Integer getCreateUser() {
+		return createUser;
+	}
+
+	public void setCreateUser(Integer createUser) {
+		this.createUser = createUser;
+	}
 
 	public Integer getId() {
 		return id;

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.upbest.mvc.entity.Buser;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -34,6 +35,7 @@ import com.upbest.mvc.vo.UpLoadInfoVO;
 import com.upbest.utils.ConfigUtil;
 import com.upbest.utils.DataType;
 import com.upbest.utils.PageModel;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 @Controller
 @RequestMapping("/toolKit")
@@ -50,7 +52,9 @@ public class UploadInfoController {
 	
 	@ResponseBody
     @RequestMapping("/addFiles")
-    public void addStore(@RequestParam(value = "originalName", required = false) String originalName,HttpServletRequest req) throws IllegalStateException, IOException {
+    public void addStore(@RequestParam(value = "originalName", required = false) String originalName,
+                         @RequestParam(value = "priority", required = false) String priority,
+                         HttpServletRequest req) throws IllegalStateException, IOException {
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) req;
         String rootPath = req.getSession().getServletContext().getRealPath("/");
         //文件上传目录
@@ -86,7 +90,58 @@ public class UploadInfoController {
 			}
         }
     }
+    @ResponseBody
+    @RequestMapping("/addToolKitFiles")
+    public void addToolKitFiles(
+                         @RequestParam(value = "priority", required = false) Integer priority,
+                         HttpServletRequest req) throws IllegalStateException, IOException {
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) req;
+        String rootPath = req.getSession().getServletContext().getRealPath("/");
+        Integer createUser=null;
+        String createUserName=null;
+        String title="";
+        Buser u = (Buser)req.getSession().getAttribute("buser");
+        if(u!=null){
+            createUser= u.getId();
+            createUserName=u.getName();
+        }
+        //文件上传目录
+        String uploadDirectory = ConfigUtil.get("toolKitPath");
+        if (!new File(uploadDirectory).exists())
+            new File(uploadDirectory).mkdirs();
+        String fullDirectory =  uploadDirectory;
 
+        MultiValueMap<String, MultipartFile> multiFileMap = multipartRequest.getMultiFileMap();
+        if(!CollectionUtils.isEmpty(multiFileMap)){
+            for (Entry<String, List<MultipartFile>> entry : multiFileMap.entrySet()) {
+                List<MultipartFile> files = entry.getValue();
+                if(!CollectionUtils.isEmpty(files)){
+                    for (MultipartFile multipartFile : files) {
+                        String fileName = multipartFile.getOriginalFilename();
+
+                        String subbfix = getSubffix(fileName);
+                        String realName = com.upbest.utils.Constant.getimageId(6)+"." + subbfix;
+                        String fullPath = fullDirectory + realName;
+                        multipartFile.transferTo(new File(fullPath));
+                        URL url=new URL(req.getRequestURL().toString());
+                        String urlPath="";
+                        if(url.getPort()!=-1){
+                            //urlPath= url.getProtocol()+":"+"//"+url.getHost()+":"+url.getPort()+ "/" + "upload/toolKit/"+realName;
+                            urlPath=  "upload/toolKit/"+realName;
+                        }else{
+        		                /*urlPath=  url.getProtocol()+":"+"//"+url.getHost()+ "/" + "upload/toolKit/"+realName;*/
+                            urlPath= "upload/toolKit/"+realName;
+                        }
+                        String fullFileName=((CommonsMultipartFile) multipartFile).getFileItem().getName();
+                        if(fullFileName.lastIndexOf(".")>-1){
+                            title=fullFileName.substring(0,fullFileName.lastIndexOf(".")) ;
+                        }
+                        service.saveFile(title,urlPath,priority,createUser,createUserName);
+                    }
+                }
+            }
+        }
+    }
 	private String getSubffix(String fileName) {
 		String s = "";
 		if(!StringUtils.isEmpty(fileName)){

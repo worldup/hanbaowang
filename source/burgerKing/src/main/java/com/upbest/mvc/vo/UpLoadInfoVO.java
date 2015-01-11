@@ -9,6 +9,34 @@ public class UpLoadInfoVO implements Serializable {
     private String originalName;
     private String path;
     private Date createTime;
+    private Integer priority;
+    private Integer createUser;
+    private String createUserName;
+
+    public String getCreateUserName() {
+        return createUserName;
+    }
+
+    public void setCreateUserName(String createUserName) {
+        this.createUserName = createUserName;
+    }
+
+    public Integer getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(Integer createUser) {
+        this.createUser = createUser;
+    }
+
+    public Integer getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
+
     public Integer getId() {
         return id;
     }

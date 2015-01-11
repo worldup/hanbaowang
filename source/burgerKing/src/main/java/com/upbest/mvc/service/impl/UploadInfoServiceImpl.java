@@ -14,6 +14,7 @@ import com.upbest.mvc.entity.BUploadInfo;
 import com.upbest.mvc.repository.factory.UploadInfoRespository;
 import com.upbest.mvc.service.CommonDaoCustom;
 import com.upbest.mvc.service.IUploadInfoService;
+import org.springframework.util.CollectionUtils;
 
 @Service
 public class UploadInfoServiceImpl implements IUploadInfoService {
@@ -31,8 +32,26 @@ public class UploadInfoServiceImpl implements IUploadInfoService {
 		
 		dao.save(uploadInfo);
 	}
-	
-	
+	@Override
+	public void saveFile(String fileName,String savePath,Integer priority,Integer createUser,String createUserName){
+		BUploadInfo uploadInfo = new BUploadInfo();
+		uploadInfo.setCreateTime(new Date());
+		uploadInfo.setOriginalName(fileName);
+		uploadInfo.setPath(savePath);
+		uploadInfo.setPriority(priority);
+		uploadInfo.setCreateUser(createUser);
+		uploadInfo.setCreateUserName(createUserName);
+		dao.save(uploadInfo);
+	}
+	@Override
+	public void saveFile(List<BUploadInfo> uploadInfoList){
+		if(!CollectionUtils.isEmpty(uploadInfoList)){
+			for(BUploadInfo bUploadInfo:uploadInfoList){
+				dao.save(bUploadInfo);
+			}
+		}
+
+	}
 
 	@Override
 	public List<BUploadInfo> findAllUploadInfo() {
