@@ -61,8 +61,9 @@ public class BSingIfnoServiceImpl implements IBSingIfnoService {
         sql.append("         s.sign_in_latitude,                ");
         sql.append("         u.name,                 ");
         sql.append("         s.location             ,   ");
-        sql.append("         u.real_name             ");
-        sql.append("    FROM bk_sign_info s left join bk_user u on u.id = s.user_id           ");
+        sql.append("         u.real_name      ,       ");
+        sql.append("  si.shop_name ");
+        sql.append("    FROM bk_sign_info s left join bk_user u on u.id = s.user_id  left join bk_shop_info si on s.shop_id=si.id         ");
         sql.append("   where 1=1                       ");
         sql.append("   and  u.is_del='1'                     ");
         if (StringUtils.isNotBlank(singName)) {

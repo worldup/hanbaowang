@@ -110,6 +110,7 @@ public class SingController {
                 entity.setSigninlatitude(DataType.getAsString(obj[4]));
                 entity.setName(DataType.getAsString(obj[7])+"("+DataType.getAsString(obj[5])+")");
                 entity.setLocation(DataType.getAsString(obj[6]));
+                entity.setShopName(DataType.getAsString(obj[8]));
                 result.add(entity);
             }
         }

@@ -28,7 +28,7 @@ $(function() {
 								{
 									name : "id",
 									hidden : true,
-									width : 200
+									width : 100
 								},
 								{
 									label : "签到时间",
@@ -40,26 +40,21 @@ $(function() {
 									label : "签出时间",
 									name : "signouttime",
 									sortable : true,
-									width : 100 ,
+									width : 100
 								},
 								{
-									label : "经度",
-									name : "signinlongitude",
+									label : "店铺名",
+									name : 'shopName',
 									title : false,
 									sortable : false,
-									width : 100,
+									width : 200
 								},
-								{
-									label : "维度",
-									name :"signinlatitude",
-									sortable : false,
-									width : 80,
-								},
+
 								{
 									label : "地址",
 									name :"location",
 									sortable : false,
-									width : 150,
+									width : 200
 								}
 									
 								 ],
