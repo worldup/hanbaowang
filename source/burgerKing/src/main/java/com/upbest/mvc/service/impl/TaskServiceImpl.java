@@ -336,7 +336,11 @@ public class TaskServiceImpl implements ITaskService {
             params.add(userId);
         }
         if (0 != date) {
-            sql.append(" and convert(char(10),t.start_time,120)=convert(char(10),'" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(DataType.getAsDate(date)) + "',120) ");
+            if(dbChooser.isSQLServer()){
+                sql.append(" and convert(char(10),t.start_time,120)=convert(char(10),'" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(DataType.getAsDate(date)) + "',120) ");
+            }else{
+                sql.append(" and date(t.start_time)=date('" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(DataType.getAsDate(date)) + "') ");
+            }
         }
         Page<Object[]> pageResult = common.queryBySql(sql.toString(), params, pageable);
         PageModel<Object> result = new PageModel<Object>();
@@ -478,17 +482,39 @@ public class TaskServiceImpl implements ITaskService {
         if(null!=beginTime){
             if(1==frequency){
                 //执行周内搜索
-                sql.append("    and (DATEPART(wk, convert(char(10),'" + new SimpleDateFormat("yyyy-MM-dd").format(DataType.getAsDate(beginTime)) + "',120)) = DATEPART(wk, t.start_time))         ");
-                sql.append("      AND (DATEPART(yy, convert(char(10),'" + new SimpleDateFormat("yyyy-MM-dd").format(DataType.getAsDate(beginTime)) + "',120)) = DATEPART(yy, t.start_time))         ");
+                if(dbChooser.isSQLServer()){
+                    sql.append("    and (DATEPART(wk, convert(char(10),'" + new SimpleDateFormat("yyyy-MM-dd").format(DataType.getAsDate(beginTime)) + "',120)) = DATEPART(wk, t.start_time))         ");
+                    sql.append("      AND (DATEPART(yy, convert(char(10),'" + new SimpleDateFormat("yyyy-MM-dd").format(DataType.getAsDate(beginTime)) + "',120)) = DATEPART(yy, t.start_time))         ");
+                }
+               else{
+                    sql.append("    and week('" + new SimpleDateFormat("yyyy-MM-dd").format(DataType.getAsDate(beginTime)) + "',1)) = week(t.start_time,1))         ");
+                    sql.append("      AND year('" + new SimpleDateFormat("yyyy-MM-dd").format(DataType.getAsDate(beginTime)) + "')) = year(t.start_time))         ");
+
+                }
             }else if(2==frequency){
                 //执行月内搜索
-                sql.append("  and (DATEPART(yy, convert(char(10),'" + new SimpleDateFormat("yyyy-MM-dd").format(DataType.getAsDate(beginTime)) + "',120)) = DATEPART(yy, t.start_time))      ");
-                sql.append("    AND (DATEPART(mm, convert(char(10),'" + new SimpleDateFormat("yyyy-MM-dd").format(DataType.getAsDate(beginTime)) + "',120)) = DATEPART(mm, t.start_time))      ");
+                if(dbChooser.isSQLServer()){
+                    sql.append("  and (DATEPART(yy, convert(char(10),'" + new SimpleDateFormat("yyyy-MM-dd").format(DataType.getAsDate(beginTime)) + "',120)) = DATEPART(yy, t.start_time))      ");
+                    sql.append("    AND (DATEPART(mm, convert(char(10),'" + new SimpleDateFormat("yyyy-MM-dd").format(DataType.getAsDate(beginTime)) + "',120)) = DATEPART(mm, t.start_time))      ");
+                }
+                else{
+                    sql.append("    and month('" + new SimpleDateFormat("yyyy-MM-dd").format(DataType.getAsDate(beginTime)) + ")) = month(t.start_time))         ");
+                    sql.append("      AND year('" + new SimpleDateFormat("yyyy-MM-dd").format(DataType.getAsDate(beginTime)) + "')) = year(t.start_time))         ");
+
+                }
+
                 
             }else if(3==frequency){
                 //执行季度搜索
-                sql.append("  and DATEPART(qq, convert(char(10),'" + new SimpleDateFormat("yyyy-MM-dd").format(DataType.getAsDate(beginTime)) + "',120)) = DATEPART(qq, t.start_time)    ");
-                sql.append("    and DATEPART(yy, convert(char(10),'" + new SimpleDateFormat("yyyy-MM-dd").format(DataType.getAsDate(beginTime)) + "',120)) = DATEPART(yy, t.start_time)    ");
+               if(dbChooser.isSQLServer()){
+                   sql.append("  and DATEPART(qq, convert(char(10),'" + new SimpleDateFormat("yyyy-MM-dd").format(DataType.getAsDate(beginTime)) + "',120)) = DATEPART(qq, t.start_time)    ");
+                   sql.append("    and DATEPART(yy, convert(char(10),'" + new SimpleDateFormat("yyyy-MM-dd").format(DataType.getAsDate(beginTime)) + "',120)) = DATEPART(yy, t.start_time)    ");
+               }
+               else{
+                   sql.append("    and QUARTER('" + new SimpleDateFormat("yyyy-MM-dd").format(DataType.getAsDate(beginTime)) + ")) = QUARTER(t.start_time))         ");
+                   sql.append("      AND year('" + new SimpleDateFormat("yyyy-MM-dd").format(DataType.getAsDate(beginTime)) + "')) = year(t.start_time))         ");
+
+               }
             }
         }
         if(null!=userId){
