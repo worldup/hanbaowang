@@ -960,7 +960,7 @@ public class StoreServiceImpl implements IStoreService {
                 sql.append(" and DATEDIFF(yy,wi.start_time, '" + year + "')=0 ");
             }
            else{
-                sql.append(" and TIMESTAMPDIFF(year,wi.start_time, '" + year + "')=0 ");
+                sql.append(" and TIMESTAMPDIFF(year,wi.start_time, '" + year+"-01-01" + "')=0 ");
             }
         }
         if (StringUtils.isNotBlank(userId)) {

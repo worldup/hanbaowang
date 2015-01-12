@@ -456,12 +456,14 @@ public class TaskServiceImpl implements ITaskService {
         if (StringUtils.isNotBlank(year)) {
             if(dbChooser.isSQLServer()){
                 sql.append(" and DATEDIFF(yy,t.start_time, ?)=0 ");
+                params.add(year);
             }
             else{
+                params.add(year+"-01-01");
                 sql.append(" and TIMESTAMPDIFF(year,t.start_time, ?)=0 ");
             }
 
-            params.add(year);
+
         }
         sql.append(" order by t.id desc ");
         return getRows(common.queryBySql(sql.toString(), params));

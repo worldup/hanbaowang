@@ -726,11 +726,13 @@ public class ShopStatisticServiceImpl implements IShopStatisticService {
 		if (!org.apache.commons.lang.StringUtils.isBlank(year)) {
 			if(dbChooser.isSQLServer()){
 				sql.append("      and DATEDIFF(yy, t.month, ?) = 0    ");
+				params.add(year);
 			}
 			else{
 				sql.append("      and TIMESTAMPDIFF(year, t.month, ?) = 0    ");
+				params.add(year+"-01-01");
 			}
-			params.add(year);
+
 		}
 		List<Object[]> list = common.queryBySql(sql.toString(), params);
 		for (Object[] objAry : list) {

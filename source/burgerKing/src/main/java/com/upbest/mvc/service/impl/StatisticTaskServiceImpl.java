@@ -101,11 +101,13 @@ public class StatisticTaskServiceImpl implements IStatisticTaskService {
         if (StringUtils.isNotBlank(year)) {
             if(dbChooser.isSQLServer()){
                 sql.append(" and DATEDIFF(yy,t.start_time, ?)=0 ");
+                params.add(year);
             }
            else{
                 sql.append(" and TIMESTAMPDIFF(year,t.start_time, ?)=0 ");
+                params.add(year+"-01-01");
             }
-            params.add(year);
+
         }
         if (StringUtils.isNotBlank(month)) {
             sql.append(" and MONTH(t.start_time)=? ");
@@ -146,12 +148,14 @@ public class StatisticTaskServiceImpl implements IStatisticTaskService {
         if (StringUtils.isNotBlank(year)) {
             if(dbChooser.isSQLServer()){
                 sql.append(" and DATEDIFF(yy,t.start_time, ?)=0 ");
+                params.add(year);
             }
             else{
                 sql.append(" and TIMESTAMPDIFF(year,t.start_time, ?)=0 ");
+                params.add(year+"-01-01");
             }
 
-            params.add(year);
+
         }
         if (StringUtils.isNotBlank(quarter)) {
             sql.append(" and t.quarter=? ");
@@ -843,7 +847,7 @@ public class StatisticTaskServiceImpl implements IStatisticTaskService {
             sql.append("      and DATEDIFF(yy, wi.start_time, '" + year + "') = 0  group by                            ");
         }
         else{
-            sql.append("      and TIMESTAMPDIFF(year, wi.start_time, '" + year + "') = 0  group by                            ");
+            sql.append("      and TIMESTAMPDIFF(year, wi.start_time, '" + year+"-01-01" + "') = 0  group by                            ");
         }
 
         if (StringUtils.isNotBlank(month)) {
