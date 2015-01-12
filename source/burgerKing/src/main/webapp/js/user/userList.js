@@ -7,6 +7,16 @@ $(function() {
 						postData : {
 							"realName" : function() {
 								return $.trim($('#reName').val());
+							},
+							"searchRole":function(){
+								return $.trim($("#searchRole").val());
+							},
+							"searchPID":function(){
+								return $.trim($("#searchPID").val());
+							},
+							"searchRegion":function(){
+								var searchRegion=$.trim($("#searchRegion").val());
+								return searchRegion;
 							}
 						},
 						forceFit:true,

@@ -19,6 +19,7 @@ public interface IBuserService {
     Buser findByName(String userName);
     Buser findById(Integer id);
 
+    Page<Object[]> findUserListByParams(String name,String role,String pidName,String region, Pageable requestPage);
     Page<Object[]> findUserList(String shopName, Pageable requestPage);
     
     Page<Buser> findUsers(Pageable pageable);

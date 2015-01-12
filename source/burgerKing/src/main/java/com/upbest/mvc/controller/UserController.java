@@ -87,6 +87,9 @@ public class UserController {
     @ResponseBody
     @RequestMapping("/list")
     public void list(@RequestParam(value = "realName", required = false) String name,
+                     @RequestParam(value = "searchRole", required = false) String searchRole,
+                     @RequestParam(value = "searchRegion", required = false) String searchRegion,
+                     @RequestParam(value = "searchPID", required = false) String searchPID,
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "sidx", required = false) String sidx,
             @RequestParam(value = "sord", required = false) String sord,
@@ -113,7 +116,7 @@ public class UserController {
         }
         Sort so=new Sort(orders);
         PageRequest requestPage = new PageRequest(page != null ? page.intValue() - 1 : 0, pageSize, so);
-        Page<Object[]> shop =userService.findUserList(name, requestPage);
+        Page<Object[]> shop =userService.findUserListByParams(name, searchRole,searchPID,searchRegion,requestPage);
         PageModel result=new PageModel();
         result.setPage(page);
         result.setRows(getShopInfo(shop.getContent()));

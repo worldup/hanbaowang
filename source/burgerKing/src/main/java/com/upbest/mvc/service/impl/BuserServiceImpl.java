@@ -73,7 +73,42 @@ public class BuserServiceImpl implements IBuserService {
         // buserRepository.delete(user);
         buserRepository.save(user);
     }
-
+    @Override
+     public  Page<Object[]> findUserListByParams(String name,String role,String pidName,String region, Pageable requestPage){
+        StringBuffer sql = new StringBuffer();
+        List<Object> params = new ArrayList<Object>();
+        sql.append("  SELECT t.id,                                              ");
+        sql.append("          t.create_date,                                    ");
+        sql.append("  t.role,                                                   ");
+        sql.append("  t.modify_date,                                            ");
+        sql.append("  t.name,                                                   ");
+        sql.append("  t.pwd,                                                    ");
+        sql.append("  t.real_name a,                                              ");
+        sql.append("  t.telephone,                                              ");
+        sql.append("  t.is_del,                                                 ");
+        sql.append("  t2.real_name b,                                             ");
+        sql.append("  t.emp                                             ");
+        sql.append("   FROM bk_user t left join bk_user t2 on t.pid=t2.id       ");
+        sql.append("   where 1 = 1   and t.is_del='1' and t.name!='admin'        ");
+        //sql.append(" and t.role!='0' ");
+        if (StringUtils.isNotBlank(name)) {
+            sql.append(" and t.real_name like ?");
+            params.add("%" + name + "%");
+        }
+        if(StringUtils.isNotBlank(role)&&!"-1".equals(role)){
+            sql.append(" and t.role = ?");
+            params.add(role);
+        }
+        if(StringUtils.isNotBlank(region)&&!"0".equals(region)){
+            sql.append(" and t.area_id = ?");
+            params.add(region);
+        }
+        if(StringUtils.isNotBlank(pidName)){
+            sql.append(" and t.pid IN  (SELECT id FROM bk_user WHERE real_name LIKE ? )");
+            params.add("%" + pidName + "%");
+        }
+        return common.queryBySql(sql.toString(), params, requestPage);
+    }
     @Override
     public Page<Object[]> findUserList(String name, Pageable requestPage) {
         StringBuffer sql = new StringBuffer();
