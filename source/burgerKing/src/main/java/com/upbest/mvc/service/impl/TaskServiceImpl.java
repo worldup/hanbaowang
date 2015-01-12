@@ -458,7 +458,7 @@ public class TaskServiceImpl implements ITaskService {
                 sql.append(" and DATEDIFF(yy,t.start_time, ?)=0 ");
             }
             else{
-                sql.append(" and TIMESTAMPDIFF(yy,t.start_time, ?)=0 ");
+                sql.append(" and TIMESTAMPDIFF(year,t.start_time, ?)=0 ");
             }
 
             params.add(year);

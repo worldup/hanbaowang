@@ -814,7 +814,7 @@ public class StoreServiceImpl implements IStoreService {
 
         }
         else{
-            sql.append("		join V_TF_Daily_Sales_MONTH_LAST_DAY v on TIMESTAMPDIFF(m,dm.salesdate,v.salesdate) = 0 ");
+            sql.append("		join V_TF_Daily_Sales_MONTH_LAST_DAY v on TIMESTAMPDIFF(month,dm.salesdate,v.salesdate) = 0 ");
 
         }
 
@@ -960,7 +960,7 @@ public class StoreServiceImpl implements IStoreService {
                 sql.append(" and DATEDIFF(yy,wi.start_time, '" + year + "')=0 ");
             }
            else{
-                sql.append(" and TIMESTAMPDIFF(yy,wi.start_time, '" + year + "')=0 ");
+                sql.append(" and TIMESTAMPDIFF(year,wi.start_time, '" + year + "')=0 ");
             }
         }
         if (StringUtils.isNotBlank(userId)) {
