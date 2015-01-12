@@ -20,10 +20,12 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.persistence.Column;
 
+import com.upbest.mvc.service.*;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,11 +41,6 @@ import com.upbest.mvc.handler.StoreStatisticHandler;
 import com.upbest.mvc.repository.factory.ExamnationPaperRespository;
 import com.upbest.mvc.repository.factory.StoreStatisticRespository;
 import com.upbest.mvc.repository.factory.StoreUserRespository;
-import com.upbest.mvc.service.CommonDaoCustom;
-import com.upbest.mvc.service.IBuserService;
-import com.upbest.mvc.service.IExamService;
-import com.upbest.mvc.service.IShopStatisticService;
-import com.upbest.mvc.service.IStoreService;
 import com.upbest.mvc.vo.ExamTypeScoreVO;
 import com.upbest.mvc.vo.ExaminationPaperVO;
 import com.upbest.mvc.vo.SelectionVO;
@@ -54,7 +51,8 @@ import com.upbest.utils.ExcelUtils;
 
 @Service
 public class ShopStatisticServiceImpl implements IShopStatisticService {
-
+	@Inject
+	private DBChooser dbChooser;
 	@Inject
 	private StoreStatisticRespository repository;
 
@@ -104,7 +102,13 @@ public class ShopStatisticServiceImpl implements IShopStatisticService {
 		sql.append("  where 1=1  ");
 		if (StringUtils.isNotBlank(mon)) {
 			Date date = DataType.getAsDate(mon, "yyyy-MM");
-			sql.append("and datediff(day,s.month,?)=0");
+			if(dbChooser.isSQLServer()){
+				sql.append("and datediff(day,s.month,?)=0");
+			}
+			else
+			{
+				sql.append("and datediff(day,s.month,?)=0");
+			}
 			params.add(date);
 		}
 		if (StringUtils.isNotBlank(sales)) {
@@ -404,11 +408,22 @@ public class ShopStatisticServiceImpl implements IShopStatisticService {
 		sql.append("	)	");
 
 		if (startTime != null) {
-			sql.append(" and DATEDIFF(day,?,p.t_end) >= 0 ");
+			if(dbChooser.isSQLServer()){
+				sql.append(" and DATEDIFF(day,?,p.t_end) >= 0 ");
+			}
+			else{
+				sql.append(" and TIMESTAMPDIFF(day,?,p.t_end) >= 0 ");
+			}
 			params.add(startTime);
 		}
 		if (endTime != null) {
-			sql.append(" and DATEDIFF(day,?,p.t_end) < 0 ");
+			if(dbChooser.isSQLServer()){
+				sql.append(" and DATEDIFF(day,?,p.t_end) < 0 ");
+			}
+			else{
+				sql.append(" and TIMESTAMPDIFF(day,?,p.t_end) < 0 ");
+			}
+
 			params.add(endTime);
 		}
 
@@ -536,11 +551,22 @@ public class ShopStatisticServiceImpl implements IShopStatisticService {
 
 		List<Object> params = new ArrayList<Object>();
 		if (startTime != null) {
-			sql.append(" and DATEDIFF(day,?,s.month) >= 0 ");
+			if(dbChooser.isSQLServer()){
+				sql.append(" and DATEDIFF(day,?,s.month) >= 0 ");
+			}
+			else{
+				sql.append(" and TIMESTAMPDIFF(day,?,s.month) >= 0 ");
+			}
 			params.add(startTime);
 		}
 		if (endTime != null) {
-			sql.append(" and DATEDIFF(day,?,s.month) < 0 ");
+			if(dbChooser.isSQLServer()){
+				sql.append(" and DATEDIFF(day,?,s.month) < 0 ");
+			}
+			else{
+				sql.append(" and TIMESTAMPDIFF(day,?,s.month) < 0 ");
+			}
+
 			params.add(endTime);
 		}
 		if (!CollectionUtils.isEmpty(shopNums)) {
@@ -698,7 +724,12 @@ public class ShopStatisticServiceImpl implements IShopStatisticService {
 			params.add(shopId);
 		}
 		if (!org.apache.commons.lang.StringUtils.isBlank(year)) {
-			sql.append("      and DATEDIFF(yy, t.month, ?) = 0    ");
+			if(dbChooser.isSQLServer()){
+				sql.append("      and DATEDIFF(yy, t.month, ?) = 0    ");
+			}
+			else{
+				sql.append("      and TIMESTAMPDIFF(year, t.month, ?) = 0    ");
+			}
 			params.add(year);
 		}
 		List<Object[]> list = common.queryBySql(sql.toString(), params);

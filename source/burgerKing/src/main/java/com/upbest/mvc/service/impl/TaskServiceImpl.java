@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import com.upbest.mvc.service.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,10 +22,6 @@ import com.upbest.mvc.entity.Buser;
 import com.upbest.mvc.repository.factory.TaskRespository;
 import com.upbest.mvc.repository.factory.UserRespository;
 import com.upbest.mvc.repository.factory.WorkRespository;
-import com.upbest.mvc.service.CommonDaoCustom;
-import com.upbest.mvc.service.IBuserService;
-import com.upbest.mvc.service.IMessageService;
-import com.upbest.mvc.service.ITaskService;
 import com.upbest.mvc.vo.BuserVO;
 import com.upbest.mvc.vo.SelectionVO;
 import com.upbest.mvc.vo.TaskVO;
@@ -33,7 +30,8 @@ import com.upbest.utils.PageModel;
 
 @Service
 public class TaskServiceImpl implements ITaskService {
-
+    @Autowired
+    private DBChooser dbChooser;
     @Inject
     protected TaskRespository taskRepository;
 
@@ -105,7 +103,12 @@ public class TaskServiceImpl implements ITaskService {
         if(StringUtils.isNotBlank(sDate))
         {
             Date   date = DataType.getAsDate(sDate,"yyyy-MM-dd");
+            if(dbChooser.isSQLServer()){
                 sql.append("and datediff(day,t.start_time,?)=0");
+            }
+           else{
+                sql.append("and TIMESTAMPDIFF(day,t.start_time,?)=0");
+            }
                 params.add(date);
         }
         sql.append(" order by t.start_time desc ");
@@ -451,7 +454,13 @@ public class TaskServiceImpl implements ITaskService {
             params.add(month);
         }
         if (StringUtils.isNotBlank(year)) {
-            sql.append(" and DATEDIFF(yy,t.start_time, ?)=0 ");
+            if(dbChooser.isSQLServer()){
+                sql.append(" and DATEDIFF(yy,t.start_time, ?)=0 ");
+            }
+            else{
+                sql.append(" and TIMESTAMPDIFF(yy,t.start_time, ?)=0 ");
+            }
+
             params.add(year);
         }
         sql.append(" order by t.id desc ");

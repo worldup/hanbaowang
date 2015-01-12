@@ -16,7 +16,5 @@ public interface TaskRespository extends JpaRepository<BWorkInfo, Serializable> 
 //    BWorkInfo findByName(String name);
 	@Query("select w from BWorkInfo w where w.starttime > ?1 and w.starttime < ?2")
 	List<BWorkInfo> findStartTimeBetween(Date startTime,Date endTime);
-	
-	@Query("select w from BWorkInfo w where DATEDIFF(dd, w.starttime, GETDATE()) = 0 and (w.state='0' or w.state is null) ")
-	   List<BWorkInfo> queryUnDoneTaskCount();
+
 }

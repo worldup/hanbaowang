@@ -15,7 +15,8 @@ public interface CommonDaoCustom<T> {
 	 * @return
 	 */
 	public List<Object[]> queryBySql(String sql, List params);
-
+    /**根据类型查询*/
+	public List<T>  queryListBySql(String sql,List params,Class clazzName);
 	/**
 	 * 根据sql语句查询分页数据
 	 * 

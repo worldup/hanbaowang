@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.upbest.mvc.service.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +24,6 @@ import com.upbest.mvc.repository.factory.StoreRespository;
 import com.upbest.mvc.repository.factory.StoreUserRespository;
 import com.upbest.mvc.repository.factory.UserRespository;
 import com.upbest.mvc.repository.factory.WorkRespository;
-import com.upbest.mvc.service.CommonDaoCustom;
-import com.upbest.mvc.service.IBuserService;
-import com.upbest.mvc.service.IStatisticTaskService;
-import com.upbest.mvc.service.IWorkService;
 import com.upbest.mvc.vo.BStatistic;
 import com.upbest.mvc.vo.BStsVO;
 import com.upbest.mvc.vo.BuserVO;
@@ -34,6 +31,8 @@ import com.upbest.mvc.vo.StsStoreVO;
 import com.upbest.mvc.vo.TaskTypeVO;
 import com.upbest.utils.ComparatorSts;
 import com.upbest.utils.DataType;
+
+import javax.inject.Inject;
 
 /**
  * 
@@ -45,7 +44,8 @@ import com.upbest.utils.DataType;
  */
 @Service
 public class StatisticTaskServiceImpl implements IStatisticTaskService {
-
+    @Autowired
+    private DBChooser dbChooser;
     @Autowired
     private CommonDaoCustom<Object[]> common;
 
@@ -99,7 +99,12 @@ public class StatisticTaskServiceImpl implements IStatisticTaskService {
             sql.append(" and tp.type_name!='顾客至上Guest Is King' ");
         }
         if (StringUtils.isNotBlank(year)) {
-            sql.append(" and DATEDIFF(yy,t.start_time, ?)=0 ");
+            if(dbChooser.isSQLServer()){
+                sql.append(" and DATEDIFF(yy,t.start_time, ?)=0 ");
+            }
+           else{
+                sql.append(" and TIMESTAMPDIFF(year,t.start_time, ?)=0 ");
+            }
             params.add(year);
         }
         if (StringUtils.isNotBlank(month)) {
@@ -139,7 +144,13 @@ public class StatisticTaskServiceImpl implements IStatisticTaskService {
             sql.append(" and tp.type_name!='顾客至上Guest Is King' ");
         }
         if (StringUtils.isNotBlank(year)) {
-            sql.append(" and DATEDIFF(yy,t.start_time, ?)=0 ");
+            if(dbChooser.isSQLServer()){
+                sql.append(" and DATEDIFF(yy,t.start_time, ?)=0 ");
+            }
+            else{
+                sql.append(" and TIMESTAMPDIFF(yy,t.start_time, ?)=0 ");
+            }
+
             params.add(year);
         }
         if (StringUtils.isNotBlank(quarter)) {
@@ -828,7 +839,13 @@ public class StatisticTaskServiceImpl implements IStatisticTaskService {
         /* if (StringUtils.isNotBlank(month)) {
              sql.append(" and  MONTH(wi.start_time)='" + month + "' ");
          }*/
-        sql.append("      and DATEDIFF(yy, wi.start_time, '" + year + "') = 0  group by                            ");
+        if(dbChooser.isSQLServer()){
+            sql.append("      and DATEDIFF(yy, wi.start_time, '" + year + "') = 0  group by                            ");
+        }
+        else{
+            sql.append("      and TIMESTAMPDIFF(year, wi.start_time, '" + year + "') = 0  group by                            ");
+        }
+
         if (StringUtils.isNotBlank(month)) {
             sql.append(" MONTH(wi.start_time), ");
         }

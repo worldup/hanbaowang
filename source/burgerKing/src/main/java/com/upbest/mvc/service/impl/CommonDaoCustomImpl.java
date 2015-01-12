@@ -24,7 +24,9 @@ public class CommonDaoCustomImpl<T> extends DaoFactory implements CommonDaoCusto
 
 		return (List<Object[]>) queryObjectsListBySql(sql, params);
 	}
-
+	public List<T>  queryListBySql(String sql,List params,Class clazzName){
+		return super.queryObjectListBySql(sql,params,clazzName);
+	}
 	/**
 	 * 根据hsql查询博客分页数据
 	 * 

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.upbest.mvc.service.DBChooser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,8 @@ import com.upbest.utils.DataType;
 @Component
 public class DefaultSchedulerTask implements SchedulerTask {
 	private static final Logger logger = LoggerFactory.getLogger(DefaultSchedulerTask.class);
-	
+	@Autowired
+	private DBChooser dbChooser;
 	@Autowired
 	protected MessageRespository messageRespository;
 	@Autowired
@@ -115,11 +117,22 @@ public class DefaultSchedulerTask implements SchedulerTask {
 			.append("	(select t.work_type_id,t.store_id,t.user_id		")
 			.append("		from bk_work_info t where 1=1 		");
 		if(getStartTime() != null){
-        	sql.append("	and DATEDIFF(day,?,t.start_time) >= 0  ");
+			if(dbChooser.isSQLServer()){
+				sql.append("	and DATEDIFF(day,?,t.start_time) >= 0  ");
+			}
+        	else{
+				sql.append("	and TIMESTAMPDIFF(day,?,t.start_time) >= 0  ");
+			}
         	params.add(getStartTime());
         }
         if(getEndTime() != null){
-        	sql.append("	and DATEDIFF(day,?,t.start_time) < 0  ");
+			if(dbChooser.isSQLServer()){
+				sql.append("	and DATEDIFF(day,?,t.start_time) < 0  ");
+			}
+			else{
+				sql.append("	and TIMESTAMPDIFF(day,?,t.start_time) < 0  ");
+			}
+
         	params.add(getEndTime());
         }
         sql.append("	)t	");

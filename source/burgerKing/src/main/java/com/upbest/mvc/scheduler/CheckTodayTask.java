@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.upbest.mvc.service.CommonDaoCustom;
+import com.upbest.mvc.service.DBChooser;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,7 +35,8 @@ import com.upbest.utils.DataType;
  */
 @Component
 public class CheckTodayTask implements SchedulerTask {
-
+    @Autowired
+    private DBChooser dbChooser;
     @Autowired
     private TaskRespository taskRespository;
 
@@ -48,13 +51,26 @@ public class CheckTodayTask implements SchedulerTask {
 
     @Autowired
     protected StoreRespository storeRes;
-    
+    @Autowired
+    private CommonDaoCustom<BWorkInfo> common;
     public CheckTodayTask(){
     }
 
     @Override
     public void scheduler() throws Exception {
-        List<BWorkInfo> list = taskRespository.queryUnDoneTaskCount();
+        StringBuffer sql = new StringBuffer();
+        List<Object> params = new ArrayList<Object>();
+        sql.append("select * from bk_work_info where ");
+        if(dbChooser.isSQLServer()){
+            sql.append(" DATEDIFF(dd, w.starttime, GETDATE()) = 0 ");
+        }
+        else{
+            sql.append( "TIMESTAMPDIFF(day,w.starttime,now())= 0 ");
+        }
+        sql.append(" and (w.state='0' or w.state is null)");
+
+        List<BWorkInfo> list= common.queryListBySql(sql.toString(), params,BWorkInfo.class);
+   //   List<BWorkInfo> list = taskRespository.queryUnDoneTaskCount();
         if (list.size() > 0) {
             pushMessage(list);
         }

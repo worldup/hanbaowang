@@ -14,6 +14,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import com.upbest.mvc.service.DBChooser;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,8 +62,8 @@ import com.upbest.utils.ExcelUtils;
 
 @Service
 public class StoreServiceImpl implements IStoreService {
-    @Value("${database}")
-    private String database;
+    @Autowired
+    private DBChooser dbChooser;
 
     @Inject
     protected StoreRespository storeRepository;
@@ -793,7 +794,7 @@ public class StoreServiceImpl implements IStoreService {
     	sql.append("	select t.storeid,count(t.salesRank) srCount,count(t.tcRank) trCount	")
     		.append("		from 															")
     		.append("		(																	");
-        if("SQL_SERVER".equalsIgnoreCase(database)){
+        if(dbChooser.isSQLServer()){
             sql.append("		select DISTINCT dm.storeid storeid,  CONVERT(varchar, dm.salesdate, 120 ) month, ");
 
         }
@@ -807,9 +808,18 @@ public class StoreServiceImpl implements IStoreService {
     		.append("		from V_TF_Daily_Sales_MONTH_LAST_DAY d 								")	
     		.append("			where d.storeid in (											");
     	 addInCondition(shopNumList.toArray(new String[shopNumList.size()]), sql);
-    	 sql.append("		) group by d.storeid) dm											")	
-    	 	.append("		join V_TF_Daily_Sales_MONTH_LAST_DAY v on DATEDIFF(m,dm.salesdate,v.salesdate) = 0 ")	
-    	 	.append("	) t group by t.storeid													");
+    	 sql.append("		) group by d.storeid) dm											")	;
+        if(dbChooser.isSQLServer()){
+            sql.append("		join V_TF_Daily_Sales_MONTH_LAST_DAY v on DATEDIFF(m,dm.salesdate,v.salesdate) = 0 ");
+
+        }
+        else{
+            sql.append("		join V_TF_Daily_Sales_MONTH_LAST_DAY v on TIMESTAMPDIFF(m,dm.salesdate,v.salesdate) = 0 ");
+
+        }
+
+
+    	 	sql.append("	) t group by t.storeid													");
     	 
     	 List<Object[]> list = common.queryBySql(sql.toString(), new ArrayList<Object>());
     	 if(!CollectionUtils.isEmpty(list)){
@@ -878,8 +888,14 @@ public class StoreServiceImpl implements IStoreService {
                 		&&StringUtils.isEmpty(statistic.getRank())){
                 	StringBuilder sql = new StringBuilder();
                 	List<String> params = new ArrayList<String>();
-                	sql.append("select top 1 s.gt_nps,s.rev_bs,s.rev_fs,s.cash_audit,s.rank from bk_shop_statistic s where s.gt_nps is not null"
-                			+ " and s.month is not null and s.shop_id=? order by month");
+                    if(dbChooser.isSQLServer()){
+                        sql.append("select top 1 s.gt_nps,s.rev_bs,s.rev_fs,s.cash_audit,s.rank from bk_shop_statistic s where s.gt_nps is not null"
+                                + " and s.month is not null and s.shop_id=? order by month");
+                    }
+                	else{
+                        sql.append("select  s.gt_nps,s.rev_bs,s.rev_fs,s.cash_audit,s.rank from bk_shop_statistic s where s.gt_nps is not null"
+                                + " and s.month is not null and s.shop_id=? order by month limit 1");
+                    }
                 	
                 	params.add(statistic.getShopNum());
                 	List<Object[]> objList = common.queryBySql(sql.toString(), params);
@@ -940,7 +956,12 @@ public class StoreServiceImpl implements IStoreService {
         sql.append("       on ur.id = wi.execute_id                                          ");
         sql.append("    where 1 = 1                                                          ");
         if (StringUtils.isNotBlank(year)) {
-            sql.append(" and DATEDIFF(yy,wi.start_time, '" + year + "')=0 ");
+            if(dbChooser.isSQLServer()){
+                sql.append(" and DATEDIFF(yy,wi.start_time, '" + year + "')=0 ");
+            }
+           else{
+                sql.append(" and TIMESTAMPDIFF(yy,wi.start_time, '" + year + "')=0 ");
+            }
         }
         if (StringUtils.isNotBlank(userId)) {
             sql.append("      and ur.id = '" + userId + "'                                                  ");
