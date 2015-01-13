@@ -55,7 +55,7 @@ public class AreaAPIController {
 
 		return result;
 	}
-	@RequestMapping("/getRootArea")
+	@RequestMapping("/securi_getRootArea")
 	@ResponseBody
 	//获取大区，南区北区中区，所有parent为-1的区域
 	public Json getRootArea(HttpServletResponse response){
