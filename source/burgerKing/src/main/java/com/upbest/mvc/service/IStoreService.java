@@ -20,6 +20,7 @@ public interface IStoreService {
     BShopInfoVO findById(Integer id);
 
     Page<Object[]> findShopList(String shopName, Integer userId,String realName, Pageable requestPage);
+    Page<Object[]> findShopList(String omids,String areaId,String shopName, Integer userId,String realName, Pageable requestPage);
 
     List<BShopInfoVO> getShopInfoVOList(String shopName, Integer userId, Pageable requestPage);
     List<BShopInfoVO> getShopInfoVOList(Integer userId,String shopName);

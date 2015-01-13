@@ -73,7 +73,7 @@ $(function() {
 									title : false,
 									sortable : false,
 									hidden:true,
-									width : 100,
+									width : 100
 								},
 								{
 									label : "操作",

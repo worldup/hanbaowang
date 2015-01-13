@@ -2,7 +2,6 @@
 <%@ page pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="basePath" value="${pageContext.request.contextPath}" />
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -19,19 +18,42 @@
 					<a href="javascript:void(0)" id="downloadTemp" class="small_ea"><span>下载模板</span></a>
 				</div>
 			</td>
+			</tr>
+		</table>
+
+	<table class="qjabtn_wrap" >
+		<tr>
+			<td>
+				<label style="font-size:14px;">区域：</label>
+			</td>
+			<td>
+				<div class=" clearfix">
+					<select id="searchRegion" name="searchRegion" class="select">
+					</select>
+				</div>
+			</td>
+			<td>
+				<label style="font-size:14px;">OM：</label>
+			</td>
+			<td>
+				<div class="clearfix">
+					<select name="OMID" id="OMID" multiple="multiple" class="stxt">
+					</select>
+				</div>
+			</td>
 			<td>
 				<label style="font-size:14px;">门店名称：</label>
 			</td>
 			<td>
-				<div class="qjstxt_wrap clearfix">
+				<div class=" clearfix">
 					<input type="text" class="stxt" name="storeName" id="storeName"/>
 				</div>
 			</td>
 			<td >
-				<label style="font-size:14px;">巡检人员：</label>
+				<label style="font-size:14px;">OC：</label>
 			</td>
 			<td>
-				<div class="qjstxt_wrap clearfix">
+				<div class=" clearfix">
 					<input type="text" class="text" name="realName" id="realName"/>
 					
 					<input type="button" value="搜&nbsp;索" id="searchBtn" class="search" />
@@ -44,11 +66,45 @@
 	<div id="gridPagerStore"></div>
 	
 </div>
-
+<link rel="stylesheet" type="text/css" href="${basePath}/js/multiselect/css/jquery.multiselect.css" />
+<link rel="stylesheet" type="text/css" href="${basePath}/js/multiselect/assets/style.css" />
+<link rel="stylesheet" type="text/css" href="${basePath}/js/multiselect/assets/prettify.css" />
+<script type="text/javascript" src="${basePath}/js/multiselect/js/jquery.multiselect.js"></script>
+<script type="text/javascript" src="${basePath}/js/multiselect/assets/prettify.js"></script>
 <script type="text/javascript" src="${basePath}/js/store/storeList.js"></script>
 <script type="text/javascript">
 	
-	$(function(){
+	$(document).ready(function(){
+		//初始化区域
+		$.post("${basePath}"+"/area/getRootArea",{},function(data){
+			var jsonResult=$.parseJSON(data);
+			var html='<option value="0">---请选择---</option>';
+			$.each(jsonResult,function(i, value) {
+				var seled = "",val = value.id;
+				html+="<option "+seled+" value="+val+">"+value.area+"</option>";
+			});
+			$('#searchRegion').append(html);
+
+		})
+
+		//初始化OM
+		$.post("${basePath}"+"/user/loadUser",{role:1},function(data){
+			var jsonResult=$.parseJSON(data);
+			var html="";
+			$.each(jsonResult,function(i, value) {
+				html+="<option  value="+value.id+">"+value.name+"</option>";
+			});
+			$('#OMID').append(html);
+			$("#OMID").multiselect({
+				minWidth: 250,
+				noneSelectedText: '请选择',
+				checkAllText: '全选',
+				uncheckAllText: '取消全选'
+			}  );
+
+		})
+
+
 		$("#searchBtn").bind("click",function(){
 			$("#gridTableStore").setGridParam({page:1}).jqGrid().trigger("reloadGrid");
     });

@@ -10,6 +10,12 @@ $(function() {
 							},
 							"realName" : function(){
 								return $.trim($('#realName').val());
+							},
+							"OMIDS":function(){
+								return $.trim($("#OMID").val())
+							},
+							"areaId":function(){
+								return $.trim($("#searchRegion").val())
 							}
 						},
 						altRows : true,
@@ -71,7 +77,7 @@ $(function() {
 									}
 								},
 								{
-									label : "巡检人员",
+									label : "OC",
 									name : "userNames",
 									sortable : false,
 									width : 100,

@@ -295,7 +295,10 @@ public class StoreController {
 
     @ResponseBody
     @RequestMapping("/list")
-    public void list(@RequestParam(value = "shopName", required = false) String name, @RequestParam(value = "page", required = false) Integer page,
+    public void list(@RequestParam(value = "shopName", required = false) String name,
+                     @RequestParam(value = "OMIDS", required = false) String OMIDS,
+                     @RequestParam(value = "areaId", required = false) String areaId,
+                     @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "rows", required = false) Integer pageSize, @RequestParam(value = "sidx", required = false) String sidx, @RequestParam(value = "sord", required = false) String sord,
             @RequestParam(value = "realName", required = false) String realName, Model model, HttpSession session, HttpServletResponse response) {
         if (pageSize == null) {
