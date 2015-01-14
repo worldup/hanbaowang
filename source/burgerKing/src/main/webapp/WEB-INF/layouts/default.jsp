@@ -27,14 +27,16 @@
 	href="${basePath}/css/jquery-ui-themes-1.10.1/themes/redmond/jquery-ui.min.css" />
 <link rel="stylesheet" type="text/css"
 	href="${basePath}/css/ui.jqgrid.css" />
-<script src="${basePath}/js/jquery-1.8.2.min.js" type="text/javascript"></script>
+	<link rel="stylesheet" type="text/css" href="${basePath}/js/jquery-easyui-1.4.1/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="${basePath}/js/jquery-easyui-1.4.1/themes/icon.css">
+<script src="${basePath}/js/jquery-easyui-1.4.1/jquery.min.js" type="text/javascript"></script>
 <script type="text/javascript"
-	src="${basePath}/js/jquery-ui-1.10.1.custom.min.js"></script>
+	src="${basePath}/js/jquery-ui-1.11.2/jquery-ui.min.js"></script>
 <script src="${basePath}/js/common.js" type="text/javascript"></script>
 <script type="text/javascript"
 	src="${basePath}/js/i18n/grid.locale-cn.js"></script>
 <script type="text/javascript" src="${basePath}/js/jquery.jqGrid.src.js"></script>
-<script type="text/javascript" src="${basePath}/js/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="${basePath}/js/jquery-easyui-1.4.1/jquery.easyui.min.js"></script>
 <script type="text/javascript"
 	src="${basePath}/js/jquery.json-2.4.min.js"></script>
 <script type="text/javascript"

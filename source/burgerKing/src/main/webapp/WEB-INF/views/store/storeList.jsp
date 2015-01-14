@@ -52,10 +52,11 @@
 			<td >
 				<label style="font-size:14px;">OC：</label>
 			</td>
+
 			<td>
 				<div class=" clearfix">
-					<input type="text" class="text" name="realName" id="realName"/>
-					
+
+					<input id="realName" class="easyui-combobox" name="realName"/>
 					<input type="button" value="搜&nbsp;索" id="searchBtn" class="search" />
 				
 				</div>
@@ -72,6 +73,7 @@
 <script type="text/javascript" src="${basePath}/js/multiselect/js/jquery.multiselect.js"></script>
 <script type="text/javascript" src="${basePath}/js/multiselect/assets/prettify.js"></script>
 <script type="text/javascript" src="${basePath}/js/store/storeList.js"></script>
+
 <script type="text/javascript">
 	
 	$(document).ready(function(){
@@ -103,7 +105,21 @@
 			}  );
 
 		})
+		//初始化oc
+		var localCache=[];
+		$.post("${basePath}"+"/user/loadUser",{role:2},function(data){
+			var jsonResult=$.parseJSON(data);
+			$.each(jsonResult,function(i, value) {
+				localCache.push({ 'label': value.name, 'value': value.value })
+			});
+			console.log(localCache)
+			$('#realName').combobox({
+				data:localCache,
+				valueField:'value',
+				textField:'label'
+			});
 
+		})
 
 		$("#searchBtn").bind("click",function(){
 			$("#gridTableStore").setGridParam({page:1}).jqGrid().trigger("reloadGrid");
