@@ -36,7 +36,9 @@
 		<property name="dataSource" ref="dataSource" />
 		<property name="jpaVendorAdapter" ref="jpaVendorAdapter" />
 	</bean>
-
+	<bean  id="jdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
+		<constructor-arg name="dataSource" ref="dataSource"/>
+	</bean>
 	<bean id="executorService" class="java.util.concurrent.Executors"
 		factory-method="newFixedThreadPool" destroy-method="shutdownNow">
 		<constructor-arg value="20">

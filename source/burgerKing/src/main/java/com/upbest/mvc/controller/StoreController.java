@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.upbest.mvc.service.*;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -56,14 +57,6 @@ import com.upbest.mvc.entity.BShopInfo;
 import com.upbest.mvc.entity.BShopReport;
 import com.upbest.mvc.entity.Buser;
 import com.upbest.mvc.repository.factory.BArearespository;
-import com.upbest.mvc.service.BeaconShopService;
-import com.upbest.mvc.service.IAreaService;
-import com.upbest.mvc.service.IBSingIfnoService;
-import com.upbest.mvc.service.IBeaconService;
-import com.upbest.mvc.service.IBuserService;
-import com.upbest.mvc.service.IStoreReportService;
-import com.upbest.mvc.service.IStoreService;
-import com.upbest.mvc.service.IStoreUserService;
 import com.upbest.mvc.vo.BShopInfoVO;
 import com.upbest.mvc.vo.BSignInfoVO;
 import com.upbest.mvc.vo.BshopStatisticVO;
@@ -292,7 +285,8 @@ public class StoreController {
         storeService.deleteById(Integer.parseInt(id));
         outPrint("0", response);
     }
-
+@Autowired
+private ISpringJdbcService jdbcService;
     @ResponseBody
     @RequestMapping("/list")
     public void list(@RequestParam(value = "shopName", required = false) String name,
@@ -304,13 +298,7 @@ public class StoreController {
         if (pageSize == null) {
             pageSize = 10;
         }
-        // 排序 begin
-        if ("shopbusinesstime".equals(sidx)) {
-            sidx = "t.shop_business_time";
-        }
-        if ("shopopentime".equals(sidx)) {
-            sidx = "t.shop_open_time";
-        }
+
         Order or = null;
         if (sord.equalsIgnoreCase("desc")) {
             or = new Order(Direction.DESC, sidx);
@@ -322,6 +310,7 @@ public class StoreController {
         PageRequest requestPage = new PageRequest(page != null ? page.intValue() - 1 : 0, pageSize, so);
         Buser buser = (Buser) session.getAttribute("buser");
         Page<Object[]> shop = storeService.findShopList(name, buser.getId(), realName, requestPage);
+        jdbcService.listUsersByParentUserId("2","");
         PageModel result = new PageModel();
         result.setPage(page);
         result.setRows(getShopInfo(shop.getContent()));

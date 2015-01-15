@@ -37,38 +37,28 @@ $(function() {
 									sortable : false,
 									width :150
 								},
+							{
+								label : "区域",
+								name : "areaName",
+								sortable : false,
+								width :150
+							},
 								{
 									label : "门店编号",
 									name : "shopnum",
 									sortable : false,
 									width :60
-								}/*,{
-									label : "门面",
-									name : "shopimage",
-									sortable : false,
-									width : 80,
-									formatter : function(cellvalue, options,
-											rowObject) {
-										var val='';
-										if(cellvalue!=null){
-										  val="../storeImage/"+cellvalue;
-										}else{
-											val="../images/default.jpg";
-										}
-										var html = "<img width=50 height=50 src=\""+val+"\" onerror=\"this.src='../images/default.jpg'\"/>";
-										return html;
-									}
-								}*/,
+								},
 								
 								{
-									label : "营业时间",
-									name : "shopbusinesstime",
-									sortable : true,
+									label : "OM",
+									name : "OM",
+									sortable : false,
 									width : 80
 								},
 								{
-									label : "开店时间",
-									name : "shopopentime",
+									label : "营业状态",
+									name : "status",
 									sortable : true,
 									width : 80,
 									formatter : function(cellvalue, options,
