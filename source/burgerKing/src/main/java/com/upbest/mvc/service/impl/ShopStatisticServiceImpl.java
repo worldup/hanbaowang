@@ -1,5 +1,38 @@
 package com.upbest.mvc.service.impl;
 
+import com.upbest.mvc.entity.BShopInfo;
+import com.upbest.mvc.entity.BShopStatistic;
+import com.upbest.mvc.entity.BShopUser;
+import com.upbest.mvc.entity.BTestPaper;
+import com.upbest.mvc.entity.Buser;
+import com.upbest.mvc.handler.StoreStatisticHandler;
+import com.upbest.mvc.repository.factory.ExamnationPaperRespository;
+import com.upbest.mvc.repository.factory.StoreStatisticRespository;
+import com.upbest.mvc.repository.factory.StoreUserRespository;
+import com.upbest.mvc.service.CommonDaoCustom;
+import com.upbest.mvc.service.DBChooser;
+import com.upbest.mvc.service.IBuserService;
+import com.upbest.mvc.service.IExamService;
+import com.upbest.mvc.service.IShopStatisticService;
+import com.upbest.mvc.service.IStoreService;
+import com.upbest.mvc.vo.ExamTypeScoreVO;
+import com.upbest.mvc.vo.ExaminationPaperVO;
+import com.upbest.mvc.vo.SelectionVO;
+import com.upbest.mvc.vo.ShopAreaVO;
+import com.upbest.mvc.vo.ShopStatisticVO;
+import com.upbest.utils.DataType;
+import com.upbest.utils.ExcelUtils;
+
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -18,36 +51,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.inject.Inject;
-import javax.persistence.Column;
-
-import com.upbest.mvc.service.*;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
-import com.upbest.mvc.entity.BShopInfo;
-import com.upbest.mvc.entity.BShopStatistic;
-import com.upbest.mvc.entity.BShopUser;
-import com.upbest.mvc.entity.BTestPaper;
-import com.upbest.mvc.entity.Buser;
-import com.upbest.mvc.handler.StoreStatisticHandler;
-import com.upbest.mvc.repository.factory.ExamnationPaperRespository;
-import com.upbest.mvc.repository.factory.StoreStatisticRespository;
-import com.upbest.mvc.repository.factory.StoreUserRespository;
-import com.upbest.mvc.vo.ExamTypeScoreVO;
-import com.upbest.mvc.vo.ExaminationPaperVO;
-import com.upbest.mvc.vo.SelectionVO;
-import com.upbest.mvc.vo.ShopAreaVO;
-import com.upbest.mvc.vo.ShopStatisticVO;
-import com.upbest.utils.DataType;
-import com.upbest.utils.ExcelUtils;
 
 @Service
 public class ShopStatisticServiceImpl implements IShopStatisticService {
@@ -582,10 +585,16 @@ public class ShopStatisticServiceImpl implements IShopStatisticService {
 		}
 		sql.append("	) s 	")
 			.append("	left join V_TF_Daily_Sales_MONTH_LAST_DAY v		")
-			.append("	on s.shop_id = v.storeid and datediff(m,v.salesdate,s.month)=0	");
-		
+			.append("	on s.shop_id = v.storeid and ");
+			if(dbChooser.isSQLServer()){
+				sql.append(" datediff(m,v.salesdate,s.month)=0 ");
+			}
+			else{
+				sql.append(" TIMESTAMPDIFF(month,v.salesdate,s.month)=0 ");
+			}
+
 		sql.append("	)sv	");
-		
+
 		if (org.springframework.util.StringUtils.hasText(sortField)) {
 			String sf = null;
 			if((sortField.equals("sales") || sortField.equals("tc"))){
