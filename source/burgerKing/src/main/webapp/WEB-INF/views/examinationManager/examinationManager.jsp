@@ -16,7 +16,7 @@
 				<div class="qjact_btn clearfix">
 					<a class="green" id="addExamPage"  href="javascript:void(0)"><span>添加表单</span></a>
 					<a href="javascript:void(0)" class="small_ea" id="batchExport"><span>表单问题批量导出</span></a>
-					<a href="javascript:void(0)" class="small_ea" id="importfile"><span>工具箱上传</span></a>
+					<%--<a href="javascript:void(0)" class="small_ea" id="importfile"><span>工具箱上传</span></a>--%>
 				</div>
 			</td>
 		</tr>

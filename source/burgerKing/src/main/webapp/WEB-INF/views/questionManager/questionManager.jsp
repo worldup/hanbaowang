@@ -109,7 +109,9 @@
 			</td>
 			<td><label style="font-size:14px;">试题类型：</label></td>
 			<td>
-				<select id="questionSel" name="questionSel"></select>
+				<select id="questionSel" class="easyui-combobox" name="questionSel" style="width:130px;">
+
+				</select>
 <!-- 				<div class="select_wrap" style="width:120px;"> -->
 <!-- 					<span class="act_btn"><b class="choose_text" value="">---请选择---</b><i></i></span> -->
 <!-- 					<ul class="select_list" style="width:118px;"> -->
@@ -146,34 +148,27 @@
 </script>
 <script type="text/javascript">
 	$(function() {
-		$.ajax({
-			async : false,
-			type : 'post',
-			url : basePath + "/question/questionType",
-			dataType : "json",
-			cache : false,
-			error : function(err) {
-				alert("系统出错了，请联系管理员！");
-			},
-			success : function(data) {
-				$('#questionSel').empty();
- 				var html='<option value="">---请选择---</option>'; 
-				$.each(data,function(i, value) {
-					html+="<option value="+value.value+">"+value.name+"</option>";
-				});
-				$('#questionSel').append(html);
-				$('#questionSel').selectui({
-					"selectwidth":130,
-					"selectedtext":"---请选择---",
-					"optionclickcallback":function(val,txt){
-						$("#gridTableQuestion").jqGrid().trigger("reloadGrid");
-						//alert(val);
-						//alert(txt);
-					}
-				});
-			}
+		var localCache=[];
+		localCache.push({'label':'---请选择---','value':''});
+		$.post("${basePath}"+"/question/questionType",{},function(data){
+			var jsonResult=$.parseJSON(data);
+			$.each(jsonResult,function(i, value) {
+				localCache.push({ 'label': value.name, 'value': value.value })
+			});
+			$('#questionSel').combobox({
+				data:localCache,
+				valueField:'value',
+				textField:'label',
+				value:'',
+				onSelect: function(param){
+					$("#gridTableQuestion").jqGrid().trigger("reloadGrid");
+				}
+			});
+			$('#questionSel').combobox('setValue','');
+
 		});
-		
+
+
 		$("#searchBtn").bind("click",function(){
 			$("#gridTableQuestion").setGridParam({page:1}).jqGrid().trigger("reloadGrid");
 		});
