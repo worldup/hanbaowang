@@ -37,8 +37,9 @@
 			</td>
 			<td>
 				<div class="clearfix">
-					<select name="OMID" id="OMID" multiple="multiple" class="stxt">
-					</select>
+					<!--<select name="OMID" id="OMID" multiple="multiple" class="stxt">
+					 /select>-->
+					<input id="OMID" class="easyui-combobox" name="OMID"/>
 				</div>
 			</td>
 			<td>
@@ -56,7 +57,7 @@
 			<td>
 				<div class=" clearfix">
 
-					<input id="realName" class="easyui-combobox" name="realName"/>
+					<input id="OCID" class="easyui-combobox" name="OCID"/>
 					<input type="button" value="搜&nbsp;索" id="searchBtn" class="search" />
 				
 				</div>
@@ -90,19 +91,31 @@
 		})
 
 		//初始化OM
+		<!--<%--$.post("${basePath}"+"/user/loadUser",{role:1},function(data){--%>
+			<%--var jsonResult=$.parseJSON(data);--%>
+			<%--var html="";--%>
+			<%--$.each(jsonResult,function(i, value) {--%>
+				<%--html+="<option  value="+value.id+">"+value.name+"</option>";--%>
+			<%--});--%>
+			<%--$('#OMID').append(html);--%>
+			<%--$("#OMID").multiselect({--%>
+				<%--minWidth: 250,--%>
+				<%--noneSelectedText: '请选择',--%>
+				<%--checkAllText: '全选',--%>
+				<%--uncheckAllText: '取消全选'--%>
+			<%--}  );--%>
+
+		<%--})--%>-->
 		$.post("${basePath}"+"/user/loadUser",{role:1},function(data){
 			var jsonResult=$.parseJSON(data);
-			var html="";
 			$.each(jsonResult,function(i, value) {
-				html+="<option  value="+value.id+">"+value.name+"</option>";
+				localCache.push({ 'label': value.name, 'value': value.value })
 			});
-			$('#OMID').append(html);
-			$("#OMID").multiselect({
-				minWidth: 250,
-				noneSelectedText: '请选择',
-				checkAllText: '全选',
-				uncheckAllText: '取消全选'
-			}  );
+			$('#OMID').combobox({
+				data:localCache,
+				valueField:'value',
+				textField:'label'
+			});
 
 		})
 		//初始化oc
@@ -112,8 +125,7 @@
 			$.each(jsonResult,function(i, value) {
 				localCache.push({ 'label': value.name, 'value': value.value })
 			});
-			console.log(localCache)
-			$('#realName').combobox({
+			$('#OCID').combobox({
 				data:localCache,
 				valueField:'value',
 				textField:'label'

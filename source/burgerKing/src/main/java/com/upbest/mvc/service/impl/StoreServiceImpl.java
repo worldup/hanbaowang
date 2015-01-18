@@ -244,10 +244,9 @@ public class StoreServiceImpl implements IStoreService {
         return vo;
     }
     @Override
-    public Page<Object[]> findShopList(String omids,String areaId,String shopName, Integer userId,String realName, Pageable pageable){
+    public Page<Object[]> findShopList(String shopName, Integer userId,String userRole,String regional, Pageable pageable){
         StringBuffer sql = new StringBuffer();
         List<Object> params = new ArrayList<Object>();
-        Buser user = userService.findById(DataType.getAsInt(userId));
         sql.append("  SELECT distinct t.id,                       ");
         sql.append("         t.shop_address,             ");
         sql.append("         t.shop_business_area,       ");
@@ -290,7 +289,7 @@ public class StoreServiceImpl implements IStoreService {
         sql.append(" t.store_info1, ");
         sql.append(" t.store_info2 ");
         sql.append("    FROM bk_shop_info t              ");
-        if ("1".equals(user.getRole())) {
+        if ("1".equals(userRole)) {
             // OM,查询OM及OC下所能巡检的门店
             sql.append(" left join bk_shop_user su on su.shop_id=t.id ");
             sql.append(" left join bk_user ur on ur.id=su.user_id ");
@@ -298,11 +297,8 @@ public class StoreServiceImpl implements IStoreService {
             sql.append(" and ur.pid=? ");
 
             params.add(userId);
-            if (!StringUtils.isEmpty(realName)) {
-                sql.append(" and ur.real_name like ? ");
-                params.add("%" + realName + "%");
-            }
-        } else if ("2".equals(user.getRole())) {
+
+        } else if ("2".equals(userRole)) {
             // OC
             sql.append(" left join bk_shop_user su on su.shop_id=t.id ");
             sql.append(" left join bk_user ur on ur.id=su.user_id ");
@@ -310,40 +306,26 @@ public class StoreServiceImpl implements IStoreService {
             sql.append(" and ur.id=? ");
             params.add(userId);
 
-            if (!StringUtils.isEmpty(realName)) {
-                sql.append(" and ur.real_name like ? ");
-                params.add("%" + realName + "%");
-            }
-        } else if ("3".equals(user.getRole())) {
+
+        } else if ("3".equals(userRole)) {
             // OM+
             sql.append(" left join bk_shop_user su on su.shop_id=t.id ");
-
-            if (!StringUtils.isEmpty(realName)) {
-                sql.append(" left join bk_user ur on su.user_id=ur.id ");
-            }
             sql.append(" where 1=1 and su.user_id in(" + userService.getOCUserListInOMPlus(userId) + ") ");
 
-            if (!StringUtils.isEmpty(realName)) {
-                sql.append(" and ur.real_name like ? ");
-                params.add("%" + realName + "%");
-            }
         } else {
             // 超级管理员，不受限制
-            if (!StringUtils.isEmpty(realName)) {
-                sql.append(" left join bk_shop_user su on su.shop_id=t.id ");
-                sql.append(" left join bk_user ur on su.user_id=ur.id ");
-            }
 
             sql.append("   where 1 = 1                       ");
 
-            if (!StringUtils.isEmpty(realName)) {
-                sql.append(" and ur.real_name like ? ");
-                params.add("%" + realName + "%");
-            }
         }
+
         if (StringUtils.isNotBlank(shopName)) {
             sql.append(" and t.shop_name like ?");
             params.add("%" + shopName + "%");
+        }
+        if(StringUtils.isNotBlank(regional)&&!"0".equals(regional)){
+            sql.append("and t.regional = ?");
+            params.add(regional);
         }
         sql.append(" order by t.shop_num  ");
         return common.queryBySql(sql.toString(), params, pageable);
@@ -359,7 +341,7 @@ public class StoreServiceImpl implements IStoreService {
         sql.append("         t.shop_business_area,       ");
         sql.append("         t.shop_business_time,       ");
         sql.append("         t.shop_image,               ");
-        sql.append("         t.shop_name,                ");
+        sql.append("         t.shop_name ,                ");
         sql.append("         t.shop_num,                 ");
         sql.append("         t.shop_open_time,           ");
         sql.append("         t.shop_phone,               ");

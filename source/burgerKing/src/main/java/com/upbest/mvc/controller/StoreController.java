@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.upbest.mvc.service.*;
+import com.upbest.mvc.vo.*;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -57,12 +58,6 @@ import com.upbest.mvc.entity.BShopInfo;
 import com.upbest.mvc.entity.BShopReport;
 import com.upbest.mvc.entity.Buser;
 import com.upbest.mvc.repository.factory.BArearespository;
-import com.upbest.mvc.vo.BShopInfoVO;
-import com.upbest.mvc.vo.BSignInfoVO;
-import com.upbest.mvc.vo.BshopStatisticVO;
-import com.upbest.mvc.vo.MapVO;
-import com.upbest.mvc.vo.SelectionVO;
-import com.upbest.mvc.vo.TreeVO;
 import com.upbest.pageModel.Json;
 import com.upbest.utils.CommonUtils;
 import com.upbest.utils.ConfigUtil;
@@ -290,11 +285,15 @@ private ISpringJdbcService jdbcService;
     @ResponseBody
     @RequestMapping("/list")
     public void list(@RequestParam(value = "shopName", required = false) String name,
-                     @RequestParam(value = "OMIDS", required = false) String OMIDS,
-                     @RequestParam(value = "areaId", required = false) String areaId,
+                     @RequestParam(value = "OMID", required = false) Integer OMID,
+                     @RequestParam(value = "OCID", required = false) Integer OCID,
+                     @RequestParam(value = "regional", required = false) String regional,
                      @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "rows", required = false) Integer pageSize, @RequestParam(value = "sidx", required = false) String sidx, @RequestParam(value = "sord", required = false) String sord,
-            @RequestParam(value = "realName", required = false) String realName, Model model, HttpSession session, HttpServletResponse response) {
+            @RequestParam(value = "realName", required = false) String realName, Model model, HttpSession session,
+                     HttpServletRequest request,
+                     HttpServletResponse response) {
+        Buser user = (Buser) request.getSession().getAttribute("buser");
         if (pageSize == null) {
             pageSize = 10;
         }
@@ -308,9 +307,24 @@ private ISpringJdbcService jdbcService;
         Sort so = new Sort(or);
         // 排序 end
         PageRequest requestPage = new PageRequest(page != null ? page.intValue() - 1 : 0, pageSize, so);
-        Buser buser = (Buser) session.getAttribute("buser");
-        Page<Object[]> shop = storeService.findShopList(name, buser.getId(), realName, requestPage);
-        jdbcService.listUsersByParentUserId("2","");
+
+        String queryUserRole="";
+        Integer queryUserId=0;
+        if(OCID!=null){
+            queryUserId=OCID;
+            queryUserRole="2";
+        }
+        else if(OMID!=null){
+            queryUserId=OMID;
+            queryUserRole="1";
+        }
+        else{
+            Buser buser = (Buser) session.getAttribute("buser");
+            queryUserRole=buser.getRole();
+            queryUserId=buser.getId();
+        }
+        Page<Object[]> shop = storeService.findShopList(name, queryUserId,queryUserRole, regional, requestPage);
+
         PageModel result = new PageModel();
         result.setPage(page);
         result.setRows(getShopInfo(shop.getContent()));

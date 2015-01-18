@@ -8,13 +8,14 @@ $(function() {
 							"shopName" : function() {
 								return $.trim($('#storeName').val());
 							},
-							"realName" : function(){
-								return $.trim($('#realName').val());
+
+							"OMID":function(){
+								return $.trim($("#OMID").combobox('getValue'))
 							},
-							"OMIDS":function(){
-								return $.trim($("#OMID").val())
+							"OCID":function(){
+								return $.trim($("#OCID").combobox('getValue'))
 							},
-							"areaId":function(){
+							"regional":function(){
 								return $.trim($("#searchRegion").val())
 							}
 						},
@@ -39,7 +40,7 @@ $(function() {
 								},
 							{
 								label : "区域",
-								name : "areaName",
+								name : "regional",
 								sortable : false,
 								width :150
 							},

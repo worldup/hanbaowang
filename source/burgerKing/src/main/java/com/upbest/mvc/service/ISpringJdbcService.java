@@ -10,8 +10,8 @@ import java.util.List;
  * Created by lili on 15-1-15.
  */
 public interface ISpringJdbcService {
+    public List<BShopInfoVO> listShopInfo(String regional , String chineseName,  String queryUserRole ,String queryUserId  ) ;
 
-    public List<BShopInfoVO> listShopInfo(BShopInfoVO params, String realName, BuserVO user);
     /**
      *获取所有角色下管理的用户
      * @param role 查询的用户角色

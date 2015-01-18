@@ -95,9 +95,11 @@ function tipsWindown(title,content,width,height,drag,time,showbg,cssName) {
         $("#windown-title").css({width:(parseInt(width)+10)+"px"});
         $("#windown-content").css({width:width+"px",height:height+"px"});
     }
-    var cw = document.documentElement.clientWidth,ch = document.documentElement.clientHeight,est = document.documentElement.scrollTop; 
-    var _version = $.browser.version;
-    if ( _version == 6.0 ) {
+    var cw = document.documentElement.clientWidth,ch = document.documentElement.clientHeight,est = document.documentElement.scrollTop;
+
+   // var _version = $.browser.version;
+    var no_ie8down_version =  $.support.leadingWhitespace;
+    if ( !no_ie8down_version ) {
         $("#windown-box").css({left:"50%",top:(parseInt((ch)/2)+est)+"px",marginLeft:-((parseInt(width)+32)/2)+"px",zIndex: "100"});
     }else {
         $("#windown-box").css({left:"50%",top:"50%",marginTop:-((parseInt(height)+53)/2)+"px",marginLeft:-((parseInt(width)+32)/2)+"px",zIndex: "100"});
@@ -105,7 +107,7 @@ function tipsWindown(title,content,width,height,drag,time,showbg,cssName) {
     var Drag_ID = document.getElementById("windown-box"),DragHead = document.getElementById("windown-title");
         
     var moveX = 0,moveY = 0,moveTop,moveLeft = 0,moveable = false;
-        if ( _version == 6.0 ) {
+        if ( !no_ie8down_version ) {
             moveTop = est;
         }else {
             moveTop = 0;
