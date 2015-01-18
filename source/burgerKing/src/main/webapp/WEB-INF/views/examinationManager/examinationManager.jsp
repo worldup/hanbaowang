@@ -14,9 +14,8 @@
 		<tr>
 			<td>
 				<div class="qjact_btn clearfix">
-					<a class="green" id="addExamPage"  href="javascript:void(0)"><span>添加表单</span></a>
-					<a href="javascript:void(0)" class="small_ea" id="batchExport"><span>表单问题批量导出</span></a>
-					<%--<a href="javascript:void(0)" class="small_ea" id="importfile"><span>工具箱上传</span></a>--%>
+					<a class="green" id="addExamPage"  href="javascript:void(0)"><span>添加试卷</span></a>
+					<a href="javascript:void(0)" class="small_ea" id="batchExport"><span>答卷批量导出</span></a>
 				</div>
 			</td>
 		</tr>
@@ -31,7 +30,7 @@
 		$("#batchExport").bind('click',function(){
 			var selectRows = jQuery("#gridTableExam").jqGrid('getGridParam','selarrrow');
 			if(selectRows==null||selectRows.length==0){
-				alert("请选择要导出的问卷");
+				alert("请选择要导出的试卷");
 				return;
 			}
 			var url = basePath + "/examManager/examport?id=" + selectRows.join(',');

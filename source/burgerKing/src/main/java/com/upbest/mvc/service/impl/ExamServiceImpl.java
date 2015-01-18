@@ -1040,7 +1040,7 @@ public class ExamServiceImpl implements IExamService {
         sql.append("       sum(q.q_value - tpd.t_value) as loseTotalScore,                                       ");
         sql.append("       sum(q.q_value) as oldTotalScore,                                                      ");
         sql.append("       sum(tpd.t_value) as getTotalScore,                                                    ");
-        sql.append("       CAST(sum(tpd.t_value) AS FLOAT) / sum(q.q_value) * 100 as losePercent     ");
+        sql.append("       ( sum(tpd.t_value) / sum(q.q_value)) * 100 as losePercent     ");
         sql.append("  from bk_test_paper tp                                                                      ");
         sql.append("  join bk_test_paper_detail tpd on tpd.t_id = tp.id                                          ");
         sql.append("  join bk_question q on q.id = tpd.q_id                                                      ");

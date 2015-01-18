@@ -25,7 +25,7 @@ $(function() {
 							},
 							
 							{
-								label : "考卷名称",
+								label : "试卷名称",
 								name : "examName",
 								title : false,
 								sortable : false,
@@ -39,7 +39,7 @@ $(function() {
 								
 							},
 							{
-								label : "考卷类型",
+								label : "试卷类型",
 								name : "examTypeName",
 								title : false,
 								sortable : false,

@@ -126,10 +126,10 @@
 							<c:if test="${current=='base'}"> class="current"</c:if>>试卷类型管理</a></li>
 						<li><a href="${basePath}/examManager/index"
 							<c:if test="${current=='examManager'||current=='addExamination'||current=='examPageDetail'||current=='userAnswerInfo'}"> class="current"</c:if>>试卷管理</a></li>
-						<li><a href="${basePath}/exam/index"
-							<c:if test="${current=='exam'}"> class="current"</c:if>>试卷参照表</a></li>
+						<%--<!--<li><a href="${basePath}/exam/index"--%>
+							<%--<c:if test="${current=='exam'}"> class="current"</c:if>>试卷参照表</a></li>-->--%>
 						<li class="last"><a href="${basePath}/examManager/loseSts/index"
-							<c:if test="${current=='losePerSts'}"> class="current"</c:if>>试卷失分率统计</a></li>
+							<c:if test="${current=='losePerSts'}"> class="current"</c:if>>答卷失分率统计</a></li>
 					</ul>
 				</div>
 				<div class="subchild_menu md_sbmenu">

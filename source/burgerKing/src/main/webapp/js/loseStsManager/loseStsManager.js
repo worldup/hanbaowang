@@ -79,13 +79,13 @@ $(function() {
 								width : 100
 							},
 							{
-								label : "表单名称",
+								label : "试卷名称",
 								name : "ename",
 								sortable : false,
 								width : 150
 							},
 							{
-								label : "表单类型",
+								label : "试卷类型",
 								name : "qtype",
 								sortable : false,
 								width : 150

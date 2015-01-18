@@ -11,7 +11,7 @@
 					<a href="javascript:void(0)" class="small_ea" id="batchExport"><span>失分率批量导出</span></a>
 				</div>
 			</td>
-			<td><label style="font-size: 14px;">表单类型：</label></td>
+			<td><label style="font-size: 14px;">试卷类型：</label></td>
 			<td>
 				<div class="qjstxt_wrap clearfix">
 					<input name="examType" id="examType" onclick="showMenu();"
