@@ -151,6 +151,13 @@ public class BExBaseInfoController {
         String json = com.alibaba.fastjson.JSON.toJSONStringWithDateFormat(jsonString, "yyyy-MM-dd HH:mm:ss", SerializerFeature.WriteMapNullValue);
         outPrint(json, response);
     }
+    @ResponseBody
+    @RequestMapping("/getExamUserTreeList")
+    public void getExamUserTreeList(@RequestParam(value = "pid", required = false) String role, Model model, HttpSession session, HttpServletResponse response) {
+        List<TreeVO> list = baseService.getUrVOList();
+        String json = com.alibaba.fastjson.JSON.toJSONStringWithDateFormat(list, "yyyy-MM-dd HH:mm:ss", SerializerFeature.WriteMapNullValue);
+        outPrint(json, response);
+    }
 
     @ResponseBody
     @RequestMapping("/addStore")

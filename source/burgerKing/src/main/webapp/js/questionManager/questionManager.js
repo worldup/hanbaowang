@@ -1,11 +1,11 @@
-$(function() {
+$(document).ready(function() {
 	$("#gridTableQuestion").jqGrid(
 			{
 				url : basePath + "/question/list",
 				mtype : "POST",
 				postData : {
 					"quesType" : function(){return $.trim($("#questionSel").combobox('getValue'));},
-					"ids" : function(){return $('#ids').val();}
+					"ids" : function(){return $.trim($('#ids').combotree('getValue'));}
 				},
 				altRows : true,
 				altclass : "jqgrid_alt_row",
