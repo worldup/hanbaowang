@@ -1,34 +1,5 @@
 package com.upbest.mvc.controller.api;
 
-import java.io.File;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.upbest.mvc.constant.Constant.Code;
 import com.upbest.mvc.constant.Constant.OperatorResultMsg;
 import com.upbest.mvc.entity.BActionPlan;
@@ -49,6 +20,35 @@ import com.upbest.pageModel.Json;
 import com.upbest.utils.ConfigUtil;
 import com.upbest.utils.Constant;
 import com.upbest.utils.DataType;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/api/exam")
@@ -617,11 +617,7 @@ public class ExamAPIController {
             FileUtils.copyInputStreamToFile(file.getInputStream(), new File( filePath));
             URL url=new URL(req.getRequestURL().toString());
             String urlPath="";
-            if(url.getPort()!=-1){
-                urlPath= url.getProtocol()+":"+"//"+url.getHost()+":"+url.getPort()+ "/" +"upload/question_image/"+fileName;
-            }else{
-                urlPath=  url.getProtocol()+":"+"//"+url.getHost()+ "/" + "upload/question_image/"+fileName;
-            }
+                urlPath= "/upload/question_image/"+fileName;
             System.out.println(urlPath);
             result.setObj(urlPath);
             result.setCode(Code.SUCCESS_CODE);
