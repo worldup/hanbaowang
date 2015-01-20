@@ -24,7 +24,7 @@ $(document).ready(function() {
 								hidden : true
 							},
 							{
-								label : "试题类型",
+								label : "评估项类型",
 								name : "questionType",
 								title : false,
 								sortable : false,
@@ -138,12 +138,13 @@ $(document).ready(function() {
 //查看
 function detail(id) {
 	var url =basePath+"/question/detail?id="+id;
-    tipsWindown("查看试题","url:post?"+url,"660","400","true","","true","");
+
+    tipsWindown("查看评估项","url:post?"+url,"660","400","true","","true","");
 }
 // 修改
 function modify(id) {
 	var url =basePath+"/question/addOrUpdatePage?id="+id;
-    tipsWindown("修改试题信息","url:post?"+url,"660","400","true","","true","");
+    tipsWindown("修改评估项信息","url:post?"+url,"660","400","true","","true","");
 }
 // 删除
 function del(id) {
@@ -172,7 +173,8 @@ function del(id) {
 
 function addQuestion(){
 	var url =basePath+"/question/addOrUpdatePage";
-    tipsWindown("创建试题","url:post?"+url,"660","400","true","","true","");	
+    tipsWindown("创建评估项","url:post?"+url,"660","400","true","","true","");
+
 }
 
 

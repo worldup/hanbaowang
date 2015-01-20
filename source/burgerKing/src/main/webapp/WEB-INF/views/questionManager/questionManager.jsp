@@ -11,12 +11,12 @@
 					
 				</div>
 			</td>
-			<td><label style="font-size:14px;">试题类型：</label></td>
+			<td><label style="font-size:14px;">评估项类型：</label></td>
 			<td>
 				<select id="questionSel" class="easyui-combobox" name="questionSel" style="width:130px;">
 				</select>
 			</td>
-			<td style="padding-left:20px;"><label style="font-size:14px;">试题模块：</label></td>
+			<td style="padding-left:20px;"><label style="font-size:14px;">评估项所属模块：</label></td>
 			<td >
 				<div class="qjstxt_wrap clearfix">
 					<input id="ids" class="easyui-combotree"  style="width:200px;">

@@ -93,7 +93,7 @@
 							<li class="tj"><a href="${basePath}/statistic/index"
 								<c:if test="${current=='statistic'}"> class="current"</c:if>><b>统计管理</b></a></li>
 							<li class="wj"><a href="javascript:void(0)"
-								<c:if test="${current=='base'||current=='questionManager'||current=='examManager'||current=='addExamination'||current=='examPageDetail'||current=='userAnswerInfo'||current=='questionTypeManager'||current=='exam'||current=='losePerSts'}"> class="current"</c:if>><b>试卷管理</b></a></li>
+								<c:if test="${current=='base'||current=='questionManager'||current=='examManager'||current=='addExamination'||current=='examPageDetail'||current=='userAnswerInfo'||current=='questionTypeManager'||current=='exam'||current=='losePerSts'}"> class="current"</c:if>><b>评估表管理</b></a></li>
 							<li class="tool"><a href="javascript:void(0)"
 									<c:if test="${current=='toolbox'}"> class="current"</c:if>><b>工具箱</b></a></li>
 							<li class="fbgx"><a href="${basePath}/update/index"
@@ -119,17 +119,17 @@
 				<div class="subchild_menu wj_sbmenu" style="width:118px">
 					<ul>
 						<li><a href="${basePath}/questionType/index"
-							<c:if test="${current=='questionTypeManager'}"> class="current"</c:if>>抬头/问题列</a></li>
+							<c:if test="${current=='questionTypeManager'}"> class="current"</c:if>>评估项类别管理</a></li>
 						<li><a href="${basePath}/question/index"
-							<c:if test="${current=='questionManager'}"> class="current"</c:if>>试题管理</a></li>
+							<c:if test="${current=='questionManager'}"> class="current"</c:if>>评估项管理</a></li>
 						<li><a href="${basePath}/base/index"
-							<c:if test="${current=='base'}"> class="current"</c:if>>试卷类型管理</a></li>
+							<c:if test="${current=='base'}"> class="current"</c:if>>评估表类别管理</a></li>
 						<li><a href="${basePath}/examManager/index"
-							<c:if test="${current=='examManager'||current=='addExamination'||current=='examPageDetail'||current=='userAnswerInfo'}"> class="current"</c:if>>试卷管理</a></li>
+							<c:if test="${current=='examManager'||current=='addExamination'||current=='examPageDetail'||current=='userAnswerInfo'}"> class="current"</c:if>>评估表管理</a></li>
 						<%--<!--<li><a href="${basePath}/exam/index"--%>
 							<%--<c:if test="${current=='exam'}"> class="current"</c:if>>试卷参照表</a></li>-->--%>
 						<li class="last"><a href="${basePath}/examManager/loseSts/index"
-							<c:if test="${current=='losePerSts'}"> class="current"</c:if>>答卷失分率统计</a></li>
+							<c:if test="${current=='losePerSts'}"> class="current"</c:if>>评估表失分率统计</a></li>
 					</ul>
 				</div>
 				<div class="subchild_menu md_sbmenu">
