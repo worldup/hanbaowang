@@ -74,16 +74,7 @@ public class UploadInfoController {
         				String realName = com.upbest.utils.Constant.getimageId(6)+"." + subbfix;
         				String fullPath = fullDirectory + realName;
         				multipartFile.transferTo(new File(fullPath));
-        				 URL url=new URL(req.getRequestURL().toString());
-        		            String urlPath="";
-        		            if(url.getPort()!=-1){
-        		                //urlPath= url.getProtocol()+":"+"//"+url.getHost()+":"+url.getPort()+ "/" + "upload/toolKit/"+realName;
-        		                urlPath=  "upload/toolKit/"+realName;
-        		            }else{
-        		                /*urlPath=  url.getProtocol()+":"+"//"+url.getHost()+ "/" + "upload/toolKit/"+realName;*/
-        		                urlPath= "upload/toolKit/"+realName;
-        		            }
-        				
+                        String  urlPath= "upload/toolKit/"+realName;
         				service.saveFile(originalName,urlPath);
 					}
         		}
@@ -124,14 +115,7 @@ public class UploadInfoController {
                         String fullPath = fullDirectory + realName;
                         multipartFile.transferTo(new File(fullPath));
                         URL url=new URL(req.getRequestURL().toString());
-                        String urlPath="";
-                        if(url.getPort()!=-1){
-                            //urlPath= url.getProtocol()+":"+"//"+url.getHost()+":"+url.getPort()+ "/" + "upload/toolKit/"+realName;
-                            urlPath=  "upload/toolKit/"+realName;
-                        }else{
-        		                /*urlPath=  url.getProtocol()+":"+"//"+url.getHost()+ "/" + "upload/toolKit/"+realName;*/
-                            urlPath= "upload/toolKit/"+realName;
-                        }
+                        String urlPath= "upload/toolKit/"+realName;
                         String fullFileName=((CommonsMultipartFile) multipartFile).getFileItem().getName();
                         if(fullFileName.lastIndexOf(".")>-1){
                             title=fullFileName.substring(0,fullFileName.lastIndexOf(".")) ;

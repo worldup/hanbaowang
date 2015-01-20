@@ -485,19 +485,15 @@ private ISpringJdbcService jdbcService;
             shopInfo.setShopimage(shopImages);
         }
         if (StringUtils.isNotBlank(storeInfo1)) {
-            if (url.getPort() != -1) {
-                urlPath = url.getProtocol() + ":" + "//" + url.getHost() + ":" + url.getPort() + "/upload/" + "storeInfo/" + storeInfo1;
-            } else {
-                urlPath = url.getProtocol() + ":" + "//" + url.getHost() + "/upload/" + "storeInfo/" + storeInfo1;
-            }
+
+                urlPath =   "/upload/" + "storeInfo/" + storeInfo1;
+
             shopInfo.setStoreInfo1(urlPath);
         }
         if (StringUtils.isNotBlank(storeInfo2)) {
-            if (url.getPort() != -1) {
-                urlPath = url.getProtocol() + ":" + "//" + url.getHost() + ":" + url.getPort() + "/upload/" + "storeInfo/" + storeInfo2;
-            } else {
-                urlPath = url.getProtocol() + ":" + "//" + url.getHost() + "/upload/" + "storeInfo/" + storeInfo2;
-            }
+
+                urlPath =  "/upload/" + "storeInfo/" + storeInfo2;
+
             shopInfo.setStoreInfo2(urlPath);
         }
 
