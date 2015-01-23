@@ -17,6 +17,7 @@
 		<pattern>/facility/index</pattern>
 		<pattern>/sing/index</pattern>
 		<pattern>/task/index</pattern>
+		<pattern>/task/commonwords/index</pattern>
 		<pattern>/work/index</pattern>
 		<pattern>/exam/index</pattern>
 		<pattern>/shopStatistic/index</pattern>

@@ -19,17 +19,7 @@
 				</configuration>
 			</plugin>
 
-			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>maven-jetty-plugin</artifactId>
-				<version>6.1.6</version>
-				<configuration>
-					<scanIntervalSeconds>3</scanIntervalSeconds>
-					<!-- <connectors> <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector"> 
-						<port>8087</port> <maxIdleTime>60000</maxIdleTime> </connector> </connectors> -->
-					<contextPath>/</contextPath>
-				</configuration>
-			</plugin>
+
 
 		</plugins>
 
@@ -38,16 +28,7 @@
 
 
 	<repositories>
-		<repository>
-			<id>amateras</id>
-			<name>Project Amateras Maven2 Repository</name>
-			<url>http://amateras.sourceforge.jp/mvn/</url>
-		</repository>
-		<repository>
-			<id>spring-milestone</id>
-			<name>Spring Maven MILESTONE Repository</name>
-			<url>http://maven.springframework.org/milestone</url>
-		</repository>
+
 		<repository>
 			<id>nexus-public</id>
 			<name>Public Repository</name>
@@ -337,11 +318,6 @@
 			<groupId>org.springframework.batch</groupId>
 			<artifactId>spring-batch-infrastructure</artifactId>
 			<version>${spring.batch.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.batch</groupId>
-			<artifactId>spring-batch-excel</artifactId>
-			<version>1.3.0</version>
 		</dependency>
 		<dependency>
             <groupId>org.apache.poi</groupId>

@@ -4,9 +4,7 @@
 <%@ taglib prefix="sitemesh"
 	uri="http://www.opensymphony.com/sitemesh/decorator"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%@ taglib uri="http://amateras.sf.jp/functions" prefix="f"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <fmt:requestEncoding value="UTF-8" />
@@ -105,8 +103,10 @@
 					<ul>
 						<li><a href="${basePath}/work/index"
 							<c:if test="${current=='work'}"> class="current"</c:if>>类型管理</a></li>
-						<li class="last"><a href="${basePath}/task/index"
+						<li class="current"><a href="${basePath}/task/index"
 							<c:if test="${current=='task'}"> class="current"</c:if>>任务管理</a></li>
+						<li class="last"><a href="${basePath}/task/commonwords/index"
+								<c:if test="${current=='commonwords'}"> class="current"</c:if>>常用语管理</a></li>
 					</ul>
 				</div>
 				<div class="subchild_menu tool_sbmenu">

@@ -63,7 +63,11 @@ public class TaskController {
         model.addAttribute("current","task");
         return "/task/taskList";
     }
-
+    @RequestMapping(value = "/commonwords/index")
+    public String commonwords(Model model) {
+        model.addAttribute("current","commonwords");
+        return "/task/commonwords";
+    }
     @ResponseBody
     @RequestMapping("/detail")
     public void detail(@RequestParam(value = "id", required = false) String id, Model model, HttpServletResponse response, HttpServletRequest request) {
