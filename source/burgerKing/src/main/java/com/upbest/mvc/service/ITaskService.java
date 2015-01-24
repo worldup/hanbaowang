@@ -3,6 +3,7 @@ package com.upbest.mvc.service;
 import java.util.Date;
 import java.util.List;
 
+import com.upbest.mvc.vo.CommonWordsVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -37,7 +38,7 @@ public interface ITaskService {
 	List<BWorkInfo> saveTasks(List<BWorkInfo> list);
 	
 	List<TaskVO> getTaskResult(Integer userId,String month,String year);
-	
+	List<CommonWordsVO> getCommonWordsByTaskType(String taskType);
 	boolean isExistSameTask(Integer userId,Integer workTypeId,Date beginTime);
 }
 

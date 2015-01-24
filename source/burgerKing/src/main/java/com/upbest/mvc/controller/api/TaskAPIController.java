@@ -11,6 +11,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.common.base.Splitter;
+import com.upbest.mvc.vo.CommonWordsVO;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +59,8 @@ public class TaskAPIController {
     
     @Autowired
     protected PushMessageServiceI pushMessageService;
-    
+    @Autowired
+    private  ITaskService taskService;
 
     @Autowired
     protected IBuserService userService;
@@ -236,33 +239,8 @@ public class TaskAPIController {
             List<BWorkInfo> list = new ArrayList<BWorkInfo>();
             List<Object> taskList = (List<Object>) o.get("tasks");
             for (Object obj : taskList) {
-                Map<String, Object> map = (Map<String, Object>) obj;
-                BWorkInfo taskInfo = new BWorkInfo();
-                taskInfo.setContent(DataType.getAsString(map.get("desc")));
-                taskInfo.setStarttime(new Date(DataType.getAsLong(map.get("starTime"))));
-                /*taskInfo.setName(o.getString("taskName"));*/
-                taskInfo.setWorktypeid(DataType.getAsInt(map.get("taskType")));
-                taskInfo.setUserid(DataType.getAsInt(map.get("userId")));
-                if(StringUtils.isNotBlank(DataType.getAsString(map.get("storeId")))){
-                    taskInfo.setStoreid(DataType.getAsInt(map.get("storeId")));
-                }
-                taskInfo.setQuarter(getQuarter(taskInfo.getStarttime()));
-                // 新增added by zhaojinhua
-                taskInfo.setExecuteid(DataType.getAsInt(map.get("executeId")));
-                taskInfo.setState(DataType.getAsString(map.get("state")));
-                // 0:自主 1:委派
-                taskInfo.setIsSelfCreate(DataType.getAsString(map.get("isSelfCreate")));
-                if(DataType.getAsString(map.get("isSelfCreate")).equals("1")){
-                    //委派需立即推送一条任务消息 
-                    doPushTaskMessage(taskInfo);
-                }
-               // if (!service.isExistSameTask(taskInfo.getUserid(), taskInfo.getWorktypeid(), taskInfo.getStarttime())) {
-                    // 不存在相同任务类型的任务
-                    list.add(taskInfo);
-                //} else {
-                    // 存在相同任务类型的任务
-                  //  isExistSameWork = true;
-               // }
+                Map<String, String> map = (Map<String, String>) obj;
+                list.addAll(splitBatchStoreTask(map));
             }
             list = service.saveTasks(list);
             if(isExistSameWork){
@@ -285,7 +263,75 @@ public class TaskAPIController {
         }
         return result;
     }
+    private  List<BWorkInfo> splitBatchStoreTask(Map<String, String> map){
+        List<BWorkInfo> bWorkInfoList=new ArrayList();
+        String storeIds= map.get("storeId");
+        String taskTypes= map.get("taskType");
+        String descs= map.get("desc");
+        String taskNames= map.get("taskName");
+        String starTimes= map.get("starTime");
+        String[] storeIdArr=StringUtils.splitPreserveAllTokens(storeIds, ";");
+        String[] taskTypeArr=StringUtils.splitPreserveAllTokens(taskTypes, ";") ;
+        String[] taskNameArr=StringUtils.splitPreserveAllTokens(taskNames, ";");
+        String[] descArr=StringUtils.splitPreserveAllTokens(descs, ";");
+        String[] starTimeArr=StringUtils.splitPreserveAllTokens(starTimes, ";");
+        if(storeIdArr!=null){
+            if(storeIdArr.length==1){
+               for(int i=0;i<taskTypeArr.length;i++){
+                   BWorkInfo taskInfo = new BWorkInfo();
+                   taskInfo.setContent(DataType.getAsString(descArr[i]));
+                   taskInfo.setStarttime(new Date(DataType.getAsLong(starTimeArr[i])));
+                   taskInfo.setWorktypeid(DataType.getAsInt(taskTypeArr[i]));
+                   taskInfo.setWorktypename(DataType.getAsString(taskNameArr[i]));
+                   taskInfo.setUserid(DataType.getAsInt(map.get("userId")));
+                   if(StringUtils.isNotBlank(DataType.getAsString(map.get("storeId")))){
+                       taskInfo.setStoreid(DataType.getAsInt(map.get("storeId")));
+                   }
+                   taskInfo.setQuarter(getQuarter(taskInfo.getStarttime()));
+                   // 新增added by zhaojinhua
+                   taskInfo.setExecuteid(DataType.getAsInt(map.get("executeId")));
+                   taskInfo.setState(DataType.getAsString(map.get("state")));
+                   // 0:自主 1:委派
+                   taskInfo.setIsSelfCreate(DataType.getAsString(map.get("isSelfCreate")));
+                   if(DataType.getAsString(map.get("isSelfCreate")).equals("1")){
+                       //委派需立即推送一条任务消息
+                       doPushTaskMessage(taskInfo);
+                   }
+                   // if (!service.isExistSameTask(taskInfo.getUserid(), taskInfo.getWorktypeid(), taskInfo.getStarttime())) {
+                   // 不存在相同任务类型的任务
+                   bWorkInfoList.add(taskInfo);
+               }
+            }
+            else if(storeIdArr.length>1){
+                for(int i=0;i<storeIdArr.length;i++){
+                    BWorkInfo taskInfo = new BWorkInfo();
+                    taskInfo.setContent(DataType.getAsString(descs));
+                    taskInfo.setStarttime(new Date(DataType.getAsLong(starTimes)));
+                    taskInfo.setWorktypeid(DataType.getAsInt(taskTypes));
+                    taskInfo.setWorktypename(DataType.getAsString(taskNames));
+                    taskInfo.setUserid(DataType.getAsInt(map.get("userId")));
+                    if(StringUtils.isNotBlank(DataType.getAsString(storeIdArr[i]))){
+                        taskInfo.setStoreid(DataType.getAsInt(storeIdArr[i]));
+                    }
+                    taskInfo.setQuarter(getQuarter(taskInfo.getStarttime()));
+                    // 新增added by zhaojinhua
+                    taskInfo.setExecuteid(DataType.getAsInt(map.get("executeId")));
+                    taskInfo.setState(DataType.getAsString(map.get("state")));
+                    // 0:自主 1:委派
+                    taskInfo.setIsSelfCreate(DataType.getAsString(map.get("isSelfCreate")));
+                    if(DataType.getAsString(map.get("isSelfCreate")).equals("1")){
+                        //委派需立即推送一条任务消息
+                        doPushTaskMessage(taskInfo);
+                    }
+                    // if (!service.isExistSameTask(taskInfo.getUserid(), taskInfo.getWorktypeid(), taskInfo.getStarttime())) {
+                    // 不存在相同任务类型的任务
+                    bWorkInfoList.add(taskInfo);
+                }
+            }
+        }
+        return bWorkInfoList;
 
+    }
     /**
      * 
      * @Title 		   	函数名称：	doPushTaskMessage
@@ -498,6 +544,37 @@ public class TaskAPIController {
 
           return result;
       }
+    @RequestMapping(value = "/securi_commonWordsList")
+    @ResponseBody
+    public Json commonWordsList(HttpServletRequest req) {
+        Json result = new Json();
+        Json j = Constant.convertJson(req);
+        JSONObject o = (JSONObject) j.getObj();
+        String taskType = o.getString("taskType");
+        if (StringUtils.isBlank(taskType)) {
+            result.setCode(Code.NULL_CODE);
+            result.setMsg(VERIFY_NULL);
+            result.setSuccess(false);
+            result.setObj(null);
+            return result;
+        }
+        try {
+            List<CommonWordsVO> commonWordsVOs=taskService.getCommonWordsByTaskType(taskType);
+            result.setObj(commonWordsVOs);
+            result.setCode(Code.SUCCESS_CODE);
+            result.setSuccess(true);
+            result.setMsg(OperatorResultMsg.SUCCESS);
+         //   result.setObj(userService.getOCUserList(DataType.getAsInt(userId)));
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+
+            result.setCode(Code.TYPE_CONVERT_ERROR_CODE);
+            result.setSuccess(false);
+            result.setMsg(PARAM_ILLEGAL);
+        }
+
+        return result;
+    }
 
     /*  private List<TaskVO> getTaskInfo(List<Object[]> list) {
           List<TaskVO> result = new ArrayList<TaskVO>();

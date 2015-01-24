@@ -1,17 +1,18 @@
 package com.upbest.mvc.service.impl;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import javax.inject.Inject;
 
 import com.upbest.mvc.service.*;
+import com.upbest.mvc.vo.CommonWordsVO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -30,6 +31,8 @@ import com.upbest.utils.PageModel;
 
 @Service
 public class TaskServiceImpl implements ITaskService {
+    @Autowired
+    private NamedParameterJdbcTemplate jdbcTemplate;
     @Autowired
     private DBChooser dbChooser;
     @Inject
@@ -471,8 +474,17 @@ public class TaskServiceImpl implements ITaskService {
         }
         sql.append(" order by t.id desc ");
         return getRows(common.queryBySql(sql.toString(), params));
-    } 
-    
+    }
+
+    @Override
+    public List<CommonWordsVO> getCommonWordsByTaskType(String taskType) {
+        StringBuilder sb=new StringBuilder();
+        sb.append("select * from bk_common_words where task_type_id = :task_type_id");
+        Map<String ,String> params=new HashMap();
+        params.put("task_type_id",taskType);
+         return  jdbcTemplate.query(sb.toString(), params,  BeanPropertyRowMapper.newInstance(CommonWordsVO.class) );
+    }
+
     public int countWorkInfo(Integer userId, Integer workTypeId,Date beginTime,int frequency){
         int result=0;
         StringBuffer sql=new StringBuffer();

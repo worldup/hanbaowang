@@ -56,7 +56,8 @@ public class BWorkInfo implements Serializable{
 	 
 	 @Column(name="work_type_id")
      private Integer worktypeid;
-
+    @Column(name="work_type_name")
+    private String worktypename;
 	 @Column(name="execute_id")
 	 private Integer executeid;
 	 
@@ -68,8 +69,15 @@ public class BWorkInfo implements Serializable{
 
 	 @Column(name="quarter")//季度
 	 private String quarter;
-	 
-	 
+
+    public String getWorktypename() {
+        return worktypename;
+    }
+
+    public void setWorktypename(String worktypename) {
+        this.worktypename = worktypename;
+    }
+
     public Integer getId() {
         return id;
     }
