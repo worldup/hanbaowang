@@ -2,6 +2,10 @@ package com.upbest.mvc.controller.api;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.common.base.Function;
+import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
+import com.upbest.mvc.vo.BuserVO;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +23,8 @@ import com.upbest.mvc.service.IFacilityLoginService;
 import com.upbest.pageModel.Json;
 import com.upbest.utils.Constant;
 import com.upbest.utils.DataType;
+
+import java.util.List;
 
 /**
  * 设备登陆接口
@@ -107,7 +113,29 @@ public class FacilityLoginController {
          }
          try {
              Integer buserId=DataType.getAsInt(userId);
-             result.setObj(userService.getBUserList(buserId, name,"1"));
+             List<BuserVO> buserVOList=userService.getBUserList(buserId, name, "1");
+             buserVOList= Lists.transform(buserVOList, new Function<BuserVO, BuserVO>() {
+                 @Override
+                 public BuserVO apply(BuserVO input) {
+                     String role=input.getRole();
+                     if("1".equals(role)){
+                         input.setRole("OM");
+                     }else if("2".equals(role)){
+                         input.setRole("OC");
+                     }else if("3".equals(role)){
+                         input.setRole("OM+");
+                     }
+                     else if("0".equals(role)){
+                         input.setRole("超级管理员");
+                     }
+                     else{
+                        input.setRole("未知");
+                     }
+                     input.setPwd("");
+                     return  input;
+                 }
+             });
+             result.setObj(buserVOList);
              result.setCode(Code.SUCCESS_CODE);
              result.setSuccess(true);
              result.setMsg(VERIFY_SUCCESS);
