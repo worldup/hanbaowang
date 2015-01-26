@@ -3,12 +3,17 @@ package com.upbest.mvc.controller.api;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.common.base.Function;
-import com.google.common.base.Objects;
+
 import com.google.common.collect.Lists;
+
 import com.upbest.mvc.vo.BuserVO;
+
+import org.apache.commons.beanutils.BeanUtilsBean;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +28,7 @@ import com.upbest.mvc.service.IFacilityLoginService;
 import com.upbest.pageModel.Json;
 import com.upbest.utils.Constant;
 import com.upbest.utils.DataType;
+
 
 import java.util.List;
 
@@ -99,6 +105,7 @@ public class FacilityLoginController {
     @RequestMapping(value="/securi_list")
     @ResponseBody
     public Json list(HttpServletRequest req){
+
         Json result = new Json();
          Json j = Constant.convertJson(req);
          JSONObject o = (JSONObject) j.getObj();
@@ -109,36 +116,25 @@ public class FacilityLoginController {
              result.setMsg(VERIFY_NULL);
              result.setSuccess(false);
              result.setObj(null); 
-             return result;
+             return  result;
          }
          try {
              Integer buserId=DataType.getAsInt(userId);
              List<BuserVO> buserVOList=userService.getBUserList(buserId, name, "1");
              buserVOList= Lists.transform(buserVOList, new Function<BuserVO, BuserVO>() {
+
+
                  @Override
                  public BuserVO apply(BuserVO input) {
-                     String role=input.getRole();
-                     if("1".equals(role)){
-                         input.setRole("OM");
-                     }else if("2".equals(role)){
-                         input.setRole("OC");
-                     }else if("3".equals(role)){
-                         input.setRole("OM+");
-                     }
-                     else if("0".equals(role)){
-                         input.setRole("超级管理员");
-                     }
-                     else{
-                        input.setRole("未知");
-                     }
-                     input.setPwd("");
-                     return  input;
+                     return transBUserVO(input);
                  }
              });
+
              result.setObj(buserVOList);
              result.setCode(Code.SUCCESS_CODE);
              result.setSuccess(true);
              result.setMsg(VERIFY_SUCCESS);
+             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
             logger.debug("参数非法 ",e.getMessage());
@@ -147,5 +143,26 @@ public class FacilityLoginController {
             result.setMsg(PARAM_ILLEGAL);
         }
          return result;
+    }
+    private BuserVO transBUserVO(BuserVO source){
+        BuserVO result=new BuserVO();
+        BeanUtils.copyProperties(source,result);
+        result.setChildList(null);
+        String role=result.getRole();
+        if("1".equals(role)){
+            result.setRole("OM");
+        }else if("2".equals(role)){
+            result.setRole("OC");
+        }else if("3".equals(role)){
+            result.setRole("OM+");
+        }
+        else if("0".equals(role)){
+            result.setRole("超级管理员");
+        }
+        else{
+            result.setRole("未知");
+        }
+        result.setPwd("");
+        return result;
     }
 }

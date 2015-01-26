@@ -3,10 +3,13 @@ package com.upbest.mvc.controller.api;
 import java.io.File;
 import java.net.URL;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
+import com.upbest.mvc.vo.BuserVO;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -134,6 +137,29 @@ public class UserAPIController {
         result.setCode(Code.SUCCESS_CODE);
         result.setSuccess(true);
         result.setMsg("操作成功！");
+        return result;
+    }
+    @RequestMapping(value = "/securi_listChildrenUser")
+    @ResponseBody
+    public Json listChildrenUser(HttpServletRequest req){
+        Json result = new Json();
+        Json j = Constant.convertJson(req);
+        JSONObject o = (JSONObject) j.getObj();
+        Integer userId = o.getInteger("userId");
+        List<BuserVO> buserVOList=service.getBUserList(userId,null,"1");
+        if(CollectionUtils.isNotEmpty(buserVOList)){
+            result.setObj(null);
+            result.setCode(1003);
+            result.setSuccess(false);
+            result.setMsg("下级员工不存在!");
+            return result;
+        }
+        else{
+            result.setObj(buserVOList);
+            result.setCode(Code.SUCCESS_CODE);
+            result.setSuccess(true);
+            result.setMsg("查询成功！");
+        }
         return result;
     }
 }
