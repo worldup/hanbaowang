@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.google.common.base.Splitter;
 import com.upbest.mvc.vo.CommonWordsVO;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -279,7 +280,12 @@ public class TaskAPIController {
             if(storeIdArr.length==1){
                for(int i=0;i<taskTypeArr.length;i++){
                    BWorkInfo taskInfo = new BWorkInfo();
-                   taskInfo.setContent(DataType.getAsString(descArr[i]));
+                   if(ArrayUtils.isEmpty(descArr)){
+                       taskInfo.setContent(DataType.getAsString(""));
+                   }
+                   else{
+                       taskInfo.setContent(DataType.getAsString(descArr[i]));
+                   }
                    taskInfo.setStarttime(new Date(DataType.getAsLong(starTimeArr[i])));
                    taskInfo.setWorktypeid(DataType.getAsInt(taskTypeArr[i]));
                    taskInfo.setWorktypename(DataType.getAsString(taskNameArr[i]));
@@ -306,6 +312,10 @@ public class TaskAPIController {
                 for(int i=0;i<storeIdArr.length;i++){
                     BWorkInfo taskInfo = new BWorkInfo();
                     taskInfo.setContent(DataType.getAsString(descs));
+                    int idx=starTimes.indexOf(";");
+                    if(idx>-1){
+                        starTimes=starTimes.substring(0,idx);
+                    }
                     taskInfo.setStarttime(new Date(DataType.getAsLong(starTimes)));
                     taskInfo.setWorktypeid(DataType.getAsInt(taskTypes));
                     taskInfo.setWorktypename(DataType.getAsString(taskNames));
