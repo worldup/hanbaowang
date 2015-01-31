@@ -1,10 +1,15 @@
 package com.upbest.mvc.controller.api;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import com.upbest.mvc.vo.BStsVO;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,7 +97,32 @@ public class StsAPIController {
         }
         try {
             Integer userIdInt = DataType.getAsInt(userId);
-            result.setObj(service.queryStsRs(userIdInt, year, type, sord, month, quarter));
+            List<BStsVO> obj=service.queryStsRs(userIdInt, year, type, sord, month, quarter);
+           List<BStsVO> objTrans=  Lists.transform(obj, new Function<BStsVO, BStsVO>() {
+
+                @Override
+                public BStsVO apply(BStsVO input) {
+                    try {
+                        BStsVO copy = (BStsVO) BeanUtils.cloneBean(input);
+                        String role = copy.getUser().getRole();
+                        String roleName = "未知";
+                        if ("1".equals(role)) {
+                            roleName = "OM";
+                        } else if ("2".equals(role)) {
+                            roleName = "OC";
+                        } else if ("3".equals(role)) {
+                            roleName = "OM+";
+                        }
+
+                        copy.getUser().setRole(roleName);
+                        return copy;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+            });
+            result.setObj(objTrans);
             result.setCode(Code.SUCCESS_CODE);
             result.setSuccess(true);
             result.setMsg(VERIFY_SUCCESS);

@@ -20,7 +20,7 @@
 			<td>
 				<div class="qjstxt_wrap clearfix">
 					<input type="text"  class="text" name="baseName" id="baseName"/>
-					<label class="defalut_val" for="baseName">根据试卷类型查询</label>
+					<label class="defalut_val" for="baseName">根据评估类型查询</label>
 					<input type="button" value="搜&nbsp;索" id="searchBtn" class="search" />
 				</div>
 			</td>

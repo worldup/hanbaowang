@@ -16,7 +16,7 @@
 			<td>
 				<select id="questionSel" class="easyui-combobox" name="questionSel" style="width:120px;">
 					<option value="">--请选择--</option>
-					<option value="1">抬头</option>
+					<option value="1">台头</option>
 					<option value="2">问题</option>
 				</select>
 			</td>

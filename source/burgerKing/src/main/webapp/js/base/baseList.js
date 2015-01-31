@@ -154,6 +154,6 @@ function del(id) {
 
 function addUser(){
 	var url =basePath+"/base/create";
-    tipsWindown("添加表单类型","url:post?"+url,"620","400","true","","true","");	
+    tipsWindown("添加评估表类型","url:post?"+url,"620","400","true","","true","");
 }
 

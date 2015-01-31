@@ -37,13 +37,13 @@ $(function() {
 								editoptions:{value:"1:填空题;2:选择题;3:简答题;4:日期;5:下拉;6:评估人;7:置顶;8:上次稽核成绩;9:成绩;10:重复扣分项编号;11:时间;12:地区"}
 							},
 							{
-								label : "抬头/问题类型标识",
+								label : "台头/问题类型标识",
 								name : "type",
 								title : false,
 								sortable : false,
 								width : 200,
 								formatter:'select',
-								editoptions:{value:"1:抬头;2:问题"}	
+								editoptions:{value:"1:台头;2:问题"}
 							},
 							{
 								label : "操作",
@@ -113,6 +113,6 @@ function del(id) {
 
 function addQuestion(){
 	var url =basePath+"/questionType/addOrUpdatePage";
-    tipsWindown("添加台头/问题信息","url:post?"+url,"660","400","true","","true","");	
+    tipsWindown("添加评估项类型","url:post?"+url,"660","400","true","","true","");
 }
 
