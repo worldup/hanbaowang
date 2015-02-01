@@ -62,5 +62,7 @@
 		</bean>
 	</mvc:interceptors>
 
-	<jpa:repositories base-package="com.upbest.mvc.repository" />
+	<jpa:repositories base-package="com.upbest.mvc.repository" repository-impl-postfix="Impl"
+                      entity-manager-factory-ref="entityManagerFactory"
+                      transaction-manager-ref="transactionManager" />
 </beans>

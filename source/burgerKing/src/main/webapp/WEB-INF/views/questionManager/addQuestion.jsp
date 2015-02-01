@@ -9,7 +9,7 @@
 			<tr>
 				<td class="title"><b>*</b>评估项类型：</td>
 				<td align="left">
-					<select id="qtype" class="easyui-combobox" name="qtype" style="width:130px;">
+					<select id="qtype" class="easyui-combobox" name="qtype" style="width:150px;">
 					</select>
 				</td>
 			</tr>
@@ -20,9 +20,8 @@
 			</tr>
 			<tr>
 				<td class="title"><b></b>所属模块：</td>
-
 				<td>
-					<input id="modelId1"  style="width:200px;"/>
+					<input id="modelComboTree" class="easyui-combotree"  style="width:200px;"/>
 				</td>
 			</tr>
 			<tr>
@@ -83,12 +82,12 @@ $(document).ready(function(){
 			valueField:'value',
 			textField:'label'
 		});
-
+        $('#qtype').combobox('setValue','${question.questionType}');
 	});
 	$.post("${basePath}/base/getExamUserTreeList",{},function(data){
 		var comboData= treeconvert($.parseJSON(data));
-	    $('#modelId1').combotree('loadData',comboData);
-
+	    $('#modelComboTree').combotree('loadData',comboData);
+        $('#modelComboTree').combotree('setValue', '${question.moduleId}');
 	});
 
 });
@@ -100,16 +99,8 @@ $("#btn_save").bind("click",function(){
 		return;
 	}
 	
-	var	value = '';
-	// 拿到选中的id值
-	var zTree = $.fn.zTree.getZTreeObj("winDtreeDemo");
-	var nodes = zTree.getCheckedNodes(true);
-	for ( var i = 0; i < nodes.length; i++) {
-		var node = nodes[i];
-		value += node.id + ",";
-	}
-	value = value.substring(0, value.length - 1);
-	
+	var	value =  $('#modelComboTree').combotree('getValue');
+
 	var reg = /^\d+$/;
 	if($.trim($('#qtype').combobox('getValue')) == ''){
 		alert("请选择试题类型！");
@@ -153,7 +144,7 @@ $("#btn_save").bind("click",function(){
 			}else{
 				alert('修改成功!');
 			}
-				closeOutWindow();
+            $('#win').window('close');
 			$("#gridTableQuestion").jqGrid().trigger("reloadGrid");
 		}
 	};

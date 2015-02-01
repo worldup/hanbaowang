@@ -144,7 +144,17 @@ function detail(id) {
 // 修改
 function modify(id) {
 	var url =basePath+"/question/addOrUpdatePage?id="+id;
-    tipsWindown("修改评估项信息","url:post?"+url,"660","400","true","","true","");
+  //  tipsWindown("修改评估项信息","url:post?"+url,"660","400","true","","true","");
+    $('#win').window({
+        title:"修改评估项信息",
+        width:800,
+        height:600,
+        modal:true,
+        closable:true,
+        closed:true
+    });
+    $('#win').window('refresh', url);
+    $('#win').window('open');
 }
 // 删除
 function del(id) {
@@ -173,8 +183,17 @@ function del(id) {
 
 function addQuestion(){
 	var url =basePath+"/question/addOrUpdatePage";
-    tipsWindown("创建评估项","url:post?"+url,"660","400","true","","true","");
-
+  //  tipsWindown(,"url:post?"+url,"660","400","true","","true","");
+    $('#win').window({
+        title:"创建评估项",
+        width:800,
+        height:600,
+        modal:true,
+        closable:true,
+        closed:true
+    });
+    $('#win').window('refresh', url);
+    $('#win').window('open');
 }
 
 

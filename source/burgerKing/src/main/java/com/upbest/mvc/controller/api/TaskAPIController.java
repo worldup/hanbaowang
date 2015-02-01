@@ -188,7 +188,9 @@ public class TaskAPIController {
         if (!CollectionUtils.isEmpty(taskVOList)) {
             int count = 0;
             for (TaskVO obj : taskVOList) {
-                if (time == formatDate(obj.getStarttime()).getTime() && count < 3) {
+                //去掉三行限制
+              //  if (time == formatDate(obj.getStarttime()).getTime() && count < 3) {
+                if (time == formatDate(obj.getStarttime()).getTime()) {
                     result.add(obj);
                     count++;
                 }
@@ -257,6 +259,7 @@ public class TaskAPIController {
             }
            
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error(e.getMessage());
             result.setCode(Code.ILLEGAL_CODE);
             result.setSuccess(false);
@@ -312,11 +315,20 @@ public class TaskAPIController {
                 for(int i=0;i<storeIdArr.length;i++){
                     BWorkInfo taskInfo = new BWorkInfo();
                     taskInfo.setContent(DataType.getAsString(descs));
+
                     int idx=starTimes.indexOf(";");
                     if(idx>-1){
-                        starTimes=starTimes.substring(0,idx);
+                        String []arrStarTimes=StringUtils.splitPreserveAllTokens(starTimes,";");
+                        if(arrStarTimes.length==storeIdArr.length){
+                            taskInfo.setStarttime(new Date(DataType.getAsLong(arrStarTimes[i])));
+                        }
+                        else{
+                            taskInfo.setStarttime(new Date(DataType.getAsLong(starTimes=starTimes.substring(0,idx))));
+                        }
                     }
-                    taskInfo.setStarttime(new Date(DataType.getAsLong(starTimes)));
+                    else{
+                        taskInfo.setStarttime(new Date(DataType.getAsLong(starTimes)));
+                    }
                     taskInfo.setWorktypeid(DataType.getAsInt(taskTypes));
                     taskInfo.setWorktypename(DataType.getAsString(taskNames));
                     taskInfo.setUserid(DataType.getAsInt(map.get("userId")));
@@ -346,7 +358,7 @@ public class TaskAPIController {
      * 
      * @Title 		   	函数名称：	doPushTaskMessage
      * @Description   	功能描述：	推送任务消息
-     * @param 		   	参          数：	
+     * @param 		   参      数：
      * @return          返  回   值：	void  
      * @throws
      */

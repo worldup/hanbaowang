@@ -7,7 +7,7 @@
 		<table class="addform_wrap">
 			<tr>
 				<td class="title"><b>*</b>字段名称：</td>
-				<td align="left">
+				<td >
 					<input id="hValue" name="hValue" class="text" value="${question.hValue}"/>
 				</td>
 			</tr>

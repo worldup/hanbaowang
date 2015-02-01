@@ -29,6 +29,8 @@
 	</table>
 	<table id="gridTableQuestion"></table>
 		<div id="gridPagerQuestion"></div>
+    <div id="win"  >
+    </div>
 </div>
 <script type="text/javascript" src="${basePath}/js/jquery-easyui-1.4.1/treeconvert.js"></script>
 	<script type="text/javascript" src="${basePath}/js/questionManager/questionManager.js"></script>
