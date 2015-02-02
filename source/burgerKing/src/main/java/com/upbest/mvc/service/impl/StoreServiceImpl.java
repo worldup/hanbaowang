@@ -287,7 +287,7 @@ public class StoreServiceImpl implements IStoreService {
         sql.append(" t.longitude,   ");
         sql.append(" t.latitude,     ");
         sql.append(" t.store_info1, ");
-        sql.append(" t.store_info2 ");
+        sql.append(" t.store_info2  ");
         sql.append("    FROM bk_shop_info t              ");
         if ("1".equals(userRole)) {
             // OM,查询OM及OC下所能巡检的门店

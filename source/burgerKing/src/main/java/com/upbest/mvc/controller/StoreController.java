@@ -377,7 +377,8 @@ private ISpringJdbcService jdbcService;
                 entity.setChineseAddress(DataType.getAsString(obj[34]));
                 entity.setEnglishAddress(DataType.getAsString(obj[35]));
                 entity.setStraightJointJoin(DataType.getAsString(obj[36]));
-
+                entity.setLongitude(DataType.getAsString(obj[37]));
+                entity.setLatitude(DataType.getAsString(obj[38]));
                 List<String> urList = storeService.getUserIds(DataType.getAsString(obj[0]));
                 if (!CollectionUtils.isEmpty(urList)) {
                     entity.setUserIds(urList.get(0));
@@ -395,6 +396,7 @@ private ISpringJdbcService jdbcService;
         if (StringUtils.isNotBlank(id)) {
             BShopInfoVO shop = storeService.findById(Integer.parseInt(id));
             model.addAttribute("shop", shop);
+        }
             model.addAttribute("shopStatus", getShopStatus());
             model.addAttribute("brandExtesions", getBrandExtesions());
             try {
@@ -402,7 +404,7 @@ private ISpringJdbcService jdbcService;
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
+
         if (null != buser) {
             model.addAttribute("role", buser.getRole());
         }

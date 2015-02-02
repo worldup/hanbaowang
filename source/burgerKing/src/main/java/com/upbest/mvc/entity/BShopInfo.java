@@ -160,11 +160,11 @@ public class BShopInfo implements Serializable{
 	@Column(name="straight_joint_join")
     private String straightJointJoin;
 	
-	@Column(name="Longitude")
+	@Column(name="longitude")
     @Size(max=100)
     private String longitude;
     
-    @Column(name="Latitude")
+    @Column(name="latitude")
     @Size(max=100)
     private String latitude;
     
