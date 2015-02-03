@@ -156,3 +156,16 @@ function closeOutWindow(){
     $("#windownbg").remove();
     $("#windown-box").fadeOut("slow",function(){$(this).remove();});
 }
+
+function easyUIWindow(windowId, title ,url , width ,   height ,   modal ,  closable ,   closed){
+    windowId.window({
+        title:title,
+        width:width,
+        height:height,
+        modal:modal,
+        closable:closable,
+        closed:closed
+    });
+    windowId.window('refresh', url);
+    windowId.window('open');
+}

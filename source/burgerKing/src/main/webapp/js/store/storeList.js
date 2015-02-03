@@ -185,7 +185,8 @@ function del(id) {
 }
 function addStore() {
     var url = basePath + "/store/create";
-    tipsWindown("添加门店", "url:post?" + url, "960", "600", "true", "", "true", "");
+   // tipsWindown("添加门店", "url:post?" + url, "960", "600", "true", "", "true", "");
+    easyUIWindow($("#win"),"添加门店",   url,  960, 600, true, true, true);
 }
 
 function viewReport(id) {

@@ -66,13 +66,16 @@
 	</table>
 	<table id="gridTableStore"></table>
 	<div id="gridPagerStore"></div>
-	
+    <div id="win"  >
+    </div>
 </div>
 <link rel="stylesheet" type="text/css" href="${basePath}/js/multiselect/css/jquery.multiselect.css" />
 <link rel="stylesheet" type="text/css" href="${basePath}/js/multiselect/assets/style.css" />
 <link rel="stylesheet" type="text/css" href="${basePath}/js/multiselect/assets/prettify.css" />
 <script type="text/javascript" src="${basePath}/js/multiselect/js/jquery.multiselect.js"></script>
 <script type="text/javascript" src="${basePath}/js/multiselect/assets/prettify.js"></script>
+
+<script type="text/javascript" src="${basePath}/js/jquery-easyui-1.4.1/treeconvert.js"></script>
 <script type="text/javascript" src="${basePath}/js/store/storeList.js"></script>
 
 <script type="text/javascript">

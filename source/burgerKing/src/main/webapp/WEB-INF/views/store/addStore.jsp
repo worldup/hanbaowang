@@ -1,121 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-         pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<c:set var="basePath" value="${pageContext.request.contextPath}"/>
-<link rel="stylesheet" href="${basePath}/css/zTreeStyle/zTreeStyle.css"
-      type="text/css">
-<script type="text/javascript"
-        src="${basePath}/js/ztree/jquery.ztree.core-3.5.js"></script>
-<script type="text/javascript"
-        src="${basePath}/js/ztree/jquery.ztree.excheck-3.5.js"></script>
-<c:set var="basePath" value="${pageContext.request.contextPath}"/>
+         pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var="basePath" value="${pageContext.request.contextPath}" />
 <script type="text/javascript">
-    var setting = {
-        check: {
-            enable: true,
-            chkboxType: {
-                "Y": "s",
-                "N": "s"
-            }
-        },
-        view: {
-            dblClickExpand: false
-        },
-        data: {
-            simpleData: {
-                enable: true
-            }
-        },
-        callback: {
-            beforeClick: beforeClick,
-            onCheck: onCheck
-        }
-    };
-
-    var zNodes = '';
-    $(function () {
-        $.ajax({
-            async: false,
-            url: basePath + "/store/getUserTreeList",//请求的action路径
-            data: {
-                "role": 2
-            },
-            cache: false,
-            type: 'POST',
-            dataType: "json",
-            success: function (data) { //请求成功后处理函数。
-                zNodes = eval(data); //把后台封装好的简单Json格式赋给treeNodes
-
-                $.fn.zTree.init($("#treeDemo"), setting, zNodes);
-                var userIds = '${shop.userIds}';
-                if (userIds != '') {
-                    var zTree = $.fn.zTree.getZTreeObj("treeDemo");
-                    var array = userIds.split(",");
-                    for (var i = 0; i < array.length; i++) {
-                        var selNode = zTree.getNodeByParam('id', array[i], null);
-                        if (selNode != null) {
-                            zTree.checkNode(selNode, true, false, false);
-                        }
-                    }
-                    var cityObj = $("#citySel");
-                    cityObj.attr("value", '${shop.userNames}');
-                }
-            }
-        });
-
-    });
-    function beforeClick(treeId, treeNode) {
-        var zTree = $.fn.zTree.getZTreeObj("treeDemo");
-        zTree.checkNode(treeNode, !treeNode.checked, null, true);
-        return false;
-    }
-
-    function onCheck(e, treeId, treeNode) {
-        var zTree = $.fn.zTree.getZTreeObj("treeDemo"), nodes = zTree
-                .getCheckedNodes(true), v = "";
-        for (var i = 0, l = nodes.length; i < l; i++) {
-            v += nodes[i].name + ",";
-        }
-        if (v.length > 0)
-            v = v.substring(0, v.length - 1);
-        var cityObj = $("#citySel");
-        cityObj.attr("value", v);
-    }
-
-    function showMenu() {
-        var cityObj = $("#citySel");
-        var cityOffset = $("#citySel").offset();
-        $("#menuContent").css({
-            "z-index": 10000
-        }).slideDown("fast");
-
-        $("body").bind("mousedown", onBodyDown);
-        //$.fn.zTree.init($("#treeDemo"), setting, zNodes);//重新加载ztree默认全部不选择
-    }
-    function hideMenu() {
-        $("#menuContent").fadeOut("fast");
-        $("body").unbind("mousedown", onBodyDown);
-    }
-    function onBodyDown(event) {
-        if (!(event.target.id == "menuBtn" || event.target.id == "citySel"
-                || event.target.id == "menuContent" || $(event.target).parents(
-                        "#menuContent").length > 0)) {
-            hideMenu();
-        }
-    }
-
     $(document).ready(function () {
-        $(".big_green").removeClass("big_ddd");
-
-        var _sjj = $("#straightJointJoinHid").val();
-        if (_sjj != "") {
-            $("#straightJointJoin").val(_sjj);
-        }
-
-        $(".close_tree").bind("click", function () {
-            $("#menuContent").fadeOut("fast");
+        $.post("${basePath}/store/getOCTreeList",{role:'2'},function(data){
+            var comboData= treeconvert($.parseJSON(data));
+            $('#treeDemo').combotree('loadData',comboData);
         });
-
+        $(".big_green").removeClass("big_ddd");
         //鼠标放到图片上
         $(".storepic_list").delegate("li", "mouseenter", function () {
             var _obj = $(this);
@@ -138,11 +31,7 @@
                     $(".more_stropic_btn").hide();
                 }
             }
-            ;
-
         });
-
-
     });
 </script>
 <style>
@@ -223,15 +112,9 @@
             <td align="left"><input type="text" id="lhi" data-required="true" data-required-msg="装修摊销不能为空"
                                     name="lhi" value="${shop.lhi}" class="text"/></td>
             <td class="title" style="padding-left:60px"><b>*</b>营运督导：</td>
-            <td style=""><input id="citySel" class="text" type="text" readonly="readonly"
-                                onclick="showMenu();" name="authNames"/>
+            <td style="">   <input id="treeDemo"  class="easyui-combotree"/>
+                <input id="citySel"  type="hidden"   name="authNames"/>
                 <input id="authIds" name="authIds" type="hidden"/>
-
-                <div id="menuContent" class="menuContent"
-                     style="display: none;position:absolute;background:#fff;overflow-y:auto; width:200px;height:160px;border:1px solid #02335b">
-                    <p class="clearfix"><a href="javascript:void(0)" class="close_tree">关闭</a></p>
-                    <ul id="treeDemo" class="ztree"></ul>
-                </div>
             </td>
         </tr>
         <tr>
@@ -390,9 +273,7 @@
 
         var role = '${role}';
 
-        if (role == 2) {
-            $('#citySel').attr("disabled", "disabled");
-        }
+
         var iurl = basePath + "/upload/storeImage/";
         var imagesarr = shopimages.split(",");
         $(".storepic_list").remove("li");
@@ -581,15 +462,7 @@
             brandExtension.push($(item).val());
         });
         vo.brandExtension = brandExtension.join(',');
-        var value = '';
-        // 拿到选中的id值
-        var zTree = $.fn.zTree.getZTreeObj("treeDemo");
-        var nodes = zTree.getCheckedNodes(true);
-        for (var i = 0; i < nodes.length; i++) {
-            var node = nodes[i];
-            value += node.id + ",";
-        }
-        value = value.substring(0, value.length - 1);
+        var   value = $("#treeDemo").combotree("getValue");
         if (value.length == 0) {
             alert('运营督导不能为空');
             return;

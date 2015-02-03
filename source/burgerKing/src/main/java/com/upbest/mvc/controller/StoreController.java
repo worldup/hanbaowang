@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -26,13 +27,13 @@ import javax.servlet.http.HttpSession;
 
 import com.upbest.mvc.service.*;
 import com.upbest.mvc.vo.*;
+import com.upbest.utils.*;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
@@ -59,11 +60,6 @@ import com.upbest.mvc.entity.BShopReport;
 import com.upbest.mvc.entity.Buser;
 import com.upbest.mvc.repository.factory.BArearespository;
 import com.upbest.pageModel.Json;
-import com.upbest.utils.CommonUtils;
-import com.upbest.utils.ConfigUtil;
-import com.upbest.utils.DataType;
-import com.upbest.utils.DownloadFileUtils;
-import com.upbest.utils.PageModel;
 
 /**
  * 
@@ -200,7 +196,7 @@ public class StoreController {
             MapVO mapVO = null;
             for (BShopInfoVO vo : storeList) {
                 mapVO = new MapVO();
-                BeanUtils.copyProperties(vo, mapVO);
+                    NoNullBeanCopy.copyProperties(vo, mapVO);
                 List<BSignInfoVO> latestSignInfo = getLatestSignInfo(vo.getId(), signInfoList, vo.getUserIds());
                 mapVO.setLatestSignInfo(latestSignInfo);
                 mapVO.setLatestSts(getLatestSts(vo.getShopnum(), shopStss));
@@ -511,8 +507,8 @@ private ISpringJdbcService jdbcService;
         BShopInfo srcEntity = new BShopInfo();
         if (null != shopId) {
             srcEntity = storeService.queryEntityById(shopInfo.getId());
-            copyProperties(shopInfo, srcEntity);
         }
+        NoNullBeanCopy.copyProperties(shopInfo, srcEntity);
         BShopInfo entity = storeService.saveBShop(srcEntity);
         storeService.deleteUserId(shopInfo.getId());
         if (null != buser) {
@@ -653,6 +649,15 @@ private ISpringJdbcService jdbcService;
         }
         map.put("randomName", resultDis);
         return map;
+    }
+    @ResponseBody
+    @RequestMapping("/getOCTreeList")
+    public void getOCTreeList(@RequestParam(value = "role", required = false) String role, Model model, HttpSession session, HttpServletResponse response) {
+        Buser buser = (Buser) session.getAttribute("buser");
+
+        List<TreeVO> list = userService.getUrVOList(buser.getId());
+        String json = com.alibaba.fastjson.JSON.toJSONStringWithDateFormat(list, "yyyy-MM-dd HH:mm:ss", SerializerFeature.WriteMapNullValue);
+        outPrint(json, response);
     }
 
     @ResponseBody

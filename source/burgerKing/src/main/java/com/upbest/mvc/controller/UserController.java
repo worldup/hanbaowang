@@ -220,6 +220,8 @@ public class UserController {
         }
         user.setIsdel("1");
         userService.insertBuser(user);
+        String json = com.alibaba.fastjson.JSON.toJSONStringWithDateFormat("ok", "yyyy-MM-dd HH:mm:ss", SerializerFeature.WriteMapNullValue);
+        outPrint(json, response);
     }   
 
     @RequestMapping(value = "up")
