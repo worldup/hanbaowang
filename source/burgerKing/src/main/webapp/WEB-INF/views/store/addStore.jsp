@@ -7,7 +7,24 @@
         $.post("${basePath}/store/getOCTreeList",{role:'2'},function(data){
             var comboData= treeconvert($.parseJSON(data));
             $('#treeDemo').combotree('loadData',comboData);
+            if("${shop.userIds}"!="null"&&"${shop.userIds}"!=""){
+                $('#treeDemo').combotree('setValue',"${shop.userIds}");
+            }
         });
+        var _opentime = $('#h_reopentime').val();
+        var _expireTime = $('#h_expireTime').val();
+        var _shopopentime = $('#h_shopopentime').val();
+        $('#reOpenTime').val(_opentime);
+        $('#expireTime').val(_expireTime);
+        $('#shopopentime').val(_shopopentime);
+        $('#straightJointJoin').val('${shop.straightJointJoin}');
+        if("${shop.regional}"!="null"&&"${shop.regional}"!=""){
+            $('#regional').combobox('setValue','${shop.regional}');
+        }
+        if("${shop.prefecture}"!="null"&&"${shop.prefecture}"!=""){
+            $('#prefecture').combobox('setValue','${shop.prefecture}');
+        }
+
         $(".big_green").removeClass("big_ddd");
         //鼠标放到图片上
         $(".storepic_list").delegate("li", "mouseenter", function () {
@@ -164,13 +181,18 @@
         <tr>
             <td class="title">所属区域：</td>
             <td>
-                <select id="regional" name="regional">
-                </select>
+                <input id="regional" name="regional" class="easyui-combobox" data-options="
+                valueField: 'id',
+                textField: 'area',
+                url: '${basePath}/area/getRootArea',
+                onSelect: function(rec){
+                var url = '${basePath}/area/getCityListByAreaId?areaId='+rec.id;
+                $('#prefecture').combobox('reload', url);
+                }"/>
             </td>
             <td class="title" style="padding-left:120px">城市：</td>
             <td>
-                <select id="prefecture" name="prefecture">
-                </select>
+                <input id="prefecture" name="prefecture" class="easyui-combobox" data-options="valueField:'id',textField:'area'"/>
             </td>
         </tr>
         <tr>
@@ -270,10 +292,7 @@
     var areaInfo = $.parseJSON('${areaInfo}');
     $(function () {
         var shopimages = '${shop.shopimage}';
-
         var role = '${role}';
-
-
         var iurl = basePath + "/upload/storeImage/";
         var imagesarr = shopimages.split(",");
         $(".storepic_list").remove("li");
@@ -302,12 +321,6 @@
                 }
         );
 
-        var opentime = $('#h_reopentime').val();
-        var expireTime = $('#h_expireTime').val();
-        var shopopentime = $('#h_shopopentime').val();
-        $('#reOpenTime').val(opentime.split(' ')[0]);
-        $('#expireTime').val(expireTime.split(' ')[0]);
-        $('#shopopentime').val(shopopentime.split(' ')[0]);
 
         $(".big_green").removeClass("big_ddd");
 
@@ -323,21 +336,6 @@
             }
         }
 
-        $('#straightJointJoin').val('${shop.straightJointJoin}');
-        //过滤不符合的地区信息
-        areaInfo = convertAreaInfo(areaInfo);
-        buildRegionOption(areaInfo, 'regional');
-
-        setSelectVal('regional', '${shop.regional}');
-        buildPrefectureOption('${shop.regional}', 'prefecture');
-
-        setSelectVal('prefecture', '${shop.prefecture}');
-
-        //
-        $('#regional').bind('change', function (e) {
-            var region = $('#regional').val();
-            buildPrefectureOption(region, 'prefecture');
-        })
     });
 
     function setSelectVal(selectId, val) {
@@ -454,8 +452,8 @@
         }
 
         vo.status = $('#shopStatu').val() == -1 ? null : $('#shopStatu').val();
-        vo.regional = $('#regional').val() == -1 ? null : $('#regional').val();
-        vo.prefecture = $('#prefecture').val() == -1 ? null : $('#prefecture').val();
+        vo.regional = $('#regional').combobox("getText");
+        vo.prefecture = $('#prefecture').combobox("getText");
         vo.straightJointJoin = $('#straightJointJoin').val() == -1 ? null : $('#straightJointJoin').val();
         var brandExtension = [];
         $('input[name=brandExtension]:checked').each(function (i, item) {

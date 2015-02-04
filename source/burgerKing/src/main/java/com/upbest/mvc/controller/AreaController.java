@@ -33,4 +33,17 @@ public class AreaController {
             e.printStackTrace();
         }
     }
+    @RequestMapping("/getCityListByAreaId")
+    @ResponseBody
+    //获取大区，南区北区中区，所有parent为-1的区域
+    public void getCityListByAreaId(Integer areaId,HttpServletResponse response){
+        List<BArea>  areaList=areaService.findByParent(areaId);
+        Gson gson=new Gson();
+        String result=gson.toJson(areaList);
+        try {
+            response.getWriter().write(result);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

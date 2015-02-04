@@ -151,13 +151,15 @@ function showStoreUpload() {
 // 查看
 function detail(id) {
     var url = basePath + "/store/get?id=" + id;
-    tipsWindown("查看门店", "url:post?" + url, "960", "600", "true", "", "true", "");
+   // tipsWindown("查看门店", "url:post?" + url, "960", "600", "true", "", "true", "");
+    easyUIWindow($("#win"),"查看门店",   url,  960, 600, true, true, true);
 
 }
 // 修改
 function modify(id) {
     var url = basePath + "/store/create?id=" + id;
-    tipsWindown("修改门店", "url:post?" + url, "960", "600", "true", "", "true", "");
+    //tipsWindown("修改门店", "url:post?" + url, "960", "600", "true", "", "true", "");
+    easyUIWindow($("#win"),"修改门店",   url,  960, 600, true, true, true);
 }
 //删除
 function del(id) {
