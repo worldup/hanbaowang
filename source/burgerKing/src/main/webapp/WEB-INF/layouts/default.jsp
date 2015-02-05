@@ -105,7 +105,7 @@
 							<c:if test="${current=='work'}"> class="current"</c:if>>类型管理</a></li>
 						<li class="current"><a href="${basePath}/task/index"
 							<c:if test="${current=='task'}"> class="current"</c:if>>任务管理</a></li>
-						<li class="last"><a href="${basePath}/task/commonwords/index"
+						<li class="current"><a href="${basePath}/task/commonwords/index"
 								<c:if test="${current=='commonwords'}"> class="current"</c:if>>常用语管理</a></li>
 					</ul>
 				</div>
