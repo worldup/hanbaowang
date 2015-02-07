@@ -520,34 +520,6 @@ private ISpringJdbcService jdbcService;
         storeUserService.saveBShopUser(ids, DataType.getAsString(entity.getId()));
     }
 
-    private void copyProperties(BShopInfo src, BShopInfo target) {
-        target.setShopsize(src.getShopsize());
-        target.setShopseatnum(src.getShopseatnum());
-        target.setKitchenArea(src.getKitchenArea());
-        target.setStatus(src.getStatus());
-        target.setReOpenTime(src.getReOpenTime());
-        target.setShopphone(src.getShopphone());
-        target.setShopbusinesstime(src.getShopbusinesstime());
-        target.setExpireTime(src.getExpireTime());
-        target.setCurrentRent(src.getCurrentRent());
-        target.setEquipment(src.getEquipment());
-        target.setLhi(src.getLhi());
-        target.setBrandExtension(src.getBrandExtension());
-        target.setShopimage(src.getShopimage());
-        target.setStoreInfo1(src.getStoreInfo1());
-        target.setStoreInfo2(src.getStoreInfo2());
-        target.setShopopentime(src.getShopopentime());
-        target.setEbitda(src.getEbitda());
-
-        target.setShopname(src.getShopname());
-        target.setShopaddress(src.getShopaddress());
-        target.setStraightJointJoin(src.getStraightJointJoin());
-        target.setTiers(src.getTiers());
-        target.setRegional(src.getRegional());
-        target.setPrefecture(src.getPrefecture());
-        target.setBusinessCircle(src.getBusinessCircle());
-
-    }
 
     @ResponseBody
     @RequestMapping("/bindShop")

@@ -6,25 +6,41 @@
     $(document).ready(function () {
         $.post("${basePath}/store/getOCTreeList",{role:'2'},function(data){
             var comboData= treeconvert($.parseJSON(data));
-            $('#treeDemo').combotree('loadData',comboData);
+            $('#ocTree').combotree('loadData',comboData);
             if("${shop.userIds}"!="null"&&"${shop.userIds}"!=""){
-                $('#treeDemo').combotree('setValue',"${shop.userIds}");
+                $('#ocTree').combotree('setValue',"${shop.userIds}");
             }
         });
-        var _opentime = $('#h_reopentime').val();
-        var _expireTime = $('#h_expireTime').val();
-        var _shopopentime = $('#h_shopopentime').val();
+        $.getJSON( '${basePath}/area/getRootArea',{},function(data){
+            $('#regional').combobox('loadData',data);
+            if('${shop.regional}'!='null'&&'${shop.regional}'!=''){
+                for(var a in data){
+                    if(data[a].area=='${shop.regional}'){
+                        $('#regional').combobox('setValue', data[a].id);
+                        $.getJSON( '${basePath}/area/getCityListByAreaId?areaId='+data[a].id,{},function(cityData){
+                            $('#prefecture').combobox('loadData',cityData);
+                            if('${shop.prefecture}'!='null'&&'${shop.prefecture}'!=''){
+                                for(var c in cityData){
+                                    if(cityData[a].area=='${shop.prefecture}'){
+                                        $('#prefecture').combobox('setValue',cityData[a].id);
+                                        break;
+                                    }
+                                }
+                            }
+                        })
+                        break;
+                    }
+                }
+            }
+
+        })
+        var _opentime = $('#h_reopentime').val().split(" ")[0];
+        var _expireTime = $('#h_expireTime').val().split(" ")[0];
+        var _shopopentime = $('#h_shopopentime').val().split(" ")[0];
+        $('#shopopentime').val(_shopopentime);
         $('#reOpenTime').val(_opentime);
         $('#expireTime').val(_expireTime);
-        $('#shopopentime').val(_shopopentime);
         $('#straightJointJoin').val('${shop.straightJointJoin}');
-        if("${shop.regional}"!="null"&&"${shop.regional}"!=""){
-            $('#regional').combobox('setValue','${shop.regional}');
-        }
-        if("${shop.prefecture}"!="null"&&"${shop.prefecture}"!=""){
-            $('#prefecture').combobox('setValue','${shop.prefecture}');
-        }
-
         $(".big_green").removeClass("big_ddd");
         //鼠标放到图片上
         $(".storepic_list").delegate("li", "mouseenter", function () {
@@ -65,12 +81,11 @@
 <form id="form1" method="post">
     <table class="addform_wrap" id="storeForm" style="margin:20px;">
         <tr>
-            <td class="title"><b>*</b>餐厅面积：</td>
+            <td class="title"> 餐厅面积：</td>
             <td><input type="text" id="shopsize" value="${shop.shopsize}"
-                       name="shopsize" class="text" data-required="true" data-required-msg="餐厅面积不能为空"/></td>
-            <td class="title" style="padding-left:60px"><b>*</b>餐厅座位数：</td>
-            <td><input type="text" id="shopseatnum" data-required="true" data-required-msg="餐厅座位数不能为空"
-                       value="${shop.shopseatnum}" name="shopseatnum" class="text"/></td>
+                       name="shopsize" class="text" /></td>
+            <td class="title" style="padding-left:60px"> 餐厅座位数：</td>
+            <td><input type="text" id="shopseatnum"   value="${shop.shopseatnum}" name="shopseatnum" class="text"/></td>
         </tr>
         <tr>
             <td class="title">经度：</td>
@@ -80,10 +95,10 @@
             <td><input type="text" id="latitude"    value="${shop.latitude}" name="latitude" class="text"/></td>
         </tr>
         <tr>
-            <td class="title"><b>*</b>厨房面积：</td>
-            <td><input type="text" id="kitchenArea" name="kitchenArea" data-required="true" data-required-msg="厨房面积不能为空"
+            <td class="title"> 厨房面积：</td>
+            <td><input type="text" id="kitchenArea" name="kitchenArea" 
                        value="${shop.kitchenArea}" class="text"/></td>
-            <td class="title" style="padding-left:60px"><b>*</b>营业状态：</td>
+            <td class="title" style="padding-left:60px">营业状态：</td>
             <td>
                 <select id="shopStatu">
                     <c:forEach items="${shopStatus}" var="statu">
@@ -93,43 +108,31 @@
             </td>
         </tr>
         <tr>
-            <td class="title"><b>*</b>开业时间：</td>
-            <td align="left"><input type="text" id="shopopentime" data-required="true" data-required-msg="开业时间不能为空"
-                                    name="shopopentime" class="Wdate input_w150"
-                                    value=""
-                                    onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" maxlength="10"/></td>
+            <td class="title"> 开业时间：</td>
+            <td align="left"><input type="text" id="shopopentime"    name="shopopentime" class="Wdate input_w150"  onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" maxlength="10"/></td>
             <td class="title" style="padding-left:60px">重装开业：</td>
-            <td align="left"><input type="text" id="reOpenTime"
-                                    name="reOpenTime" class="Wdate input_w150"
-                                    value=""
-                                    onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" maxlength="10"/></td>
+            <td align="left"><input type="text" id="reOpenTime"    name="reOpenTime" class="Wdate input_w150"      onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" maxlength="10"/></td>
         </tr>
         <tr>
-            <td class="title"><b>*</b>营业时间：</td>
-            <td><input type="text" id="shopbusinesstime" data-required="true" data-required-msg="营业时间不能为空"
-                       name="shopbusinesstime" value="${shop.shopbusinesstime}" class="text"/>
+            <td class="title">营业时间：</td>
+            <td><input type="text" id="shopbusinesstime"    name="shopbusinesstime" value="${shop.shopbusinesstime}" class="text"/>
             </td>
-            <td class="title" style="padding-left:60px"><b>*</b>餐厅租期到期日：</td>
-            <td><input type="text" id="expireTime" data-required="true" data-required-msg="餐厅租期到期日不能为空"
-                       name="expireTime" class="Wdate input_w150"
-                       value="${shop.expireTime}"
+            <td class="title" style="padding-left:60px">餐厅租期到期日：</td>
+            <td><input type="text" id="expireTime"    name="expireTime" class="Wdate input_w150"  value="${shop.expireTime}"
                        onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" maxlength="10"/>
             </td>
         </tr>
         <tr>
-            <td class="title"><b>*</b>租金信息：</td>
-            <td align="left"><input type="text" id="currentRent" data-required="true" data-required-msg="租金信息不能为空"
-                                    name="currentRent" value="${shop.currentRent}" class="text"/></td>
-            <td class="title" style="padding-left:60px"><b>*</b>设备折旧：</td>
-            <td><input type="text" id="equipment" data-required="true" data-required-msg="设备折旧不能为空"
-                       value="${shop.equipment}" name="equipment" class="text"/></td>
+            <td class="title">租金信息：</td>
+            <td align="left"><input type="text" id="currentRent"  name="currentRent" value="${shop.currentRent}" class="text"/></td>
+            <td class="title" style="padding-left:60px">设备折旧：</td>
+            <td><input type="text" id="equipment"       value="${shop.equipment}" name="equipment" class="text"/></td>
         </tr>
         <tr>
-            <td class="title"><b>*</b>装修摊销：</td>
-            <td align="left"><input type="text" id="lhi" data-required="true" data-required-msg="装修摊销不能为空"
-                                    name="lhi" value="${shop.lhi}" class="text"/></td>
-            <td class="title" style="padding-left:60px"><b>*</b>营运督导：</td>
-            <td style="">   <input id="treeDemo"  class="easyui-combotree"/>
+            <td class="title">装修摊销：</td>
+            <td align="left"><input type="text" id="lhi"     name="lhi" value="${shop.lhi}" class="text"/></td>
+            <td class="title" style="padding-left:60px">营运督导：</td>
+            <td style="">   <input id="ocTree"  class="easyui-combotree"/>
                 <input id="citySel"  type="hidden"   name="authNames"/>
                 <input id="authIds" name="authIds" type="hidden"/>
             </td>
@@ -138,19 +141,25 @@
             <td class="title">餐厅商圈类型：</td>
             <td><input type="text" id="businessCircle" value="${shop.businessCircle}"
                        name="businessCircle" class="text"/></td>
-            <td class="title" style="padding-left:60px"><b>*</b>联系方式：</td>
-            <td><input type="text" id="shopphone" data-required="true" data-required-msg="联系方式不能为空"
-                       value="${shop.shopphone}" name="shopphone" class="text"/></td>
+            <td class="title" style="padding-left:60px">联系方式：</td>
+            <td><input type="text" id="shopphone"     value="${shop.shopphone}" name="shopphone" class="text"/></td>
         </tr>
         <tr>
-            <td class="title"><b>*</b>保本营业额：</td>
-            <td><input type="text" id="ebitda" value="${shop.ebitda}" data-required="true" data-required-msg="保本营业额不能为空"
-                       name="ebitda" class="text"/></td>
+            <td class="title">保本营业额：</td>
+            <td><input type="text" id="ebitda" value="${shop.ebitda}"    name="ebitda" class="text"/></td>
             <td class="title" style="padding-left:60px">品牌延伸：</td>
             <td>
                 <div class="ckbox_wrap">
                     <c:forEach items="${brandExtesions}" var="brandExt">
-                        <input type="checkbox" name="brandExtension" value="${brandExt.value}">${brandExt.name}</input>
+                        <c:choose>
+                            <c:when test="${shop.brandExtension!=null&&shop.brandExtension.indexOf(brandExt.value)>-1}">
+                                <input type="checkbox" checked="true" name="brandExtension" value="${brandExt.value}">${brandExt.name}</input>
+                            </c:when>
+                            <c:otherwise>
+                                <input type="checkbox"   name="brandExtension" value="${brandExt.value}">${brandExt.name}</input>
+                            </c:otherwise>
+                        </c:choose>
+
                     </c:forEach>
                 </div>
             </td>
@@ -184,15 +193,14 @@
                 <input id="regional" name="regional" class="easyui-combobox" data-options="
                 valueField: 'id',
                 textField: 'area',
-                url: '${basePath}/area/getRootArea',
                 onSelect: function(rec){
                 var url = '${basePath}/area/getCityListByAreaId?areaId='+rec.id;
-                $('#prefecture').combobox('reload', url);
+                    $('#prefecture').combobox('reload', url);
                 }"/>
             </td>
             <td class="title" style="padding-left:120px">城市：</td>
             <td>
-                <input id="prefecture" name="prefecture" class="easyui-combobox" data-options="valueField:'id',textField:'area'"/>
+                <input id="prefecture" name="prefecture" class="easyui-combobox" data-options="valueField:'id',textField:'area' " />
             </td>
         </tr>
         <tr>
@@ -460,11 +468,7 @@
             brandExtension.push($(item).val());
         });
         vo.brandExtension = brandExtension.join(',');
-        var   value = $("#treeDemo").combotree("getValue");
-        if (value.length == 0) {
-            alert('运营督导不能为空');
-            return;
-        }
+        var   value = $("#ocTree").combotree("getValue");
         //门店图片
         var pics = $(".stopic_wrap img"), picsurl = "";
         for (var i = 0; i < pics.length; i++) {

@@ -1,5 +1,7 @@
 package com.upbest.mvc.controller;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import com.google.gson.Gson;
 import com.upbest.mvc.entity.BArea;
 import com.upbest.mvc.service.IAreaService;
@@ -10,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by lili on 15-1-11.
@@ -24,9 +26,9 @@ public class AreaController {
     @ResponseBody
     //获取大区，南区北区中区，所有parent为-1的区域
     public void getRootArea(HttpServletResponse response){
-      List<BArea>  areaList=areaService.findByParent(-1);
+        Collection<Map<String,String>> resultList=  areaService.findAllRegion();
         Gson gson=new Gson();
-        String result=gson.toJson(areaList);
+        String result=gson.toJson(resultList);
         try {
             response.getWriter().write(result);
         } catch (IOException e) {

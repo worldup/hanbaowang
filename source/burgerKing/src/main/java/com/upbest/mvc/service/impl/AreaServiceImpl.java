@@ -1,8 +1,9 @@
 package com.upbest.mvc.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -74,7 +75,23 @@ public class AreaServiceImpl implements IAreaService {
 		}
 		return result;
 	}
-
+    @Override
+    public Collection<Map<String,String>> findAllRegion (){
+        List<BArea>  areaList=this.findByParent(-1);
+        Collection<Map<String,String>> resultList=new ArrayList();
+        if(areaList!=null){
+            resultList=  Collections2.transform(areaList, new Function<BArea, Map<String,String>>() {
+                @Override
+                public Map<String, String> apply(BArea input) {
+                    Map<String, String> map = new HashMap();
+                    map.put("id", String.valueOf(input.getId()));
+                    map.put("area", input.getArea());
+                    return map;
+                }
+            });
+        }
+        return resultList;
+    }
 	public static void main(String[] args) {
 		System.out.println(null == null);
 	}
