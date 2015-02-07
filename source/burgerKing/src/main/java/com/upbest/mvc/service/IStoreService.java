@@ -3,6 +3,7 @@ package com.upbest.mvc.service;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -70,5 +71,6 @@ public interface IStoreService {
 	BShopInfo queryEntityById(Integer id);
 	
 	BShopInfo findByShopNum(String shopNum);
-
+    //地图小黑框
+    Map<String ,Object > findStoreMapBaseInfo(String shopId);
 }

@@ -25,9 +25,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.upbest.mvc.constant.*;
 import com.upbest.mvc.service.*;
 import com.upbest.mvc.vo.*;
 import com.upbest.utils.*;
+import com.upbest.utils.Constant;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -877,5 +879,15 @@ private ISpringJdbcService jdbcService;
     public List<BArea> loadStore(@RequestParam(value = "id", required = false) Integer pid, HttpServletResponse response) {
         return areaService.findByParent(pid);
 
+    }
+    @RequestMapping(value="/getShopBaseInfo")
+    @ResponseBody
+    public Json getShopBaseInfo(HttpServletRequest req,String shopId){
+        Json result = new Json();
+        Map<String ,Object > map= storeService.findStoreMapBaseInfo(shopId);
+        result.setObj(map);
+        result.setCode(com.upbest.mvc.constant.Constant.Code.SUCCESS_CODE);
+        result.setSuccess(true);
+        return result;
     }
 }

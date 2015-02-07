@@ -2,6 +2,10 @@ package com.upbest.mvc.service.impl;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,6 +26,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.core.*;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -64,6 +71,8 @@ import com.upbest.utils.ExcelUtils;
 public class StoreServiceImpl implements IStoreService {
     @Autowired
     private DBChooser dbChooser;
+    @Autowired
+    private JdbcTemplate coreJdbcTemplate;
 
     @Inject
     protected StoreRespository storeRepository;
@@ -210,15 +219,15 @@ public class StoreServiceImpl implements IStoreService {
         vo.setStoreInfo2(shopInfo.getStoreInfo2());
         vo.setStatus(ShopState.getChName(shopInfo.getStatus()));
         String brandExtension = shopInfo.getBrandExtension();
-        if(!StringUtils.isEmpty(brandExtension)){
-        	String[] brandAry = brandExtension.split(",");
-        	StringBuilder brandDesc = new StringBuilder();
-        	for (String b : brandAry) {
-        		brandDesc.append(BrandExtension.getName(Integer.valueOf(b))).append(",");
-			}
-        	if(brandDesc.length() > 0){
-        		vo.setBrandExtensionChDesc(brandDesc.substring(0,brandDesc.length() - 1));
-        	}
+        if (!StringUtils.isEmpty(brandExtension)) {
+            String[] brandAry = brandExtension.split(",");
+            StringBuilder brandDesc = new StringBuilder();
+            for (String b : brandAry) {
+                brandDesc.append(BrandExtension.getName(Integer.valueOf(b))).append(",");
+            }
+            if (brandDesc.length() > 0) {
+                vo.setBrandExtensionChDesc(brandDesc.substring(0, brandDesc.length() - 1));
+            }
         }
 
         List<String> urList = getUserIds(DataType.getAsString(id));
@@ -243,8 +252,9 @@ public class StoreServiceImpl implements IStoreService {
         }
         return vo;
     }
+
     @Override
-    public Page<Object[]> findShopList(String shopName, Integer userId,String userRole,String regional, Pageable pageable){
+    public Page<Object[]> findShopList(String shopName, Integer userId, String userRole, String regional, Pageable pageable) {
         StringBuffer sql = new StringBuffer();
         List<Object> params = new ArrayList<Object>();
         sql.append("  SELECT distinct t.id,                       ");
@@ -323,7 +333,7 @@ public class StoreServiceImpl implements IStoreService {
             sql.append(" and t.shop_name like ?");
             params.add("%" + shopName + "%");
         }
-        if(StringUtils.isNotBlank(regional)&&!"0".equals(regional)){
+        if (StringUtils.isNotBlank(regional) && !"0".equals(regional)) {
             sql.append("and t.regional = ?");
             params.add(regional);
         }
@@ -817,19 +827,19 @@ public class StoreServiceImpl implements IStoreService {
             List<String> params = new ArrayList<String>();
             StringBuilder sql = new StringBuilder();
             sql.append("	select f.sales,")
-            	.append("			f.tc,")
-            	.append("			f.shopId,")
-            	.append("			f.month,")
-            	.append("			f.cash_audit,")
-            	.append("			f.gt_nps,")
-            	.append("			f.rank,")
-            	.append("			f.rev_bs,")
-            	.append("			f.rev_fs,")
-            	.append("			f.shop_num,")
-            	.append("			v.tc_comp_tc,")
-            	.append("			v.comp,")
-            	.append("			v.PM,")
-            	.append("			v.TC_COMP_PM ");
+                    .append("			f.tc,")
+                    .append("			f.shopId,")
+                    .append("			f.month,")
+                    .append("			f.cash_audit,")
+                    .append("			f.gt_nps,")
+                    .append("			f.rank,")
+                    .append("			f.rev_bs,")
+                    .append("			f.rev_fs,")
+                    .append("			f.shop_num,")
+                    .append("			v.tc_comp_tc,")
+                    .append("			v.comp,")
+                    .append("			v.PM,")
+                    .append("			v.TC_COMP_PM ");
 
            /* sql.append("	select f.sales," + "f.tc," + "f.shopId," + "f.month," + "f.cash_audit," + "f.gt_nps," + "f.rank," + "f.rev_bs," + "f.rev_fs,	" + "f.shop_num," + "v.[tc_comp_tc]," + "v.comp,"
                     + "v.pm," + "v.[TC_COMP_PM] ");*/
@@ -838,31 +848,31 @@ public class StoreServiceImpl implements IStoreService {
 
             sql.append("			select s.*,si.id as shopId,si.shop_num from (	");
             sql.append("				select s.*	")
-             	.append("				from		")
-            	.append("				(select s.shop_id, MAX(s.month) last_month 	")
-            	.append("				from bk_shop_statistic s where s.shop_id in (		");
+                    .append("				from		")
+                    .append("				(select s.shop_id, MAX(s.month) last_month 	")
+                    .append("				from bk_shop_statistic s where s.shop_id in (		");
             addInCondition(shopNumList.toArray(new String[shopNumList.size()]), sql);
             sql.append("				) group by s.shop_id) sm	")
-            	.append("			join bk_shop_statistic s on sm.shop_id = s.shop_id and sm.last_month = s.month	");
+                    .append("			join bk_shop_statistic s on sm.shop_id = s.shop_id and sm.last_month = s.month	");
             sql.append("	)s	").append("	join bk_shop_info si on s.shop_id = si.shop_num ");
             sql.append(" )f		")
-            	.append("	left join 			");
+                    .append("	left join 			");
             //tc_comp,sales_comp的最近一次的数据
             sql.append("		(	select v.*	")
-	        	.append("				from		")
-	        	.append("				(select d.storeid, MAX(d.salesdate) salesdate 	")
-	        	.append("				from V_TF_Daily_Sales_MONTH_LAST_DAY d where d.storeid in (		");
-	        addInCondition(shopNumList.toArray(new String[shopNumList.size()]), sql);
-	        sql.append("				) group by d.storeid) dm	")
-        		.append("			join V_TF_Daily_Sales_MONTH_LAST_DAY v on dm.storeid = v.storeid and dm.salesdate = v.salesdate  ) v");
-	        sql.append("	on f.shop_num = v.storeid ");
+                    .append("				from		")
+                    .append("				(select d.storeid, MAX(d.salesdate) salesdate 	")
+                    .append("				from V_TF_Daily_Sales_MONTH_LAST_DAY d where d.storeid in (		");
+            addInCondition(shopNumList.toArray(new String[shopNumList.size()]), sql);
+            sql.append("				) group by d.storeid) dm	")
+                    .append("			join V_TF_Daily_Sales_MONTH_LAST_DAY v on dm.storeid = v.storeid and dm.salesdate = v.salesdate  ) v");
+            sql.append("	on f.shop_num = v.storeid ");
 
             List<Object[]> list = common.queryBySql(sql.toString(), params);
-            
+
             //获取门店对应的最大排名
             Map<String, String[]> maxRankMap = getMaxRankByStoreId(shopNumList);
 
-            result = buildStatisticInfo(list,maxRankMap);
+            result = buildStatisticInfo(list, maxRankMap);
         }
 
         return result;
@@ -871,66 +881,65 @@ public class StoreServiceImpl implements IStoreService {
     /**
      * key : 门店号
      * value : [salesRank最大排名数,tcRank最大排名数]
+     *
      * @param shopNumList
      * @return
      */
     private Map<String, String[]> getMaxRankByStoreId(List<String> shopNumList) {
-    	Map<String, String[]> result = new HashMap<String, String[]>();
-    	
-    	StringBuilder sql = new StringBuilder();
-    	sql.append("	select t.storeid,count(t.salesRank) srCount,count(t.tcRank) trCount	")
-    		.append("		from 															")
-    		.append("		(																	");
-        if(dbChooser.isSQLServer()){
+        Map<String, String[]> result = new HashMap<String, String[]>();
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("	select t.storeid,count(t.salesRank) srCount,count(t.tcRank) trCount	")
+                .append("		from 															")
+                .append("		(																	");
+        if (dbChooser.isSQLServer()) {
             sql.append("		select DISTINCT dm.storeid storeid,  CONVERT(varchar, dm.salesdate, 120 ) month, ");
 
-        }
-    	else{
+        } else {
             sql.append("		select DISTINCT dm.storeid storeid,  str_to_date( dm.salesdate, '%Y-%m-%d %H:%i:%s' ) month, ");
 
         }
         sql.append("		v.PM salesRank,v.TC_COMP_PM tcRank,v.storeid vstoreid 				")
-    		.append("		from																")
-    		.append("		(select d.storeid, MAX(d.salesdate) salesdate 						")	
-    		.append("		from V_TF_Daily_Sales_MONTH_LAST_DAY d 								")	
-    		.append("			where d.storeid in (											");
-    	 addInCondition(shopNumList.toArray(new String[shopNumList.size()]), sql);
-    	 sql.append("		) group by d.storeid) dm											")	;
-        if(dbChooser.isSQLServer()){
+                .append("		from																")
+                .append("		(select d.storeid, MAX(d.salesdate) salesdate 						")
+                .append("		from V_TF_Daily_Sales_MONTH_LAST_DAY d 								")
+                .append("			where d.storeid in (											");
+        addInCondition(shopNumList.toArray(new String[shopNumList.size()]), sql);
+        sql.append("		) group by d.storeid) dm											");
+        if (dbChooser.isSQLServer()) {
             sql.append("		join V_TF_Daily_Sales_MONTH_LAST_DAY v on DATEDIFF(m,dm.salesdate,v.salesdate) = 0 ");
 
-        }
-        else{
+        } else {
             sql.append("		join V_TF_Daily_Sales_MONTH_LAST_DAY v on TIMESTAMPDIFF(month,dm.salesdate,v.salesdate) = 0 ");
 
         }
 
 
-    	 	sql.append("	) t group by t.storeid													");
-    	 
-    	 List<Object[]> list = common.queryBySql(sql.toString(), new ArrayList<Object>());
-    	 if(!CollectionUtils.isEmpty(list)){
-    		 for (Object[] objAry : list) {
-    			String storeId = DataType.getAsString(objAry[0]);
-    			if(org.springframework.util.StringUtils.hasText(storeId)){
-    				String[] rankAry = new String[2];
-    				rankAry[0] = DataType.getAsString(objAry[1]);
-    				rankAry[1] = DataType.getAsString(objAry[2]);
-    				
-    				result.put(storeId, rankAry);
-    			}
-				
-				
-			}
-    	 }
-		return result;
-	}
+        sql.append("	) t group by t.storeid													");
 
-	private List<BshopStatisticVO> buildStatisticInfo(List<Object[]> list, Map<String, String[]> maxRankMap) {
+        List<Object[]> list = common.queryBySql(sql.toString(), new ArrayList<Object>());
+        if (!CollectionUtils.isEmpty(list)) {
+            for (Object[] objAry : list) {
+                String storeId = DataType.getAsString(objAry[0]);
+                if (org.springframework.util.StringUtils.hasText(storeId)) {
+                    String[] rankAry = new String[2];
+                    rankAry[0] = DataType.getAsString(objAry[1]);
+                    rankAry[1] = DataType.getAsString(objAry[2]);
+
+                    result.put(storeId, rankAry);
+                }
+
+
+            }
+        }
+        return result;
+    }
+
+    private List<BshopStatisticVO> buildStatisticInfo(List<Object[]> list, Map<String, String[]> maxRankMap) {
         List<BshopStatisticVO> result = new ArrayList<BshopStatisticVO>();
 
         if (!CollectionUtils.isEmpty(list)) {
-        	long shopCount = storeRepository.count();
+            long shopCount = storeRepository.count();
             for (Object[] objAry : list) {
                 BshopStatisticVO statistic = new BshopStatisticVO();
                 statistic.setSales(DataType.getAsString(objAry[0]));
@@ -952,53 +961,52 @@ public class StoreServiceImpl implements IStoreService {
                 Double d = scaleDouble(salesComp, 2);
 
                 statistic.setSalesComp(d == null ? null : (d.doubleValue() + ""));
-                
+
                 String[] rankAry = maxRankMap.get(statistic.getShopNum());
                 String salesRankCount = null;
                 String tcRankCount = null;
-                if(rankAry == null){
-                	salesRankCount = "0";
-                	tcRankCount = "0";
-                }else{
-                	salesRankCount = StringUtils.isEmpty(rankAry[0]) ? "0" : rankAry[0];
-                	tcRankCount = StringUtils.isEmpty(rankAry[1]) ? "0" : rankAry[1];
+                if (rankAry == null) {
+                    salesRankCount = "0";
+                    tcRankCount = "0";
+                } else {
+                    salesRankCount = StringUtils.isEmpty(rankAry[0]) ? "0" : rankAry[0];
+                    tcRankCount = StringUtils.isEmpty(rankAry[1]) ? "0" : rankAry[1];
                 }
                 statistic.setSalesRank(DataType.getAsInt(objAry[12]) + "/" + salesRankCount);
                 statistic.setTcRank(DataType.getAsInt(objAry[13]) + "/" + tcRankCount);
-                
-                
+
+
                 //获取最近一次的gtnps，等
-                if(StringUtils.isEmpty(statistic.getGtNps())
-                		&&StringUtils.isEmpty(statistic.getRevBs())
-                		&&StringUtils.isEmpty(statistic.getRevFs())
-                		&&StringUtils.isEmpty(statistic.getCashAudit())
-                		&&StringUtils.isEmpty(statistic.getRank())){
-                	StringBuilder sql = new StringBuilder();
-                	List<String> params = new ArrayList<String>();
-                    if(dbChooser.isSQLServer()){
+                if (StringUtils.isEmpty(statistic.getGtNps())
+                        && StringUtils.isEmpty(statistic.getRevBs())
+                        && StringUtils.isEmpty(statistic.getRevFs())
+                        && StringUtils.isEmpty(statistic.getCashAudit())
+                        && StringUtils.isEmpty(statistic.getRank())) {
+                    StringBuilder sql = new StringBuilder();
+                    List<String> params = new ArrayList<String>();
+                    if (dbChooser.isSQLServer()) {
                         sql.append("select top 1 s.gt_nps,s.rev_bs,s.rev_fs,s.cash_audit,s.rank from bk_shop_statistic s where s.gt_nps is not null"
                                 + " and s.month is not null and s.shop_id=? order by month");
-                    }
-                	else{
+                    } else {
                         sql.append("select  s.gt_nps,s.rev_bs,s.rev_fs,s.cash_audit,s.rank from bk_shop_statistic s where s.gt_nps is not null"
                                 + " and s.month is not null and s.shop_id=? order by month limit 1");
                     }
-                	
-                	params.add(statistic.getShopNum());
-                	List<Object[]> objList = common.queryBySql(sql.toString(), params);
-                	if (!CollectionUtils.isEmpty(objList)) {
-                		for (Object[] ary : objList) {
-                			 Double gtNps = DataType.getAsDouble(ary[0]);
-                             gtNps = scaleDouble(gtNps, 4);
-                			statistic.setGtNps(gtNps + "");
-                			statistic.setRevBs(DataType.getAsString(ary[1]));
-                			statistic.setRevFs(DataType.getAsString(ary[2]));
-                			statistic.setCashAudit(DataType.getAsString(ary[3]));
-                			statistic.setRank(DataType.getAsString(ary[4]));
-						}
-                		
-                	}
-                	
+
+                    params.add(statistic.getShopNum());
+                    List<Object[]> objList = common.queryBySql(sql.toString(), params);
+                    if (!CollectionUtils.isEmpty(objList)) {
+                        for (Object[] ary : objList) {
+                            Double gtNps = DataType.getAsDouble(ary[0]);
+                            gtNps = scaleDouble(gtNps, 4);
+                            statistic.setGtNps(gtNps + "");
+                            statistic.setRevBs(DataType.getAsString(ary[1]));
+                            statistic.setRevFs(DataType.getAsString(ary[2]));
+                            statistic.setCashAudit(DataType.getAsString(ary[3]));
+                            statistic.setRank(DataType.getAsString(ary[4]));
+                        }
+
+                    }
+
                 }
 
                 result.add(statistic);
@@ -1043,11 +1051,10 @@ public class StoreServiceImpl implements IStoreService {
         sql.append("       on ur.id = wi.execute_id                                          ");
         sql.append("    where 1 = 1                                                          ");
         if (StringUtils.isNotBlank(year)) {
-            if(dbChooser.isSQLServer()){
+            if (dbChooser.isSQLServer()) {
                 sql.append(" and DATEDIFF(yy,wi.start_time, '" + year + "')=0 ");
-            }
-           else{
-                sql.append(" and TIMESTAMPDIFF(year,wi.start_time, '" + year+"-01-01" + "')=0 ");
+            } else {
+                sql.append(" and TIMESTAMPDIFF(year,wi.start_time, '" + year + "-01-01" + "')=0 ");
             }
         }
         if (StringUtils.isNotBlank(userId)) {
@@ -1137,10 +1144,10 @@ public class StoreServiceImpl implements IStoreService {
                 entity.setShopnum(tar.getShopnum());
                 entity.setChineseAddress(tar.getChineseAddress());
                 entity.setBusinessCircle(tar.getBusinessCircle());
-                entity.setEmail("bk"+tar.getShopnum()+"@bkchina.cn");
+                entity.setEmail("bk" + tar.getShopnum() + "@bkchina.cn");
                 storeRepository.save(entity);
             } //else {
-                // 修改
+            // 修改
                /* shopInfo.setShopaddress(tar.getShopaddress());
                 shopInfo.setShopbusinessarea(tar.getShopbusinessarea());
                 shopInfo.setShopname(tar.getShopname());
@@ -1159,10 +1166,10 @@ public class StoreServiceImpl implements IStoreService {
                 shopInfo.setShopnum(tar.getShopnum());
                 shopInfo.setChineseAddress(tar.getChineseAddress());
                 shopInfo.setBusinessCircle(tar.getBusinessCircle());*/
-                //shopInfo.setEmail("bk"+tar.getShopnum()+"@bkchina.cn");
-             //   storeRepository.save(shopInfo);
-           // }
-            saveArea(tar.getRegional(),tar.getPrefecture());
+            //shopInfo.setEmail("bk"+tar.getShopnum()+"@bkchina.cn");
+            //   storeRepository.save(shopInfo);
+            // }
+            saveArea(tar.getRegional(), tar.getPrefecture());
         }
 
     }
@@ -1237,36 +1244,63 @@ public class StoreServiceImpl implements IStoreService {
     public BShopInfo findByShopNum(String shopNum) {
         return storeRepository.findByShopnum(shopNum);
     }
-    
-    public void saveArea(String regional,String prefecture){
-        if(StringUtils.isNotBlank(regional)){
+
+    public void saveArea(String regional, String prefecture) {
+        if (StringUtils.isNotBlank(regional)) {
             //大区
-            List<BArea> areaList=areaRes.findByArea(regional);
-            BArea reEntity=new BArea();
-            if(!CollectionUtils.isEmpty(areaList)){
+            List<BArea> areaList = areaRes.findByArea(regional);
+            BArea reEntity = new BArea();
+            if (!CollectionUtils.isEmpty(areaList)) {
                 //存在不做处理
-                reEntity=areaList.get(0);
-            }else{
-                reEntity=new BArea();
+                reEntity = areaList.get(0);
+            } else {
+                reEntity = new BArea();
                 reEntity.setArea(regional);
                 reEntity.setParent(null);
                 areaRes.save(reEntity);
             }
-            if(StringUtils.isNotBlank(prefecture)){
+            if (StringUtils.isNotBlank(prefecture)) {
                 //市
-                List<BArea> preList=areaRes.findByArea(prefecture);
-                BArea preEntity=new BArea();
-                if(!CollectionUtils.isEmpty(preList)){
+                List<BArea> preList = areaRes.findByArea(prefecture);
+                BArea preEntity = new BArea();
+                if (!CollectionUtils.isEmpty(preList)) {
                     //存在不做处理
-                }else{
-                    preEntity=new BArea();
+                } else {
+                    preEntity = new BArea();
                     preEntity.setArea(prefecture);
                     preEntity.setParent(reEntity);
                     areaRes.save(preEntity);
-                }     
+                }
             }
-          
+
         }
+    }
+
+    public Map<String, Object> findStoreMapBaseInfo(final String shopId) {
+        SimpleJdbcCall simpleJdbcCall = new SimpleJdbcCall(coreJdbcTemplate);
+        Map<String, Object> map = new HashMap();
+        map.put("i_shop_num", shopId);
+        Map<String, Object> outValues = simpleJdbcCall.withProcedureName("getBaseInfo").declareParameters(
+                new SqlParameter("i_shop_num", Types.VARCHAR),
+                new SqlOutParameter("o_sale_mtd", Types.VARCHAR),
+                new SqlOutParameter("o_sale_comp_mtd", Types.VARCHAR),
+                new SqlOutParameter("o_tc_comp_mtd", Types.VARCHAR),
+                new SqlOutParameter("o_sale_rank_mtd", Types.VARCHAR),
+                new SqlOutParameter("o_tc_rank_mtd", Types.VARCHAR),
+                new SqlOutParameter("o_sale_ytd", Types.VARCHAR),
+                new SqlOutParameter("o_sale_comp_ytd", Types.VARCHAR),
+                new SqlOutParameter("o_tc_ytd", Types.VARCHAR),
+                new SqlOutParameter("o_tc_comp_ytd", Types.VARCHAR),
+                new SqlOutParameter("o_sale_rank_ytd", Types.VARCHAR),
+                new SqlOutParameter("o_tc_rank_ytd", Types.VARCHAR),
+                new SqlOutParameter("o_REV_BS", Types.VARCHAR),
+                new SqlOutParameter("o_REV_FS", Types.VARCHAR),
+                new SqlOutParameter("o_Guest_Trac_NPS", Types.VARCHAR),
+                new SqlOutParameter("o_Guest_Trac_RANK", Types.VARCHAR),
+                new SqlOutParameter("o_nps_signed", Types.VARCHAR),
+                new SqlOutParameter("o_CASH_AUDIT", Types.VARCHAR)
+        ).execute(map);
+        return outValues;
     }
 
 }

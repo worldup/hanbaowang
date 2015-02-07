@@ -323,7 +323,10 @@ public class TaskServiceImpl implements ITaskService {
         sql.append("         t.is_self_create,                  ");
         sql.append("         t.quarter,                  ");
         sql.append("         shop.id as shopId,                  ");
-        sql.append("         typ.id as taskTypeId, typ.is_to_store as isToStore                 ");
+        sql.append("         typ.id as taskTypeId, typ.is_to_store as isToStore   ,              ");
+        sql.append("         t.useImg  ,               ");
+        sql.append("         t.useText     ,         ");
+        sql.append("         t.ishidden                 ");
         sql.append("    from bk_work_info t                  ");
         sql.append("    left join bk_work_type typ           ");
         sql.append("      on t.work_type_id = typ.id         ");
@@ -414,6 +417,10 @@ public class TaskServiceImpl implements ITaskService {
                 vo.setStoreId(DataType.getAsInt(obj[15]));
                 vo.setTaskTypeId(DataType.getAsInt(obj[16]));
                 vo.setIsToStore(DataType.getAsInt(obj[17]));
+                vo.setUseText(DataType.getAsString(obj[19]));
+                vo.setUseImg(DataType.getAsString(obj[18]));
+                vo.setIshidden(DataType.getAsString(obj[20]));
+
                 result.add(vo);
             }
         }
@@ -440,7 +447,10 @@ public class TaskServiceImpl implements ITaskService {
         sql.append("         t.is_self_create,                  ");
         sql.append("         t.quarter,                  ");
         sql.append("         shop.id as shopId,                  ");
-        sql.append("         t.id as taskTypeId,typ.is_to_store as isToStore                  ");
+        sql.append("         t.id as taskTypeId,typ.is_to_store as isToStore ,                 ");
+        sql.append("         t.useImg  ,               ");
+        sql.append("         t.useText     ,         ");
+        sql.append("         t.ishidden                 ");
         sql.append("    from bk_work_info t                  ");
         sql.append("    left join bk_work_type typ           ");
         sql.append("      on t.work_type_id = typ.id         ");

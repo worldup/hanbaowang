@@ -68,6 +68,11 @@ public class TaskController {
         model.addAttribute("current","commonwords");
         return "/task/commonwords";
     }
+    @RequestMapping(value = "/workingtime/index")
+    public String workingtime(Model model) {
+        model.addAttribute("current","workingtime");
+        return "/task/workingtime";
+    }
     @ResponseBody
     @RequestMapping(value = "/commonwords/list")
     public String commonwordsList(Model model) {

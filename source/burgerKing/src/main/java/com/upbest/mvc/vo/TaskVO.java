@@ -27,9 +27,35 @@ public class TaskVO implements Serializable {
     private String quarter;
     private int storeId;
     private int taskTypeId;
-    
+    private String ishidden ;
+    private String useText;
+    private String useImg;
     private int isToStore;
-    
+
+    public String getIshidden() {
+        return ishidden;
+    }
+
+    public void setIshidden(String ishidden) {
+        this.ishidden = ishidden;
+    }
+
+    public String getUseText() {
+        return useText;
+    }
+
+    public void setUseText(String useText) {
+        this.useText = useText;
+    }
+
+    public String getUseImg() {
+        return useImg;
+    }
+
+    public void setUseImg(String useImg) {
+        this.useImg = useImg;
+    }
+
     public int getIsToStore() {
         return isToStore;
     }

@@ -302,6 +302,9 @@ public class TaskAPIController {
                    taskInfo.setState(DataType.getAsString(map.get("state")));
                    // 0:自主 1:委派
                    taskInfo.setIsSelfCreate(DataType.getAsString(map.get("isSelfCreate")));
+                   taskInfo.setUseimg(DataType.getAsString(map.get("useImg")));
+                   taskInfo.setUsetext(DataType.getAsString(map.get("useText")));
+                   taskInfo.setIshidden(DataType.getAsString(map.get("ishidden")));
                    if(DataType.getAsString(map.get("isSelfCreate")).equals("1")){
                        //委派需立即推送一条任务消息
                        doPushTaskMessage(taskInfo);
@@ -339,6 +342,9 @@ public class TaskAPIController {
                     // 新增added by zhaojinhua
                     taskInfo.setExecuteid(DataType.getAsInt(map.get("executeId")));
                     taskInfo.setState(DataType.getAsString(map.get("state")));
+                    taskInfo.setUsetext(DataType.getAsString(map.get("useText")));
+                    taskInfo.setUseimg(DataType.getAsString(map.get("useImg")));
+                    taskInfo.setIshidden(DataType.getAsString(map.get("ishidden")));
                     // 0:自主 1:委派
                     taskInfo.setIsSelfCreate(DataType.getAsString(map.get("isSelfCreate")));
                     if(DataType.getAsString(map.get("isSelfCreate")).equals("1")){

@@ -69,6 +69,36 @@ public class BWorkInfo implements Serializable{
 
 	 @Column(name="quarter")//季度
 	 private String quarter;
+    @Column(name="usetext")//文本框
+    private String usetext;
+    @Column(name="useimg")//是否图片
+    private String useimg;
+    @Column(name="ishidden")//是否隐藏
+    private String ishidden;
+
+    public String getIshidden() {
+        return ishidden;
+    }
+
+    public void setIshidden(String ishidden) {
+        this.ishidden = ishidden;
+    }
+
+    public String getUsetext() {
+        return usetext;
+    }
+
+    public void setUsetext(String usetext) {
+        this.usetext = usetext;
+    }
+
+    public String getUseimg() {
+        return useimg;
+    }
+
+    public void setUseimg(String useimg) {
+        this.useimg = useimg;
+    }
 
     public String getWorktypename() {
         return worktypename;

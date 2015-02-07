@@ -3,6 +3,7 @@ package com.upbest.mvc.controller.api;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -515,5 +516,24 @@ public class StoreAPIController {
     }
     private Date parseLong(Long lng){
     	return lng == null ? null : new Date(lng);
+    }
+
+    //添加小黑框
+    public Map<String ,Object > getStoreMapBaseInfo(String shopId){
+      return    service.findStoreMapBaseInfo(shopId);
+    }
+    @RequestMapping(value="/securi_getShopBaseInfo")
+    @ResponseBody
+    public Json getShopBaseInfo(HttpServletRequest req){
+        Json result = new Json();
+        Json j = Constant.convertJson(req);
+        JSONObject o = (JSONObject) j.getObj();
+        String shopId = o.getString("shopId");
+        Map<String ,Object > map= getStoreMapBaseInfo(shopId);
+        result.setObj(map);
+        result.setCode(Code.SUCCESS_CODE);
+        result.setSuccess(true);
+        result.setMsg(VERIFY_SUCCESS);
+        return result;
     }
 }
