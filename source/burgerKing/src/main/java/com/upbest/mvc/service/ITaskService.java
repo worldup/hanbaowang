@@ -14,7 +14,7 @@ import com.upbest.mvc.vo.TaskVO;
 import com.upbest.utils.PageModel;
 
 public interface ITaskService {
-
+    void setWorkHidden(Integer id,String hidden);
     BWorkInfo findById(Integer id);
 
     Page<Object[]> findWorkList(Buser user, String workName,String uName,String sDate,Pageable requestPage);

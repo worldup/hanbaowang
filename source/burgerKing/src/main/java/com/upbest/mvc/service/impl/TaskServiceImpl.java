@@ -54,7 +54,12 @@ public class TaskServiceImpl implements ITaskService {
     public BWorkInfo findById(Integer id) {
         return taskRepository.findOne(id);
     }
-
+   public   void setWorkHidden(Integer id,String hidden){
+       Map map=new HashMap();
+       map.put("id",id);
+       map.put("hidden",hidden);
+       jdbcTemplate.update("update bk_work_info set ishidden=:hidden where id=:id",map);
+   }
     @Override
     public Page<Object[]> findWorkList(Buser user, String typeName,String uName,String sDate, Pageable pageable) {
         StringBuffer sql = new StringBuffer();

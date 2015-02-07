@@ -119,7 +119,20 @@ public class TaskAPIController {
         }
         return result;
     }
-
+    @RequestMapping(value = "/securi_hiddenTask")
+    @ResponseBody
+    public Json hiddenTask(HttpServletRequest req) {
+        Json result = new Json();
+        Json j = Constant.convertJson(req);
+        JSONObject o = (JSONObject) j.getObj();
+        String hidden = o.getString("hidden");
+        Integer id = o.getInteger("id");
+       service.setWorkHidden(id,hidden);
+        result.setCode(Code.SUCCESS_CODE);
+        result.setSuccess(true);
+        result.setMsg(OperatorResultMsg.SUCCESS);
+        return result;
+    }
     @RequestMapping(value = "/securi_caList")
     @ResponseBody
     public Json queryTaskList(HttpServletRequest req) {
