@@ -104,17 +104,19 @@ public class StsAPIController {
                 public BStsVO apply(BStsVO input) {
                     try {
                         BStsVO copy = (BStsVO) BeanUtils.cloneBean(input);
-                        String role = copy.getUser().getRole();
-                        String roleName = "未知";
-                        if ("1".equals(role)) {
-                            roleName = "OM";
-                        } else if ("2".equals(role)) {
-                            roleName = "OC";
-                        } else if ("3".equals(role)) {
-                            roleName = "OM+";
+                        if(copy.getUser()!=null&&copy.getUser().getRole()!=null){
+                            String role = copy.getUser().getRole();
+                            String roleName = "未知";
+                            if ("1".equals(role)) {
+                                roleName = "OM";
+                            } else if ("2".equals(role)) {
+                                roleName = "OC";
+                            } else if ("3".equals(role)) {
+                                roleName = "OM+";
+                            }
+                            copy.getUser().setRole(roleName);
                         }
 
-                        copy.getUser().setRole(roleName);
                         return copy;
                     } catch (Exception e) {
                         e.printStackTrace();
