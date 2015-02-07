@@ -474,11 +474,12 @@ private ISpringJdbcService jdbcService;
         URL url = new URL(req.getRequestURL().toString());
         String urlPath = "";
         if (StringUtils.isNotBlank(shop_image)) {
-            if (StringUtils.isBlank(shopImages)) {
-                shopInfo.setShopimage(shop_image);
-            } else {
-                shopInfo.setShopimage(shopImages + "," + shop_image);
+            String imgName=shop_image;
+            if (StringUtils.isNotBlank(shopImages)) {
+                imgName=shopImages + "," + shop_image;
             }
+            shopInfo.setShopimage(imgName);
+
         } else {
             shopInfo.setShopimage(shopImages);
         }

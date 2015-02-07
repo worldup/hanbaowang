@@ -298,6 +298,7 @@
 <script type="text/javascript" src="${basePath}/js/jquery.form.js"></script>
 <script type="text/javascript">
     var areaInfo = $.parseJSON('${areaInfo}');
+    var shopimages1 = '${shop.shopimage}';
     $(function () {
         var shopimages = '${shop.shopimage}';
         var role = '${role}';
@@ -305,6 +306,7 @@
         var imagesarr = shopimages.split(",");
         $(".storepic_list").remove("li");
         for (var i = 0; i < imagesarr.length; i++) {
+           if(imagesarr[i]!=""){
             var str = "'" + imagesarr[i] + "'";
             var liclass = "";
             if (i >= 5) {
@@ -316,6 +318,7 @@
             + '<div class="del" title="删除"><img alt="删除" src="${basePath}/images/del.png"></div></li>');
 
             $(".storepic_list").append(li);
+           }
         }
         //点击更多
         $(".more_stropic_btn").toggle(
