@@ -1,11 +1,12 @@
 $(function () {
+
     $("#gridTableStore")
         .jqGrid(
         {
             url: basePath + "/task/commonwords/list",
             mtype: "POST",
             postData: {
-                "type": function () {
+                "taskTypeId": function () {
                     return $.trim($('#type').val());
                 }
             },
@@ -20,6 +21,15 @@ $(function () {
             colModel: [
                 {
                     name: "id",
+                    hidden: true
+                },
+                {
+                    name: "taskTypeId",
+                    hidden: true
+                },
+                {
+                    label: "任务类型",
+                    name: "taskTypeName",
                     hidden: false
                 },
                 {
@@ -35,16 +45,13 @@ $(function () {
                     formatter: function (cellvalue, options,
                                          rowObject) {
                         var id = rowObject.id;
-                        var html = "<input type='button' class='details' title='查看' value='查看' onclick=\"detail(\'"
-                            + id + "\')\"/>";
-                        html += "<input type='button' class='edit' title='修改' value='修改' onclick=\"modify(\'"
+                        //var html = "<input type='button' class='details' title='查看' value='查看' onclick=\"detail(\'"
+                        //    + id + "\')\"/>";
+                       var html = "<input type='button' class='edit' title='修改' value='修改' onclick=\"modify(\'"
                         + id + "\')\"/>";
-                        /*html += "<input type='button' class='del' title='删除' value='删除' onclick=\"del(\'"
-                         + id + "\')\"/>";*/
-                        html += "<input type='button' class='upload' title='上传报表' value='报表查看' onclick=\"viewReport(\'"
-                        + id + "\')\"/>";
-                        /*html += "<input type='button' class='bind' title='绑定' value='绑定' onclick=\"bind(\'"
-                         + id + "\')\"/>";*/
+                        html += "<input type='button' class='del' title='删除' value='删除' onclick=\"del(\'"
+                         + id + "\')\"/>";
+
                         return html;
                     }
                 }],
@@ -76,16 +83,16 @@ function showStoreUpload() {
 }
 // 查看
 function detail(id) {
-    var url = basePath + "/task/commonwords/get?id=" + id;
+    var url = basePath + "/task/commonwords/show?id=" + id;
    // tipsWindown("查看门店", "url:post?" + url, "960", "600", "true", "", "true", "");
-    easyUIWindow($("#win"),"查看门店",   url,  960, 600, true, true, true);
+    easyUIWindow($("#win"),"查看常用语",   url,  960, 600, true, true, true);
 
 }
 // 修改
 function modify(id) {
-    var url = basePath + "/task/commonwords/create?id=" + id;
+    var url = basePath + "/task/commonwords/show?id=" + id;
     //tipsWindown("修改门店", "url:post?" + url, "960", "600", "true", "", "true", "");
-    easyUIWindow($("#win"),"修改门店",   url,  960, 600, true, true, true);
+    easyUIWindow($("#win"),"修改常用语",   url,  960, 600, true, true, true);
 }
 //删除
 function del(id) {
@@ -112,9 +119,9 @@ function del(id) {
     }
 }
 function addCommonWords() {
-    var url = basePath + "/task/commonwords/create";
+    var url = basePath + "/task/commonwords/show";
    // tipsWindown("添加门店", "url:post?" + url, "960", "600", "true", "", "true", "");
-    easyUIWindow($("#win"),"添加门店",   url,  960, 600, true, true, true);
+    easyUIWindow($("#win"),"添加常用语",   url,  960, 600, true, true, true);
 }
 
 

@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.upbest.mvc.entity.BCommonWords;
+import com.upbest.mvc.vo.CommonWordsVO;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -75,13 +77,48 @@ public class TaskController {
     }
     @ResponseBody
     @RequestMapping(value = "/commonwords/list")
-    public String commonwordsList(Model model) {
-        return "/task/commonwords";
+    public void commonwordsList(
+            @RequestParam(value = "sidx", required = false) String sidx,
+            @RequestParam(value = "sord", required = false) String sord,@RequestParam(value = "page", required = false) Integer page,
+                                   @RequestParam(value = "rows", required = false) Integer pageSize,
+                                   @RequestParam(value = "taskTypeId", required = false) String taskTypeId,HttpServletResponse response) {
+        List<Order> orders=new ArrayList<Order>();
+        orders.add(new Order(Direction.fromString(sord),sidx));
+        Sort so=new Sort(orders);
+        PageRequest requestPage = new PageRequest(page != null ? page.intValue() - 1 : 0, pageSize, so);
+        Page<Object[]> commonWordsList = taskService.findCommonWordsList(taskTypeId,requestPage);
+        PageModel result = new PageModel();
+        result.setPage(page);
+        result.setRows(getCommonWordsVOInfo(commonWordsList.getContent()));
+        result.setPageSize(pageSize);
+        result.setRecords(NumberUtils.toInt(ObjectUtils.toString(commonWordsList.getTotalElements())));
+        String json = com.alibaba.fastjson.JSON.toJSONStringWithDateFormat(result, "yyyy-MM-dd HH:mm:ss", SerializerFeature.WriteMapNullValue);
+        outPrint(json, response);
     }
-
-
-
-
+    //打开常用语页面
+    @RequestMapping(value = "/commonwords/show")
+    public String showCommonWords(String id, Model model) {
+        if(StringUtils.isNotBlank(id)){
+            CommonWordsVO  commonWordsVO = taskService.getCommonWordsById(Integer.parseInt(id));
+            model.addAttribute("commonwords",commonWordsVO);
+        }
+        return "/task/addCommonWords";
+    }
+    @ResponseBody
+    @RequestMapping(value = "/commonwords/save")
+    public void saveCommonWords(CommonWordsVO vo,HttpSession session, HttpServletResponse response) {
+        Buser user = (Buser)session.getAttribute("buser");
+        vo.setUser(user.getName());
+        BCommonWords commonWords = taskService.saveCommonWords(vo);
+        String json = com.alibaba.fastjson.JSON.toJSONStringWithDateFormat(commonWords, "yyyy-MM-dd HH:mm:ss", SerializerFeature.WriteMapNullValue);
+        outPrint(json, response);
+    }
+    @ResponseBody
+    @RequestMapping(value = "/commonwords/del")
+    public void delCommonWords(@RequestParam(value="id" ,required = true)Integer id,HttpSession session, HttpServletResponse response) {
+        taskService.deleteCommonWordsById(id);
+        outPrint("0", response);
+    }
     @ResponseBody
     @RequestMapping("/detail")
     public void detail(@RequestParam(value = "id", required = false) String id, Model model, HttpServletResponse response, HttpServletRequest request) {
@@ -103,7 +140,7 @@ public class TaskController {
             @RequestParam(value = "userName", required = false) String uName,
             @RequestParam(value = "sDate", required = false) String sDate,
             @RequestParam(value = "page", required = false) Integer page,
-            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "rows", required = false) Integer pageSize,
             @RequestParam(value = "sidx", required = false) String sidx,
             @RequestParam(value = "sord", required = false) String sord,
             Model model, HttpSession session, HttpServletResponse response) {
@@ -183,7 +220,22 @@ public class TaskController {
         String json = com.alibaba.fastjson.JSON.toJSONStringWithDateFormat(userList, "yyyy-MM-dd HH:mm:ss", SerializerFeature.WriteMapNullValue);
         outPrint(json, response);
     }
+    private List<CommonWordsVO> getCommonWordsVOInfo(List<Object[]> list){
+        List<CommonWordsVO> result = new ArrayList<CommonWordsVO>();
 
+        if (!CollectionUtils.isEmpty(list)) {
+            CommonWordsVO entity = null;
+            for (Object[] obj : list) {
+                entity = new CommonWordsVO();
+                entity.setId(DataType.getAsString(obj[0]));
+                entity.setTaskTypeId(DataType.getAsString(obj[1]));
+                entity.setContent(DataType.getAsString(obj[2]));
+                entity.setTaskTypeName(DataType.getAsString(obj[3]));
+                result.add(entity);
+            }
+        }
+        return result;
+    }
     private List<TaskVO> getTaskInfo(List<Object[]> list) {
         List<TaskVO> result = new ArrayList<TaskVO>();
         if (!CollectionUtils.isEmpty(list)) {

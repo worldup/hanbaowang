@@ -7,8 +7,26 @@ import java.io.Serializable;
  */
 public class CommonWordsVO implements Serializable {
     private String id;
+    private String taskTypeName;
     private String taskTypeId;
     private String content;
+    private String user;
+
+    public String getTaskTypeName() {
+        return taskTypeName;
+    }
+
+    public void setTaskTypeName(String taskTypeName) {
+        this.taskTypeName = taskTypeName;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
 
     public String getId() {
         return id;

@@ -1,10 +1,14 @@
 package com.upbest.mvc.service.impl;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.inject.Inject;
 
+import com.upbest.mvc.entity.*;
+import com.upbest.mvc.repository.factory.BCommonWordsRespository;
 import com.upbest.mvc.service.*;
 import com.upbest.mvc.vo.CommonWordsVO;
 import org.apache.commons.lang.StringUtils;
@@ -12,14 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import com.upbest.mvc.entity.BMessage;
-import com.upbest.mvc.entity.BWorkInfo;
-import com.upbest.mvc.entity.BWorkType;
-import com.upbest.mvc.entity.Buser;
 import com.upbest.mvc.repository.factory.TaskRespository;
 import com.upbest.mvc.repository.factory.UserRespository;
 import com.upbest.mvc.repository.factory.WorkRespository;
@@ -33,6 +35,7 @@ import com.upbest.utils.PageModel;
 public class TaskServiceImpl implements ITaskService {
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
+
     @Autowired
     private DBChooser dbChooser;
     @Inject
@@ -43,6 +46,8 @@ public class TaskServiceImpl implements ITaskService {
 
     @Autowired
     private WorkRespository workRespository;
+    @Autowired
+    private BCommonWordsRespository commonWordsRespository;
 
     @Autowired
     private CommonDaoCustom<Object[]> common;
@@ -54,11 +59,11 @@ public class TaskServiceImpl implements ITaskService {
     public BWorkInfo findById(Integer id) {
         return taskRepository.findOne(id);
     }
-   public   void setWorkHidden(Integer id,String hidden){
+   public   void setWorkHidden(final Integer id,   final String hidden){
        Map map=new HashMap();
-       map.put("id",id);
-       map.put("hidden",hidden);
-       jdbcTemplate.update("update bk_work_info set ishidden=:hidden where id=:id",map);
+       map.put("ishidden",hidden);
+       map.put("id", id);
+       jdbcTemplate.update("update bk_work_info set ishidden= :ishidden where id= :id", map);
    }
     @Override
     public Page<Object[]> findWorkList(Buser user, String typeName,String uName,String sDate, Pageable pageable) {
@@ -343,7 +348,8 @@ public class TaskServiceImpl implements ITaskService {
         sql.append("      on shop.id = t.store_id            ");
         sql.append("    where 1=1                  ");
         if (0 != userId) {
-            sql.append(" and (t.execute_id = ?) ");
+            sql.append(" and (t.execute_id = ? or t.user_id= ?) ");
+            params.add(userId);
             params.add(userId);
         }
         if (0 != date) {
@@ -466,9 +472,10 @@ public class TaskServiceImpl implements ITaskService {
         sql.append("    left join bk_shop_info shop          ");
         sql.append("      on shop.id = t.store_id            ");
         sql.append("    where 1=1                  ");
-        if (0 != userId) {
-            //sql.append(" and (t.user_id = ? or t.execute_id = ?) ");
-        	sql.append(" and ( t.execute_id = ?) ");
+        if (null!=userId&&0 != userId) {
+            sql.append(" and (t.user_id = ? or t.execute_id = ?) ");
+        	//sql.append(" and ( t.execute_id = ?) ");
+            params.add(userId);
             params.add(userId);
         }
         if (StringUtils.isNotBlank(month)) {
@@ -490,14 +497,67 @@ public class TaskServiceImpl implements ITaskService {
         sql.append(" order by t.id desc ");
         return getRows(common.queryBySql(sql.toString(), params));
     }
+    @Override
+    public  CommonWordsVO  getCommonWordsById(Integer id){
+        StringBuilder sb=new StringBuilder();
+        sb.append("select * from bk_common_words where id= :id");
+        Map<String,Integer> map=new HashMap();
+        map.put("id",id);
+        return jdbcTemplate.queryForObject(sb.toString(),map,BeanPropertyRowMapper.newInstance(CommonWordsVO.class));
+    }
+    @Override
+    public  void deleteCommonWordsById(Integer id){
+        StringBuilder sb=new StringBuilder();
+        sb.append("delete from bk_common_words where id= :id");
+        Map<String,Integer> map=new HashMap();
+        map.put("id",id);
+        jdbcTemplate.update(sb.toString(),map);
+    }
+    @Override
 
+    public BCommonWords  saveCommonWords(CommonWordsVO vo){
+        BCommonWords commonWords=new BCommonWords();
+        String id=vo.getId();
+        String content=vo.getContent();
+        String taskTypeId=vo.getTaskTypeId();
+        commonWords.setContent(vo.getContent());
+        if(StringUtils.isNotBlank(content)){
+            commonWords.setContent(content);
+        }
+        if(StringUtils.isNotBlank(taskTypeId)){
+            commonWords.setTaskTypeId(Integer.parseInt(taskTypeId));
+        }
+        if(StringUtils.isNotBlank(id)){
+            commonWords.setId(Integer.parseInt(id));
+        }
+        commonWords.setUpdateTime(new Date());
+        commonWords.setCreateTime(new Date());
+        commonWords.setCreateUser(vo.getUser());
+        commonWords.setUpdateUser(vo.getUser());
+        return  commonWordsRespository.saveAndFlush(commonWords);
+
+    }
+    @Override
+    public Page<Object[]> findCommonWordsList(String taskTypeId, Pageable pageable){
+        StringBuilder sb=new StringBuilder();
+         List params=new ArrayList();
+        sb.append("select t.id,t.task_type_id,t.content,u.type_name from bk_common_words t left join bk_work_type u on t.task_type_id=u.id");
+        if(StringUtils.isNotBlank(taskTypeId)&&!taskTypeId.equals("-1")){
+            sb.append(" where task_type_id = ?");
+            params.add(taskTypeId);
+        }
+        return common.queryBySql(sb.toString(), params, pageable);
+    }
     @Override
     public List<CommonWordsVO> getCommonWordsByTaskType(String taskType) {
         StringBuilder sb=new StringBuilder();
-        sb.append("select * from bk_common_words where task_type_id = :task_type_id");
         Map<String ,String> params=new HashMap();
-        params.put("task_type_id",taskType);
-         return  jdbcTemplate.query(sb.toString(), params,  BeanPropertyRowMapper.newInstance(CommonWordsVO.class) );
+        sb.append("select * from bk_common_words ");
+        if(StringUtils.isNotBlank(taskType)){
+            sb.append(" where task_type_id = :task_type_id");
+            params.put("task_type_id",taskType);
+        }
+        return  jdbcTemplate.query(sb.toString(), params,  BeanPropertyRowMapper.newInstance(CommonWordsVO.class) );
     }
 
     public int countWorkInfo(Integer userId, Integer workTypeId,Date beginTime,int frequency){

@@ -14,6 +14,6 @@
         <property name="timeBetweenEvictionRunsMillis" value="1800000" />
         <property name="numTestsPerEvictionRun" value="3" />
         <property name="minEvictableIdleTimeMillis" value="1800000" />
-        <property name="defaultAutoCommit" value="false" />
+        <property name="defaultAutoCommit" value="true" />
     </bean>
 </beans>

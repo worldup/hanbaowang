@@ -55,7 +55,25 @@
 <script type="text/javascript">
 
     $(document).ready(function(){
+        $.ajax({
+            async : false,
+            type : 'post',
+            url : basePath + "/task/loadTask",
+            dataType : "json",
+            cache : false,
+            error : function(err) {
+                alert("系统出错了，请联系管理员！");
+            },
+            success : function(data) {
+                $('#type').empty();
+                var html='<option value="-1">---请选择---</option>';
+                $.each(data,function(i, value) {
+                    html+="<option valueid="+value.related+" value="+value.value+">"+value.name+"</option>";
+                });
+                $('#type').append(html);
 
+            }
+        });
         $("#searchBtn").bind("click",function(){
             $("#gridTableStore").setGridParam({page:1}).jqGrid().trigger("reloadGrid");
         });
