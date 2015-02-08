@@ -78,6 +78,10 @@ public class TaskController {
     public String commonwordsList(Model model) {
         return "/task/commonwords";
     }
+
+
+
+
     @ResponseBody
     @RequestMapping("/detail")
     public void detail(@RequestParam(value = "id", required = false) String id, Model model, HttpServletResponse response, HttpServletRequest request) {

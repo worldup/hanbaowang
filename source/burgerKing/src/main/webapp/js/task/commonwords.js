@@ -76,14 +76,14 @@ function showStoreUpload() {
 }
 // 查看
 function detail(id) {
-    var url = basePath + "/store/get?id=" + id;
+    var url = basePath + "/task/commonwords/get?id=" + id;
    // tipsWindown("查看门店", "url:post?" + url, "960", "600", "true", "", "true", "");
     easyUIWindow($("#win"),"查看门店",   url,  960, 600, true, true, true);
 
 }
 // 修改
 function modify(id) {
-    var url = basePath + "/store/create?id=" + id;
+    var url = basePath + "/task/commonwords/create?id=" + id;
     //tipsWindown("修改门店", "url:post?" + url, "960", "600", "true", "", "true", "");
     easyUIWindow($("#win"),"修改门店",   url,  960, 600, true, true, true);
 }
@@ -93,7 +93,7 @@ function del(id) {
         $.ajax({
             async: false,
             type: 'post',
-            url: basePath + "/store/del",
+            url: basePath + "/task/commonwords/del",
             data: {
                 "id": id
             },
@@ -111,18 +111,11 @@ function del(id) {
         });
     }
 }
-function addStore() {
-    var url = basePath + "/store/create";
+function addCommonWords() {
+    var url = basePath + "/task/commonwords/create";
    // tipsWindown("添加门店", "url:post?" + url, "960", "600", "true", "", "true", "");
     easyUIWindow($("#win"),"添加门店",   url,  960, 600, true, true, true);
 }
 
-function viewReport(id) {
-    var url = basePath + "/shopRe/index?shopId=" + id;
-    tipsWindown("查看报表", "url:post?" + url, "960", "600", "true", "", "true", "");
-}
 
-function bind(id) {
-    var url = basePath + "/store/bind?id=" + id;
-    tipsWindown("绑定beacon设备", "url:post?" + url, "660", "400", "true", "", "true", "");
-}
+

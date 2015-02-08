@@ -13,7 +13,7 @@
         <tr>
             <td>
                 <div class="qjact_btn clearfix">
-                    <a class="green" name="addStore" id="addStore" onclick="addStore();" href="javascript:void(0)"><span>新增</span></a>
+                    <a class="green" name="addCommonWords" id="addCommonWords" onclick="addCommonWords();" href="javascript:void(0)"><span>新增</span></a>
 
                 </div>
             </td>
