@@ -259,6 +259,17 @@ public class TaskAPIController {
                 list.addAll(splitBatchStoreTask(map));
             }
             list = service.saveTasks(list);
+            for(BWorkInfo workInfo:list){
+                if( "1".equals(workInfo.getIsSelfCreate())){
+                    //委派需立即推送一条任务消息
+                    try{
+                        doPushTaskMessage(workInfo);
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
+            }
             if(isExistSameWork){
                 result.setCode(Code.EXIST_SAME_TASK_CODE);
                 result.setSuccess(false);
@@ -318,10 +329,16 @@ public class TaskAPIController {
                    taskInfo.setUseimg(DataType.getAsString(map.get("useImg")));
                    taskInfo.setUsetext(DataType.getAsString(map.get("useText")));
                    taskInfo.setIshidden(DataType.getAsString(map.get("ishidden")));
-                   if(DataType.getAsString(map.get("isSelfCreate")).equals("1")){
+                  /** 注释 lili 此时还没生成任务，不要推送 20150208
+                   * if(DataType.getAsString(map.get("isSelfCreate")).equals("1")){
                        //委派需立即推送一条任务消息
-                       doPushTaskMessage(taskInfo);
-                   }
+                       try{
+                           doPushTaskMessage(taskInfo);
+                       }catch(Exception e){
+                           e.printStackTrace();
+                       }
+
+                   }**/
                    // if (!service.isExistSameTask(taskInfo.getUserid(), taskInfo.getWorktypeid(), taskInfo.getStarttime())) {
                    // 不存在相同任务类型的任务
                    bWorkInfoList.add(taskInfo);
