@@ -9,16 +9,15 @@ import java.sql.Types;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.inject.Inject;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
+import com.google.gson.Gson;
 import com.upbest.mvc.service.DBChooser;
+import com.upbest.mvc.vo.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,10 +59,6 @@ import com.upbest.mvc.repository.factory.UserRespository;
 import com.upbest.mvc.service.CommonDaoCustom;
 import com.upbest.mvc.service.IBuserService;
 import com.upbest.mvc.service.IStoreService;
-import com.upbest.mvc.vo.BShopInfoVO;
-import com.upbest.mvc.vo.BshopStatisticVO;
-import com.upbest.mvc.vo.BuserVO;
-import com.upbest.mvc.vo.TaskDetailVO;
 import com.upbest.utils.DataType;
 import com.upbest.utils.ExcelUtils;
 
@@ -73,7 +68,8 @@ public class StoreServiceImpl implements IStoreService {
     private DBChooser dbChooser;
     @Autowired
     private JdbcTemplate coreJdbcTemplate;
-
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     @Inject
     protected StoreRespository storeRepository;
 
@@ -1275,11 +1271,25 @@ public class StoreServiceImpl implements IStoreService {
 
         }
     }
+    public List<SimpleSignInfoVO> getLastThreeSignInfoByShopNum(final String shopNum){
+        StringBuilder sb=new StringBuilder();
+        sb.append("select si.sign_in_time,u.id user_id ,u.`name` user_name,sp.id shop_id,sp.shop_num   from  bk_sign_info si left join bk_shop_info sp \n" +
+                "on sp.id=si.shop_id \n" +
+                "left join bk_user u\n" +
+                "on si.user_id=u.id\n" +
+                "where sp.shop_num= :shop_num\n" +
+                "order by sign_in_time DESC\n" +
+                "limit 3");
+        Map<String,String> params=new HashMap();
+        params.put("shop_num",shopNum);
+        List<SimpleSignInfoVO> simpleSignInfoVOList=namedParameterJdbcTemplate.query(sb.toString(),params,new BeanPropertyRowMapper(SimpleSignInfoVO.class));
+        return simpleSignInfoVOList;
+    }
 
-    public Map<String, Object> findStoreMapBaseInfo(final String shopId) {
+    public Map<String, Object> findStoreMapBaseInfo(final String shopNum) {
         SimpleJdbcCall simpleJdbcCall = new SimpleJdbcCall(coreJdbcTemplate);
         Map<String, Object> map = new HashMap();
-        map.put("i_shop_num", shopId);
+        map.put("i_shop_num", shopNum);
         Map<String, Object> outValues = simpleJdbcCall.withProcedureName("getBaseInfo").declareParameters(
                 new SqlParameter("i_shop_num", Types.VARCHAR),
                 new SqlOutParameter("o_sale_mtd", Types.VARCHAR),
@@ -1300,6 +1310,24 @@ public class StoreServiceImpl implements IStoreService {
                 new SqlOutParameter("o_nps_signed", Types.VARCHAR),
                 new SqlOutParameter("o_CASH_AUDIT", Types.VARCHAR)
         ).execute(map);
+        if(outValues==null){
+            outValues=new HashMap();
+        }
+        List<SimpleSignInfoVO> lastSignInfos=getLastThreeSignInfoByShopNum(shopNum);
+        Gson gson=new Gson();
+        String lastSignInfosStr=gson.toJson(lastSignInfos);
+        outValues.put("lastSignInfos",lastSignInfosStr);
+        outValues= Maps.transformEntries(outValues, new Maps.EntryTransformer<String, Object, Object>() {
+            @Override
+            public Object transformEntry(String s, Object o) {
+                if(o==null||"".equals(o)){
+                    return "N/A";
+                }
+                return o;
+            }
+        });
+
+
         return outValues;
     }
 
