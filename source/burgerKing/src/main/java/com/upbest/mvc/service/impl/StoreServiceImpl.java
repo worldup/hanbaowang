@@ -2,30 +2,30 @@ package com.upbest.mvc.service.impl;
 
 import java.io.File;
 import java.math.BigDecimal;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.sql.Types;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.upbest.mvc.service.DBChooser;
-import com.upbest.mvc.vo.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.jdbc.core.*;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.SqlOutParameter;
+import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Service;
@@ -57,8 +57,14 @@ import com.upbest.mvc.repository.factory.StoreUserRespository;
 import com.upbest.mvc.repository.factory.TestPaperRespository;
 import com.upbest.mvc.repository.factory.UserRespository;
 import com.upbest.mvc.service.CommonDaoCustom;
+import com.upbest.mvc.service.DBChooser;
 import com.upbest.mvc.service.IBuserService;
 import com.upbest.mvc.service.IStoreService;
+import com.upbest.mvc.vo.BShopInfoVO;
+import com.upbest.mvc.vo.BshopStatisticVO;
+import com.upbest.mvc.vo.BuserVO;
+import com.upbest.mvc.vo.SimpleSignInfoVO;
+import com.upbest.mvc.vo.TaskDetailVO;
 import com.upbest.utils.DataType;
 import com.upbest.utils.ExcelUtils;
 
@@ -1271,24 +1277,26 @@ public class StoreServiceImpl implements IStoreService {
 
         }
     }
-    public List<SimpleSignInfoVO> getLastThreeSignInfoByShopNum(final String shopNum){
-        StringBuilder sb=new StringBuilder();
-        sb.append("select si.sign_in_time,u.id user_id ,u.`name` user_name,sp.id shop_id,sp.shop_num   from  bk_sign_info si left join bk_shop_info sp \n" +
+
+    public List<SimpleSignInfoVO> getLastThreeSignInfoByShopNum(final String shopNum) {
+        Map<String, String> params = new HashMap<>();
+        params.put("shop_num", shopNum);
+        String s = "select si.sign_in_time,u.id user_id ,u.`name` user_name,sp.id shop_id,sp.shop_num\n" +
+                "from  bk_sign_info si left join bk_shop_info sp \n" +
                 "on sp.id=si.shop_id \n" +
                 "left join bk_user u\n" +
                 "on si.user_id=u.id\n" +
                 "where sp.shop_num= :shop_num\n" +
                 "order by sign_in_time DESC\n" +
-                "limit 3");
-        Map<String,String> params=new HashMap();
-        params.put("shop_num",shopNum);
-        List<SimpleSignInfoVO> simpleSignInfoVOList=namedParameterJdbcTemplate.query(sb.toString(),params,new BeanPropertyRowMapper(SimpleSignInfoVO.class));
+                "limit 3";
+        List<SimpleSignInfoVO> simpleSignInfoVOList = namedParameterJdbcTemplate.query(s, params,
+                new BeanPropertyRowMapper<>(SimpleSignInfoVO.class));
         return simpleSignInfoVOList;
     }
 
     public Map<String, Object> findStoreMapBaseInfo(final String shopNum) {
         SimpleJdbcCall simpleJdbcCall = new SimpleJdbcCall(coreJdbcTemplate);
-        Map<String, Object> map = new HashMap();
+        Map<String, Object> map = new HashMap<>();
         map.put("i_shop_num", shopNum);
         Map<String, Object> outValues = simpleJdbcCall.withProcedureName("getBaseInfo").declareParameters(
                 new SqlParameter("i_shop_num", Types.VARCHAR),
@@ -1310,25 +1318,24 @@ public class StoreServiceImpl implements IStoreService {
                 new SqlOutParameter("o_nps_signed", Types.VARCHAR),
                 new SqlOutParameter("o_CASH_AUDIT", Types.VARCHAR)
         ).execute(map);
-        if(outValues==null){
-            outValues=new HashMap();
-        }
-        List<SimpleSignInfoVO> lastSignInfos=getLastThreeSignInfoByShopNum(shopNum);
-        Gson gson=new Gson();
-        String lastSignInfosStr=gson.toJson(lastSignInfos);
-        outValues.put("lastSignInfos",lastSignInfosStr);
-        outValues= Maps.transformEntries(outValues, new Maps.EntryTransformer<String, Object, Object>() {
-            @Override
-            public Object transformEntry(String s, Object o) {
-                if(o==null||"".equals(o)){
-                    return "N/A";
+        Map<String, Object> returnMap = new HashMap<>();
+        if (outValues != null) {
+            outValues = Maps.transformEntries(outValues, new Maps.EntryTransformer<String, Object, Object>() {
+                @Override
+                public Object transformEntry(String s, Object o) {
+                    if (o == null || "".equals(o)) {
+                        return "N/A";
+                    }
+                    return o;
                 }
-                return o;
-            }
-        });
+            });
+            returnMap.putAll(outValues);
+        }
+        List<SimpleSignInfoVO> lastSignInfos = getLastThreeSignInfoByShopNum(shopNum);
 
+        returnMap.put("lastSignInfos", lastSignInfos);
 
-        return outValues;
+        return returnMap;
     }
 
 }
