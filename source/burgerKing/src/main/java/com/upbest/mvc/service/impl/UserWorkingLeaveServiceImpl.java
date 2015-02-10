@@ -6,6 +6,7 @@ import com.upbest.mvc.service.IUserWorkingLeaveService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -36,5 +37,15 @@ public class UserWorkingLeaveServiceImpl implements IUserWorkingLeaveService {
     @Override
     public void delUserWorkingLeave(Integer id) {
         respository.delete(id);
+    }
+    @Override
+    public void delUserWorkingLeaveBatch(List<Integer> ids){
+        List<UserWorkingLeave> leaves=new ArrayList();
+        for(Integer id:ids){
+            UserWorkingLeave leave=new UserWorkingLeave();
+            leave.setId(id);
+            leaves.add(leave);
+        }
+        respository.deleteInBatch(leaves);
     }
 }

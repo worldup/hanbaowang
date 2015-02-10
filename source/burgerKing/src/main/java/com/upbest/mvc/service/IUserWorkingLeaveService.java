@@ -13,5 +13,6 @@ public interface IUserWorkingLeaveService {
      public List<UserWorkingLeave>  queryUserWorkingLeave(Integer userId,Date beginTime,Date endTime);
     public  void updateUserWorkingLeave(UserWorkingLeave userWorkingLeave);
     public void delUserWorkingLeave(Integer id);
+    public void delUserWorkingLeaveBatch(List<Integer> id);
 
 }
