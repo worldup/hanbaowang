@@ -1316,6 +1316,7 @@ public class StoreServiceImpl implements IStoreService {
                 new SqlOutParameter("o_Guest_Trac_NPS", Types.VARCHAR),
                 new SqlOutParameter("o_Guest_Trac_RANK", Types.VARCHAR),
                 new SqlOutParameter("o_nps_signed", Types.VARCHAR),
+                new SqlOutParameter("o_rev_over_grade", Types.VARCHAR),
                 new SqlOutParameter("o_CASH_AUDIT", Types.VARCHAR)
         ).execute(map);
         Map<String, Object> returnMap = new HashMap<>();
