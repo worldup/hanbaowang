@@ -30,7 +30,7 @@ public class UserWorkingLeaveController {
     @ResponseBody
     public Json addUserWorkingTime(UserWorkingLeave userWorkingTime,HttpServletRequest req) {
         Json result = new Json();
-        iUserWorkingTimeService.addUserWorkingTime(Lists.newArrayList(userWorkingTime));
+        iUserWorkingTimeService.addUserWorkingLeave(userWorkingTime);
         result.setCode(com.upbest.mvc.constant.Constant.Code.SUCCESS_CODE);
         result.setMsg("保存成功");
         result.setSuccess(true);
@@ -42,7 +42,7 @@ public class UserWorkingLeaveController {
     @ResponseBody
     public Json queryUserWorkingTime(HttpServletRequest req) {
         Json result = new Json();
-        iUserWorkingTimeService.queryUserWorkingTime(1,new Date(),new Date());
+        iUserWorkingTimeService.queryUserWorkingLeave(1,new Date(),new Date());
         Json j = Constant.convertJson(req);
         JSONObject o = (JSONObject) j.getObj();
 
