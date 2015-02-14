@@ -62,10 +62,10 @@ public class CheckTodayTask implements SchedulerTask {
         List<Object> params = new ArrayList<Object>();
         sql.append("select * from bk_work_info where ");
         if(dbChooser.isSQLServer()){
-            sql.append(" DATEDIFF(dd, w.starttime, GETDATE()) = 0 ");
+            sql.append(" DATEDIFF(dd, w.start_time, GETDATE()) = 0 ");
         }
         else{
-            sql.append( "TIMESTAMPDIFF(day,w.starttime,now())= 0 ");
+            sql.append( "TIMESTAMPDIFF(day,w.start_time,now())= 0 ");
         }
         sql.append(" and (w.state='0' or w.state is null)");
 

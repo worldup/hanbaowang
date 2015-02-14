@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.google.gson.Gson;
 import com.upbest.mvc.constant.*;
 import com.upbest.mvc.service.*;
 import com.upbest.mvc.vo.*;
@@ -889,5 +890,12 @@ private ISpringJdbcService jdbcService;
         result.setCode(com.upbest.mvc.constant.Constant.Code.SUCCESS_CODE);
         result.setSuccess(true);
         return result;
+    }
+    @RequestMapping(value="/listShop4Combobox")
+    @ResponseBody
+    public String listShop4Combobox(HttpServletRequest req){
+        Gson gson=new Gson();
+        List<Map<String,Object>> list= storeService.listShop4Combobox();
+        return gson.toJson(list);
     }
 }

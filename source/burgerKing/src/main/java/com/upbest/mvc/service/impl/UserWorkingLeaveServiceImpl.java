@@ -26,7 +26,7 @@ public class UserWorkingLeaveServiceImpl implements IUserWorkingLeaveService {
 
     @Override
     public List<UserWorkingLeave> queryUserWorkingLeave(Integer userId, Date beginTime, Date endTime) {
-         return   respository.findByUserIdAndDayBetween(userId, beginTime, endTime);
+         return   respository.findByUserIdAndStartTimeBetween(userId, beginTime, endTime);
     }
 
     @Override

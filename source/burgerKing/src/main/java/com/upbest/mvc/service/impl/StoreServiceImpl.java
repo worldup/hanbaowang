@@ -1194,7 +1194,12 @@ public class StoreServiceImpl implements IStoreService {
         sql.append("         t.shop_id,                                   ");
         sql.append("         t.shop_name,                                 ");
         sql.append("         t.tc,                                        ");
-        sql.append("         convert(datetime, t.month + '01')            ");
+        if(dbChooser.isSQLServer()){
+            sql.append("         convert(datetime, t.month + '01')            ");
+        }
+        else{
+            sql.append("        STR_TO_DATE( CONCAT(t. MONTH,'01')  ,'%Y%m%d')          ");
+        }
         sql.append("    from bk_shop_statistic_TEMP t                     ");
         List<Object[]> list = common.queryBySql(sql.toString(), new ArrayList<>());
         if (!CollectionUtils.isEmpty(list)) {
@@ -1338,5 +1343,9 @@ public class StoreServiceImpl implements IStoreService {
 
         return returnMap;
     }
-
+@Override
+    public List<Map<String,Object>> listShop4Combobox(){
+      String sql="select id,shop_name,shop_num  from bk_shop_info  ";
+      return  namedParameterJdbcTemplate.queryForList(sql,new HashMap());
+    }
 }

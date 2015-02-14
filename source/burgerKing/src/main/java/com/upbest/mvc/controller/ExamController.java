@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.upbest.pageModel.Json;
+import com.upbest.utils.Constant;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -44,6 +46,8 @@ public class ExamController {
     
     @Autowired
     IExamSerivce examService;
+    @Autowired
+    com.upbest.mvc.service.IExamService iExamSerivce;
     @Inject
     protected ExamRespository examRespository;
     @RequestMapping(value = "/index")
@@ -132,5 +136,56 @@ public class ExamController {
         BExamRefer exam = examService.findById(Integer.parseInt(id));
         model.addAttribute("exam",exam);
         return "/bexam/getExam";
+    }
+    @RequestMapping(value = "/findRepeatLostScoreItem")
+    @ResponseBody
+    public Json securi_findRepeatLostScoreItem(Integer shopId,HttpServletRequest req) throws Exception {
+        Json result = new Json();
+
+
+        if (shopId == null) {
+            result.setCode(com.upbest.mvc.constant.Constant.Code.NULL_CODE);
+            result.setMsg("门店编号为空");
+            result.setObj(null);
+            result.setSuccess(false);
+            return result;
+        }
+        try {
+            result.setObj(iExamSerivce.findRepeatLostScoreItem(shopId));
+            result.setCode(com.upbest.mvc.constant.Constant.Code.SUCCESS_CODE);
+            result.setMsg("获取成功");
+            result.setSuccess(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(com.upbest.mvc.constant.Constant.Code.ILLEGAL_CODE);
+            result.setMsg("获取失败");
+            result.setSuccess(false);
+        }
+        return result;
+    }
+    @RequestMapping(value = "/findLastExamScore")
+    @ResponseBody
+    public Json securi_findLastExamScore(Integer shopId,Integer examType, HttpServletRequest req) throws Exception {
+        Json result = new Json();
+
+
+        if (shopId == null || examType == null) {
+            result.setCode(com.upbest.mvc.constant.Constant.Code.NULL_CODE);
+            result.setMsg("shopId,examType为空");
+            result.setObj(null);
+            result.setSuccess(false);
+            return result;
+        }
+        try {
+            result.setObj(iExamSerivce.findLastExamScore(shopId, examType));
+            result.setCode(com.upbest.mvc.constant.Constant.Code.SUCCESS_CODE);
+            result.setMsg("获取成功");
+            result.setSuccess(true);
+        } catch (Exception e) {
+            result.setCode(com.upbest.mvc.constant.Constant.Code.ILLEGAL_CODE);
+            result.setMsg("获取失败");
+            result.setSuccess(false);
+        }
+        return result;
     }
 }

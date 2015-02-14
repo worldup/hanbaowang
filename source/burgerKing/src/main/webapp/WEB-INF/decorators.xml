@@ -36,6 +36,7 @@
 		<pattern>/toolbox/index</pattern>
 		<pattern>/examManager/loseSts/index</pattern>
 		<pattern>/date/index</pattern>
+		<pattern>/xianjinjihe/index</pattern>
 	</decorator>
 	
 </decorators>

@@ -11,5 +11,5 @@ import java.util.List;
  */
 public interface UserWorkingLeaveRespository extends JpaRepository<UserWorkingLeave,Integer> {
     List<UserWorkingLeave> findByUserId(Integer userId);
-    List<UserWorkingLeave> findByUserIdAndDayBetween(Integer userId,Date startDay,Date endDay);
+    List<UserWorkingLeave> findByUserIdAndStartTimeBetween(Integer userId,Date startDay,Date endDay);
 }

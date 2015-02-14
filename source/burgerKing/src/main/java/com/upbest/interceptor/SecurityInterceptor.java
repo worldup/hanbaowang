@@ -67,7 +67,7 @@ public class SecurityInterceptor implements HandlerInterceptor {
 		if (user == null || user.getId() == null) {// 如果没有登录或登录超时
 			/*request.setAttribute("msg", "您还没有登录或登录已超时，请重新登录，然后再刷新本功能！");
 			request.getRequestDispatcher("/").forward(request, response);*/
-			response.sendRedirect("/");
+			response.sendRedirect(request.getContextPath()+"/");
 			return false;
 		}
         return true;

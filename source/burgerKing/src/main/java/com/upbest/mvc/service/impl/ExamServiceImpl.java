@@ -453,8 +453,10 @@ public class ExamServiceImpl implements IExamService {
         int examType = list.get(0).getId();
         List<Integer> examIds = getExamIds(examType);
         Integer lastTestPaperId = findLastTestPaperId(shopId, examIds);
-
-        return findLostItems(lastTestPaperId);
+        if(lastTestPaperId!=null){
+            return findLostItems(lastTestPaperId);
+        }
+        return new ArrayList();
     }
 
     private List<String> findLostItems(Integer testPaperId) {
@@ -473,9 +475,9 @@ public class ExamServiceImpl implements IExamService {
         sql.append("   where 1=1                                                                  ");
         sql.append("   and q.id in(select q.id                                                    ");
         sql.append("     from (select d.* from bk_test_paper_detail d where d.t_id = ?) d       ");
-        sql.append("     join bk_question q                                                       ");
+        sql.append("     join bk_question q    on d.q_id = q.id                                                   ");
         sql.append("     join bk_ex_base_info bi                                                  ");
-        sql.append("       on bi.id = q.q_module on d.q_id = q.id and bi.is_key='1'               ");
+        sql.append("       on bi.id = q.q_module  and bi.is_key='1'               ");
         sql.append("      and ( q.q_value = 0)                                                    ");
         sql.append("   )                                                                          ");
         sql.append("   and tp.id=?                                                            ");

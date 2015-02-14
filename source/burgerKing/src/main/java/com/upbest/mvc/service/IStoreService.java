@@ -73,4 +73,6 @@ public interface IStoreService {
 	BShopInfo findByShopNum(String shopNum);
     //地图小黑框
     Map<String ,Object > findStoreMapBaseInfo(String shopId);
+    //构造门店下拉列表
+    List<Map<String,Object>> listShop4Combobox();
 }

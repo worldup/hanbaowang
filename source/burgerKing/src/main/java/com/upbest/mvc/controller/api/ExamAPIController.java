@@ -331,6 +331,7 @@ public class ExamAPIController {
             result.setMsg("获取成功");
             result.setSuccess(true);
         } catch (Exception e) {
+           e.printStackTrace();
             result.setCode(Code.ILLEGAL_CODE);
             result.setMsg("获取失败");
             result.setSuccess(false);

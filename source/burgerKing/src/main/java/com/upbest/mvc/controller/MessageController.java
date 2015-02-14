@@ -179,7 +179,8 @@ public class MessageController {
     
     @ResponseBody
     @RequestMapping("/add")
-    public void addMessage(@RequestParam(value = "jsons", required = false) String vo, HttpServletRequest req, HttpSession session){
+    public void addMessage(@RequestParam(value = "jsons", required = false) String vo, HttpServletRequest req, HttpServletResponse response, HttpSession session){
+        String jsonString = new String();
         BMessage message = new BMessage();
         BMessageVO messageVo = new BMessageVO();
         JSONObject jso = JSONObject.parseObject(vo);
@@ -225,6 +226,8 @@ public class MessageController {
             message.setReceiverId(userList.get(2).getId());
         }
         messageService.saveBMessage(message);
+        String json = com.alibaba.fastjson.JSON.toJSONStringWithDateFormat(jsonString, "yyyy-MM-dd HH:mm:ss", SerializerFeature.WriteMapNullValue);
+        outPrint(json, response);
     }
     
     @ResponseBody
