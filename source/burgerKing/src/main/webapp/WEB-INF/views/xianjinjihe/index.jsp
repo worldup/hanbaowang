@@ -57,7 +57,7 @@
                         <input   style="display:inline-block;width: 180px" type="text" name="lostGradeNum" id="lostGradeNum"  class="easyui-validatebox" data-options="validType:'string'">
                     </td>
                     <td>
-                            <a href='#' data-options="iconCls:'icon-save'" class='easyui-linkbutton' onclick='btn()'>保存</a>
+                            <a href='#' id="saveBtn" data-options="iconCls:'icon-save'" class='easyui-linkbutton' >保存</a>
                     </td>
                 </tr>
 
@@ -83,12 +83,19 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function(){
-        formatterDate = function(date) {
+          function formatterDate (date) {
             var day = date.getDate() > 9 ? date.getDate() : "0" + date.getDate();
             var month = (date.getMonth() + 1) > 9 ? (date.getMonth() + 1) : "0"
             + (date.getMonth() + 1);
             return date.getFullYear() + '-' + month + '-' + day;
         };
+        $("#saveBtn").click(function(){
+            $.each($(":radio:checked"),function(i,v){
+               if($(v).val()=='N'){
+                 console.log( $(v).attr("name"));
+               }
+            })
+        })
         $("#jiheDate").datebox("setValue",formatterDate(new Date()));
     })
     $('#restName').combobox({
