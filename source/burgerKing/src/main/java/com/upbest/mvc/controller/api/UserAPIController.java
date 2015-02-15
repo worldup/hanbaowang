@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -152,6 +153,29 @@ public class UserAPIController {
             result.setCode(1003);
             result.setSuccess(false);
             result.setMsg("下级员工不存在!");
+            return result;
+        }
+        else{
+            result.setObj(buserVOList);
+            result.setCode(Code.SUCCESS_CODE);
+            result.setSuccess(true);
+            result.setMsg("查询成功！");
+        }
+        return result;
+    }
+    @RequestMapping(value = "/securi_getSendMessageUsers")
+    @ResponseBody
+    public Json getSendMessageUsers(HttpServletRequest req){
+        Json result = new Json();
+        Json j = Constant.convertJson(req);
+        JSONObject o = (JSONObject) j.getObj();
+         Integer userId = o.getInteger("userId");
+        List<Map<String,Object>> buserVOList=service.getMessageUserList(userId);
+        if(CollectionUtils.isNotEmpty(buserVOList)){
+            result.setObj(null);
+            result.setCode(1003);
+            result.setSuccess(false);
+            result.setMsg("发送消息人员不存在!");
             return result;
         }
         else{

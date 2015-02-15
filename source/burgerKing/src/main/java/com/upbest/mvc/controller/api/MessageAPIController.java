@@ -67,6 +67,7 @@ public class MessageAPIController {
          String page=o.getString("page");
          String pageSize=o.getString("pageSize");
          String userId=o.getString("userId");
+         Integer receiveId=o.getInteger("receiveId");
          if(StringUtils.isBlank(pageSize)||StringUtils.isBlank(page)||StringUtils.isBlank(userId)){
              result.setCode(Code.NULL_CODE);
              result.setMsg(VERIFY_NULL);
@@ -83,7 +84,7 @@ public class MessageAPIController {
              orders.add(new Order(Direction.ASC, "m.is_read"));
              orders.add(new Order(Direction.DESC, "m.create_time"));
              PageRequest requestPage = new PageRequest(pageInt != null ?pageInt- 1 : 0, pageSizeInt, new Sort(orders));
-             result.setObj(getMessageInfo(service.findMessageListAPI(messageType,buserId, requestPage).getContent()));
+             result.setObj(getMessageInfo(service.findMessageListAPI(messageType,buserId,receiveId, requestPage).getContent()));
              result.setCode(Code.SUCCESS_CODE);
              result.setSuccess(true);
              result.setMsg(VERIFY_SUCCESS);

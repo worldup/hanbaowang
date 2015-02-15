@@ -2,6 +2,7 @@ package com.upbest.mvc.service;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -15,7 +16,8 @@ import com.upbest.mvc.vo.ShopVO;
 import com.upbest.mvc.vo.TreeVO;
 
 public interface IBuserService {
-
+    //获取消息发送用户
+    List<Map<String,Object>> getMessageUserList(Integer userId);
     Buser findByName(String userName);
     Buser findById(Integer id);
 

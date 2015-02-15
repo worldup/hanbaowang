@@ -98,6 +98,41 @@ public class MessageServiceImpl implements IMessageService{
         sql.append(" order by m.create_time desc ");
         return common.queryBySql(sql.toString(), params,requestPage);
     }
+    public Page<Object[]> getInstanceMessages(Integer userId,Integer receiveId, String messageType, Pageable requestPage){
+
+        StringBuffer sql=new StringBuffer();
+        List<Object> params=new ArrayList<Object>();
+        sql.append("  SELECT m.id,                       ");
+        sql.append("         m.push_title,       ");
+        sql.append("         m.push_content,       ");
+        sql.append("         m.state,               ");
+        sql.append("         m.create_time,             ");
+        sql.append("         m.push_time,                ");
+        sql.append("         m.is_read,           ");
+        sql.append("         t1.real_name as creater,                 ");
+        sql.append("         t2.real_name as sender,                 ");
+        sql.append("         t3.real_name as receiver,                ");
+        sql.append("         m.message_type                 ");
+        sql.append("    FROM bk_message m              ");
+        sql.append("    left join bk_user t1              ");
+        sql.append("    on t1.id = m.user_id              ");
+        sql.append("    left join bk_user t2              ");
+        sql.append("    on t2.id = m.sender_id              ");
+        sql.append("    left join bk_user t3              ");
+        sql.append("    on t3.id = m.receiver_id              ");
+        sql.append("   where 1 = 1          ");
+        if(userId!=null&&-1!=userId){
+            sql.append(" and  m.sender_id = ? ");
+            params.add(userId);
+        }
+        if(receiveId!=null&&-1!=receiveId){
+            sql.append(" and  m.receiver_id = ? ");
+            params.add(receiveId);
+        }
+            sql.append(" and m.message_type=? ");
+            params.add(messageType);
+        return common.queryBySql(sql.toString(), params, requestPage);
+    }
     public Page<Object[]> getAllMessages(Integer userId, String messageType, Pageable requestPage){
         Buser user=buserRepository.findOne(userId);
         StringBuffer sql=new StringBuffer();
@@ -237,7 +272,7 @@ public class MessageServiceImpl implements IMessageService{
     }
     
     @Override
-    public Page<Object[]> findMessageListAPI(String type,Integer userId, Pageable requestPage) {
+    public Page<Object[]> findMessageListAPI(String type,Integer userId, Integer receiveId,Pageable requestPage) {
         Page<Object[]> page;
         if(StringUtils.isBlank(type)){
             //全部消息
@@ -245,7 +280,10 @@ public class MessageServiceImpl implements IMessageService{
         }else{
             if("1".equals(type)){
                 page = getNoticeMessage(userId,requestPage);
-            }else{
+            }if("6".equals(type)){
+                page=getInstanceMessages(userId,receiveId,type,requestPage);
+            }
+            else{
                 //其他消息类型
                 page = getAllMessages(userId,type,requestPage);
             }

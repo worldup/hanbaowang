@@ -31,4 +31,8 @@ public class XianjinjiheController {
     public String zhuanzhuoguanli() {
         return "/xianjinjihe/zhuanzhuoguanli";
     }
+    @RequestMapping(value = "/wentifenxi")
+    public String wentifenxi() {
+        return "/xianjinjihe/wentifenxi";
+    }
 }

@@ -10,6 +10,7 @@ import com.upbest.mvc.entity.BMessage;
 import com.upbest.mvc.entity.Buser;
 
 public interface IMessageService {
+   Page<Object[]> getInstanceMessages(Integer userId,Integer receiveId, String messageType, Pageable requestPage);
     Page<Object[]> findMessageList(String name,String type,Integer userId, Pageable requestPage);
     
     List<Object[]> findMessageById(String id);
@@ -28,7 +29,7 @@ public interface IMessageService {
     
     Map<String,Integer> getCountByUserId(Integer userId);
     
-    Page<Object[]> findMessageListAPI(String type,Integer userId, Pageable requestPage);
+    Page<Object[]> findMessageListAPI(String type,Integer userId, Integer receiveId,Pageable requestPage);
 
 	void updateNoticeMessageStatu(Integer uid, Integer bid);
 

@@ -5,9 +5,11 @@
 <c:set var="basePath" value="${pageContext.request.contextPath}" />
 <%
     String name = "";
+    Integer userId=0;
     if (session.getAttribute("buser") != null) {
         Buser u = (Buser) session.getAttribute("buser");
         name = u.getRealname();
+        userId=u.getId();
     }
 %>
 <div id="cc" class="easyui-layout " style="width:100%;height:500px;">
@@ -35,7 +37,7 @@
                         <input   style="display:inline-block;width: 180px" type="text" name="jiheMan" id="jiheMan"  class="easyui-validatebox" value="<%=name%>" data-options="validType:'string'">
                     </td>
                     <td>
-
+                        <input type="hidden" name="jiheManId" value="<%=userId%>"/>
                     </td>
                 </tr>
                 <tr>
@@ -67,15 +69,15 @@
     </div>
     <div data-options="region:'south'" style="height:80%;">
         <div id="tt" class="easyui-tabs" style="height:380px;">
-            <div title="关键项评估"  href="${pageContext.request.contextPath}/xianjinjihe/guanjianxiangpinggu" style="padding:20px;">
+            <div title="关键项评估"  href="${pageContext.request.contextPath}/xianjinjihe/guanjianxiangpinggu" data-options="selected:true"  style="padding:20px;">
              </div>
-            <div title="保险箱管理"  href="${pageContext.request.contextPath}/xianjinjihe/baoxianxiangguanli" data-options="" style="padding:20px;">
+            <div title="保险箱管理"  href="${pageContext.request.contextPath}/xianjinjihe/baoxianxiangguanli" data-options="selected:false" style="padding:20px;">
             </div>
-            <div title="转桌管理"  href="${pageContext.request.contextPath}/xianjinjihe/zhuanzhuoguanli"  data-options="" style="padding:20px;">
+            <div title="转桌管理"  href="${pageContext.request.contextPath}/xianjinjihe/zhuanzhuoguanli"  data-options="selected:false" style="padding:20px;">
             </div>
-            <div title="存货管理"  href="${pageContext.request.contextPath}/xianjinjihe/cunhuoguanli"  data-options="" style="padding:20px;">
+            <div title="存货管理"  href="${pageContext.request.contextPath}/xianjinjihe/cunhuoguanli"  data-options="selected:false" style="padding:20px;">
             </div>
-            <div title="问题分析及行动" href="${pageContext.request.contextPath}/xianjinjihe/wentifenxi"  data-options="" style="padding:20px;;">
+            <div title="问题分析及行动" href="${pageContext.request.contextPath}/xianjinjihe/wentifenxi"  data-options="selected:false,cache:false" style="padding:20px;;">
             </div>
         </div>
     </div>

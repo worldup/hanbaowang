@@ -2,7 +2,9 @@ package com.upbest.mvc.service.impl;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -662,5 +665,18 @@ public class BuserServiceImpl implements IBuserService {
         return result;
         
     }
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    @Override
+    public List<Map<String,Object>> getMessageUserList(Integer userId){
+        String sql=" select id,name,real_name,pid from bk_user p where p.id=(select pid from bk_user where id=:userId) -- 上级\n" +
+                "union ALL\n" +
+                " select id,name,real_name,pid from bk_user p where p.pid=(select pid from bk_user where id=:userId)  -- 平级\n" +
+                "union ALL\n" +
+                "select id,name,real_name,pid from bk_user c where c.pid=:userId -- 下级";
+        Map map=new HashMap();
+        map.put("userId",userId);
+        return  namedParameterJdbcTemplate.queryForList(sql,map);
 
+    }
 }

@@ -1,11 +1,15 @@
 package com.upbest.mvc.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.upbest.mvc.entity.BMessage;
@@ -25,7 +29,7 @@ public class StoreUserServiceImpl implements IStoreUserService {
 
     @Autowired
     private CommonDaoCustom<Object[]> common;
-    
+
     @Autowired
     private IMessageService messageService;
 
@@ -55,5 +59,6 @@ public class StoreUserServiceImpl implements IStoreUserService {
             messageService.saveBMessage(message);
         }
     }
+
 
 }
