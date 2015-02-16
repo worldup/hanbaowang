@@ -171,7 +171,7 @@ public class UserAPIController {
         JSONObject o = (JSONObject) j.getObj();
          Integer userId = o.getInteger("userId");
         List<Map<String,Object>> buserVOList=service.getMessageUserList(userId);
-        if(CollectionUtils.isNotEmpty(buserVOList)){
+        if(CollectionUtils.isEmpty(buserVOList)){
             result.setObj(null);
             result.setCode(1003);
             result.setSuccess(false);
