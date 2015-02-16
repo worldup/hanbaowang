@@ -280,7 +280,7 @@ public class MessageServiceImpl implements IMessageService{
         }else{
             if("1".equals(type)){
                 page = getNoticeMessage(userId,requestPage);
-            }if("6".equals(type)){
+            }else if("6".equals(type)){
                 page=getInstanceMessages(userId,receiveId,type,requestPage);
             }
             else{
