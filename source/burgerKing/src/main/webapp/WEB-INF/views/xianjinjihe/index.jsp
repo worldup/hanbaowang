@@ -92,13 +92,24 @@
             return date.getFullYear() + '-' + month + '-' + day;
         };
         $("#saveBtn").click(function(){
-            $.each($(":radio:checked"),function(i,v){
-               if($(v).val()=='N'){
-                 console.log( $(v).attr("name"));
-               }
+            var data=[];
+            $.each($(":radio"),function(i,v){
+                   var radioName=$(v).attr("name");
+                   var grade=$("#"+radioName.split("_")[0]+"_radio_grade").text();
+                   var text=$("#"+radioName.split("_")[0]+"_text").text();
+                   var checked =$(v).val();
+                   data.push({radioName:radioName,grade:grade,text:text,checked:checked});
+            });
+            $.post("${pageContext.request.contextPath}/xianjinjihe/save",{data: $.toJSON(data)},function(data){
+              console.log("aaa")
             })
         })
         $("#jiheDate").datebox("setValue",formatterDate(new Date()));
+        $("#tt").tabs("select",4)
+        $("#tt").tabs("select",3)
+        $("#tt").tabs("select",2)
+        $("#tt").tabs("select",1)
+        $("#tt").tabs("select",0)
     })
     $('#restName').combobox({
         onSelect: function (data) {
@@ -110,6 +121,8 @@
             })
             }
         });
+
+
 
 </script>
 
