@@ -240,8 +240,10 @@ public class MessageAPIController {
         Json result = new Json();
          Json j = Constant.convertJson(req);
          JSONObject o = (JSONObject) j.getObj();
-         //当前登录用户
+         //当前发送Id
          String userId=o.getString("userId");
+        //获取接受者id
+        String receiveIds=o.getString("receiveId");
          //消息标题
          String pushTitle=o.getString("pushTitle");
          //消息内容
@@ -257,19 +259,27 @@ public class MessageAPIController {
              return result;
          }
          try {
-             Integer buserId=DataType.getAsInt(userId);
-             BMessage bMessage=new BMessage();
-             bMessage.setCreateTime(new Date());
-             bMessage.setIsRead("0");
-             bMessage.setPushTitle(pushTitle);
-             bMessage.setPushContent(pushContent);
-             bMessage.setMessageType(messageType);
-             bMessage.setUserId(buserId);
-             bMessage.setSenderId(buserId);
-             bMessage.setReceiverId(buserId);
-             bMessage.setState("1");
-             bMessage.setPushTime(new Date());
-             result.setObj(service.saveBMessage(bMessage));
+             String[] recevieIdArr = StringUtils.splitByWholeSeparator(receiveIds, ";");
+             List<BMessage> listResult=new ArrayList();
+             for (String recvId : recevieIdArr) {
+                 Integer buserId = DataType.getAsInt(userId);
+                 BMessage bMessage = new BMessage();
+                 bMessage.setCreateTime(new Date());
+                 bMessage.setIsRead("0");
+                 bMessage.setPushTitle(pushTitle);
+                 bMessage.setPushContent(pushContent);
+                 bMessage.setMessageType(messageType);
+                 bMessage.setUserId(buserId);
+                 bMessage.setSenderId(buserId);
+                 bMessage.setReceiverId(Integer.valueOf(recvId));
+                 bMessage.setState("1");
+                 bMessage.setPushTime(new Date());
+                 service.saveBMessage(bMessage);
+                 listResult.add(bMessage);
+             }
+
+
+             result.setObj(listResult);
              result.setCode(Code.SUCCESS_CODE);
              result.setSuccess(true);
              result.setMsg(VERIFY_SUCCESS);
