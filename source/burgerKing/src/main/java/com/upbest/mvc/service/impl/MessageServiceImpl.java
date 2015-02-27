@@ -204,7 +204,7 @@ public class MessageServiceImpl implements IMessageService{
         sql.append("         m.state,               ");
         sql.append("         m.create_time,             ");
         sql.append("         m.push_time,                ");
-        sql.append("         is_read = 0,           ");
+        sql.append("         is_read = 0 is_read,           ");
         sql.append("         t1.real_name as creater,                 ");
         sql.append("         t2.real_name as sender,                 ");
         sql.append("         t3.real_name as receiver,                ");
@@ -235,7 +235,7 @@ public class MessageServiceImpl implements IMessageService{
         sql.append("         m.state,               ");
         sql.append("         m.create_time,             ");
         sql.append("         m.push_time,                ");
-        sql.append("         is_read = 1,           ");
+        sql.append("         is_read = 1 is_read,           ");
         sql.append("         t1.real_name as creater,                 ");
         sql.append("         t2.real_name as sender,                 ");
         sql.append("         t3.real_name as receiver,                ");
