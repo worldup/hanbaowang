@@ -49,15 +49,15 @@
 
                     <td>
                         <label style="display:inline-block;width: 100px" for="currentGrade">本次稽核成绩:</label>
-                        <input   style="display:inline-block;width: 180px" class="easyui-validatebox" type="text" name="currentGrade" id="currentGrade" data-options="" />
+                        <input   style="display:inline-block;width: 180px" class="easyui-validatebox" readonly="true" type="text" name="currentGrade" id="currentGrade" data-options="" />
                     </td>
                     <td>
                         <label style="display:inline-block;width: 100px" for="currentMananger">值班经理:</label>
-                        <input   style="display:inline-block;width: 180px" type="text" name="currentMananger" id="currentMananger"  class="easyui-validatebox" data-options="validType:'string'">
+                        <input   style="display:inline-block;width: 180px" type="text" name="currentMananger"   id="currentMananger"  class="easyui-validatebox" data-options="validType:'string'">
                     </td>
                     <td>
                         <label style="display:inline-block;width: 100px" for="lostGradeNum">重复扣分项编号:</label>
-                        <input   style="display:inline-block;width: 180px" type="text" name="lostGradeNum" id="lostGradeNum"  class="easyui-validatebox" data-options="validType:'string'">
+                        <input   style="display:inline-block;width: 180px" type="text" name="lostGradeNum" readonly="true" id="lostGradeNum"  class="easyui-validatebox" data-options="validType:'string'">
                     </td>
                     <td>
                             <a href='#' id="saveBtn" data-options="iconCls:'icon-save'" class='easyui-linkbutton' >保存</a>
@@ -121,6 +121,7 @@
         B29	:	60
     }
     $(document).ready(function(){
+     
           function formatterDate (date) {
             var day = date.getDate() > 9 ? date.getDate() : "0" + date.getDate();
             var month = (date.getMonth() + 1) > 9 ? (date.getMonth() + 1) : "0"
@@ -155,7 +156,7 @@
             data.examHeading.push({hId:6,value:$("#jiheMan").val()});
             data.examHeading.push({hId:7,value:$("#restName").combobox('getValue')});
             data.examHeading.push({hId:8,value:$("#lastGrade").val()});
-            data.examHeading.push({hId:9,value:$("#currentGrade").val()});
+
             data.examHeading.push({hId:10,value:$("#currentMananger").val()});
             data.examHeading.push({hId:11,value:$("#lostGradeNum").val()});
             data.examId=25;
@@ -163,14 +164,29 @@
 
             data.questionList=[];
             var totalGrade=0;
+            var keyItemLoseGrade=false;
             $.each($(":radio:checked"),function(i,v){
                 var radioName=$(v).attr("name");
+
                 var grade=$("#"+radioName.split("_")[0]+"_radio_grade").text();
+                var keyItem=false;
                 if(grade==''){
                     grade=0;
+                    keyItem=true;
                 }
                 totalGrade+=parseInt(grade);
-                data.questionList.push({attr:[{hId: 15,value: grade>0?1:0},{hId: 16,value: grade>0?0:1},{hId: 27,value: "0"},{hId: 13,value: ""}],qEvidence: "",questionId: questionNumMapping[radioName.split("_")[0]],tValue: grade});
+                if(radioName.substring(0,1)=='A'){
+                    if($(v).val()=='Y'){
+                        data.questionList.push({attr:[{hId: 15,value: 1},{hId: 16,value: 0},{hId: 27,value: "0"},{hId: 13,value: ""}],qEvidence: "",questionId: questionNumMapping[radioName.split("_")[0]],tValue: grade});
+                    }
+                    else{
+                        keyItemLoseGrade=true;
+                        data.questionList.push({attr:[{hId: 15,value: 0},{hId: 16,value: 1},{hId: 27,value: "0"},{hId: 13,value: ""}],qEvidence: "",questionId: questionNumMapping[radioName.split("_")[0]],tValue: grade});
+                    }
+                     }
+                else{
+                    data.questionList.push({attr:[{hId: 15,value: grade>0?1:0},{hId: 16,value: grade>0?0:1},{hId: 27,value: "0"},{hId: 13,value: ""}],qEvidence: "",questionId: questionNumMapping[radioName.split("_")[0]],tValue: grade});
+                }
             });
             $.each($(':checkbox:checked.shifenxiang'),function(i,v){
                 var scoreNum = $(v).val().split(":")[0];
@@ -178,9 +194,10 @@
                 var resolve = $(v).parents("table").find("input[type='text'].fangan").val();
                 data.problemAnalysisList.push({resolve: resolve, resource: resource, scoreNum: scoreNum});
             })
-            data.level=0;
+            data.level=keyItemLoseGrade?0:1;
             data.storeId=$("#restName").combobox('getValue');
-            data.total=totalGrade;
+            data.total=keyItemLoseGrade?0:totalGrade;
+            data.examHeading.push({hId:9,value:keyItemLoseGrade?0:totalGrade});
             data.userId='<%=userId%>';
             $.post("${pageContext.request.contextPath}/api/exam/securi_saveExamResult",{sign: $.toJSON(data)},function(data){
                 alert("保存成功")
