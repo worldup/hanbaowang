@@ -183,8 +183,9 @@
             data.total=totalGrade;
             data.userId='<%=userId%>';
             $.post("${pageContext.request.contextPath}/api/exam/securi_saveExamResult",{sign: $.toJSON(data)},function(data){
-
+                alert("保存成功")
             })
+            $("#saveBtn").remove();
         })
         $("#jiheDate").datebox("setValue",formatterDate(new Date()));
         $("#tt").tabs("select",4)
