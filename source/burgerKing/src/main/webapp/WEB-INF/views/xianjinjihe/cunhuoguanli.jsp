@@ -162,13 +162,13 @@
             </li>
             <li>
                                     <span style="margin-left: 30px">
-                                           <label style="color: #ff0000;">分数:<span class='grade'>5</span></label>
+                                           <label style="color: #ff0000;">分数:<span class='grade'>2</span></label>
 
                                     <input type="radio" name="B29_radio" value="Y" checked="checked"/><span
                                             style="display:inline-block;width: 50px">Y</span>
                                     <input type="radio" name="B29_radio" value="N"/><span
                                             style="display:inline-block;width: 50px">N</span>
-                                            <label style="color: #ff0000;">得分:<span id="B29_radio_grade">5</span></label>
+                                            <label style="color: #ff0000;">得分:<span id="B29_radio_grade">2</span></label>
                                     <label>问题描述：</label>  <input style="width:500px" type="text" name="B29_text"
                                                                        maxlength="200"/>
                                 </span>

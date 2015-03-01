@@ -273,7 +273,7 @@
                                             style="display:inline-block;width: 50px">Y</span>
                                     <input type="radio" name="B10_radio" value="N"/><span
                                             style="display:inline-block;width: 50px">N</span>
-                                                 <label style="color: #ff0000;">得分:<span id="B10_radio_grade">5</span></label>
+                                                 <label style="color: #ff0000;">得分:<span id="B10_radio_grade">2</span></label>
                                     <label>问题描述：</label> <input style="width:500px" type="text" name="B10_text"
                                                                        maxlength="200"/>
                                 </span>

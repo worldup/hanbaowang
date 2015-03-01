@@ -1,4 +1,5 @@
 <%@ page import="com.upbest.mvc.entity.Buser" %>
+<%@ page import="java.util.Date" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"%>
 <%@ page pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -84,6 +85,41 @@
 
 </div>
 <script type="text/javascript">
+    var questionNumMapping={
+        A01	:	28	,
+        A02	:	29	,
+        A03	:	30	,
+        A04	:	31	,
+        B01	:	32	,
+        B02	:	33	,
+        B03	:	34	,
+        B04	:	35	,
+        B05	:	36	,
+        B06	:	37	,
+        B07	:	38	,
+        B08	:	39	,
+        B09	:	40	,
+        B10	:	41	,
+        B11	:	42	,
+        B12	:	43	,
+        B13	:	44	,
+        B14	:	45	,
+        B15	:	46	,
+        B16	:	47	,
+        B17	:	48	,
+        B18	:	49	,
+        B19	:	50	,
+        B20	:	51	,
+        B21	:	52	,
+        B22	:	53	,
+        B23	:	54	,
+        B24	:	55	,
+        B25	:	56	,
+        B26	:	57	,
+        B27	:	58	,
+        B28	:	59	,
+        B29	:	60
+    }
     $(document).ready(function(){
           function formatterDate (date) {
             var day = date.getDate() > 9 ? date.getDate() : "0" + date.getDate();
@@ -92,16 +128,62 @@
             return date.getFullYear() + '-' + month + '-' + day;
         };
         $("#saveBtn").click(function(){
-            var data=[];
-            $.each($(":radio"),function(i,v){
-                   var radioName=$(v).attr("name");
-                   var grade=$("#"+radioName.split("_")[0]+"_radio_grade").text();
-                   var text=$("#"+radioName.split("_")[0]+"_text").text();
-                   var checked =$(v).val();
-                   data.push({radioName:radioName,grade:grade,text:text,checked:checked});
+            if($("#restMananger").val()==''){
+                alert("请填写餐厅经理");
+                return;
+            }
+            if($("#currentMananger").val()==''){
+                alert("请填写值班经理");
+                return;
+            }
+            if($("#restName").combobox('getValue')==''){
+                alert("请选择餐厅");
+                return;
+            }
+            var data={};
+            data.actionPlanList=[];
+            data.beginTime= '<%=new Date().getTime()%>';
+            data.endTime=new Date().getTime();
+            data.examHeading=[];
+            var jiheDateVals= $("#jiheDate").datebox("getValue").split("/");
+            var jiheDate=new Date();
+            jiheDate.setMonth(parseInt(jiheDateVals[0])-1) ;
+            jiheDate.setDate(jiheDateVals[1]) ;
+            jiheDate.setFullYear(jiheDateVals[2]) ;
+            data.examHeading.push({hId:4,value:jiheDate.getTime()});
+            data.examHeading.push({hId:5,value:$("#restMananger").val()});
+            data.examHeading.push({hId:6,value:$("#jiheMan").val()});
+            data.examHeading.push({hId:7,value:$("#restName").combobox('getValue')});
+            data.examHeading.push({hId:8,value:$("#lastGrade").val()});
+            data.examHeading.push({hId:9,value:$("#currentGrade").val()});
+            data.examHeading.push({hId:10,value:$("#currentMananger").val()});
+            data.examHeading.push({hId:11,value:$("#lostGradeNum").val()});
+            data.examId=25;
+            data.problemAnalysisList=[];
+
+            data.questionList=[];
+            var totalGrade=0;
+            $.each($(":radio:checked"),function(i,v){
+                var radioName=$(v).attr("name");
+                var grade=$("#"+radioName.split("_")[0]+"_radio_grade").text();
+                if(grade==''){
+                    grade=0;
+                }
+                totalGrade+=parseInt(grade);
+                data.questionList.push({attr:[{hId: 15,value: grade>0?1:0},{hId: 16,value: grade>0?0:1},{hId: 27,value: "0"},{hId: 13,value: ""}],qEvidence: "",questionId: questionNumMapping[radioName.split("_")[0]],tValue: grade});
             });
-            $.post("${pageContext.request.contextPath}/xianjinjihe/save",{data: $.toJSON(data)},function(data){
-              console.log("aaa")
+            $.each($(':checkbox:checked.shifenxiang'),function(i,v){
+                var scoreNum = $(v).val().split(":")[0];
+                var resource = $(v).parents("table").find("input[type='text'].genyuan").val();
+                var resolve = $(v).parents("table").find("input[type='text'].fangan").val();
+                data.problemAnalysisList.push({resolve: resolve, resource: resource, scoreNum: scoreNum});
+            })
+            data.level=0;
+            data.storeId=$("#restName").combobox('getValue');
+            data.total=totalGrade;
+            data.userId='<%=userId%>';
+            $.post("${pageContext.request.contextPath}/api/exam/securi_saveExamResult",{sign: $.toJSON(data)},function(data){
+
             })
         })
         $("#jiheDate").datebox("setValue",formatterDate(new Date()));
