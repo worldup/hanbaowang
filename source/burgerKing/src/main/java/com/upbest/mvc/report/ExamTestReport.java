@@ -1,6 +1,8 @@
 package com.upbest.mvc.report;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,19 +14,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.upbest.utils.ConfigUtil;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.Hyperlink;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.PrintSetup;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
+import org.apache.poi.hssf.usermodel.HSSFPatriarch;
+import org.apache.poi.hssf.usermodel.HSSFPicture;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.util.IOUtils;
+import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.CollectionUtils;
@@ -272,6 +271,7 @@ public class ExamTestReport {
 								int deviceCol = col;
 								for (String ed : evidences) {
 									if(StringUtils.isNotEmpty(ed)){
+                                        /*****************************
 										Cell edCell = questionRow.createCell(col);
 										edCell.setCellValue(ed);
 										edCell.setCellStyle(styles.get(HTTP_HREF));
@@ -279,7 +279,35 @@ public class ExamTestReport {
 										Hyperlink link = creationHelper.createHyperlink(Hyperlink.LINK_URL);  
 										link.setAddress(ed);  
 										edCell.setHyperlink((org.apache.poi.ss.usermodel.Hyperlink) link); 
-										
+										******************************/
+                                    try {
+                                        String questionPath = ConfigUtil.get("questionPicPath");
+                                        int endIdx=ed.lastIndexOf("/");
+                                        String picName=ed.substring(endIdx+1);
+
+                                        InputStream my_banner_image = new FileInputStream(questionPath+picName);
+                                        /* Convert Image to byte array */
+                                        byte[] bytes = IOUtils.toByteArray(my_banner_image);
+                                         /* Add Picture to workbook and get a index for the picture */
+
+                                        int my_picture_id = sheet.getWorkbook().addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
+                                          /* Close Input Stream */
+                                        my_banner_image.close();
+                                       /* Create the drawing container */
+                                        Drawing drawing = sheet.createDrawingPatriarch();
+                                          /* Create an anchor point */
+                                        ClientAnchor my_anchor = new XSSFClientAnchor();
+                                          /* Define top left corner, and we can resize picture suitable from there */
+                                        my_anchor.setCol1(col);
+                                        my_anchor.setRow1(firstRow-1);
+                                       /* Invoke createPicture and pass the anchor point and ID */
+                                        Picture my_picture = drawing.createPicture(my_anchor, my_picture_id);
+                                          /* Call resize method, which resizes the image */
+                                        my_picture.resize();
+                                    }catch(Exception e){
+                                        e.printStackTrace();
+                                    }
+                                        ///////////////////////////////////////////////
 										Cell deviceHeadCel = moduleHead.createCell(col);
 										deviceHeadCel.setCellValue(ENVICE_NAME + (col - deviceCol + 1));
 										deviceHeadCel.setCellStyle(styles.get(MODULER_NAME));
