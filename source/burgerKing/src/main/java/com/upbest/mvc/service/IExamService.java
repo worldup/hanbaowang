@@ -122,7 +122,7 @@ public interface IExamService {
     
     public String queryKeyRela(String moduleId,String qId,String yOrN);
     
-    public void generateExcelAndEmail(int testPaperId,String... emails)  throws Exception ;
+    public void generateExcelAndEmail(String fullServerPath,int testPaperId,String... emails)  throws Exception ;
     
     void addEaxmToExcelLose(String examid,OutputStream out) throws Exception;
     

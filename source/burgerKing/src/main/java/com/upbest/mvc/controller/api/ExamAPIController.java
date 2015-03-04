@@ -414,7 +414,8 @@ public class ExamAPIController {
             }
             testPaperDetailService.saveTestPaperDetail(list, testPaper, exHeadingList, proAnaList, actionPlList);
             String emails = getShopEmail(testPaper.getId());
-            new SendEmailThread(service, "13636462617@163.com", testPaper.getId()).start();
+            String fullServerPath=req.getScheme()+"://"+req.getServerName()+":"+req.getServerPort()+req.getContextPath();
+            new SendEmailThread(fullServerPath,service, "13636462617@163.com", testPaper.getId()).start();
             result.setCode(Code.SUCCESS_CODE);
             result.setSuccess(true);
             result.setMsg(OperatorResultMsg.SUCCESS);

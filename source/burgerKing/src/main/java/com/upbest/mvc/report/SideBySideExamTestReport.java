@@ -61,7 +61,7 @@ public class SideBySideExamTestReport extends ExamTestReport {
 	 * @param firstRow
 	 */
 	@Override
-	protected int buildModulerInfo(ExamDetailInfoVO examDetailInfo, Sheet sheet,
+	protected int buildModulerInfo(String fullServerPath,ExamDetailInfoVO examDetailInfo, Sheet sheet,
 			Map<String, CellStyle> styles,Integer firstRow, CreationHelper creationHelper) {
 		firstRow += 1;
 		List<Module> modules = examDetailInfo.getModules();

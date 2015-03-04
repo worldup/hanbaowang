@@ -1248,17 +1248,18 @@ public class ExamServiceImpl implements IExamService {
     }
     
     @Override
-    public void generateExcelAndEmail(int testPaperId,String... eamils) throws Exception {
+    public void generateExcelAndEmail(String fullServerPath,int testPaperId,String... eamils) throws Exception {
     	BTestPaper testPaper = testPaperRespository.findOne(testPaperId);
     	ExamInfoVO examInfoVO = findExamInfo(testPaper.getEid());
     	
     	ExamTestReport report = ExamTestReportFactory.findExamTestReportByExamType(examInfoVO.getExamTypeName(),this);
-    	byte[] byteAry = report.generateReport(testPaperId);
+    	byte[] byteAry = report.generateReport(fullServerPath,testPaperId);
     	
     	BShopInfo shopInfo = storeRepository.findOne(testPaper.getStoreid());
     	String timeStr = formatDate(testPaper.getTend());
-    	String fileName = getExcelName(timeStr,shopInfo,examInfoVO.getExamTypeName());
+
     	Buser user = userService.findById(testPaper.getUserid());
+        String fileName = getExcelName(user == null ? "":user.getRealname(),timeStr,shopInfo,examInfoVO.getExamTypeName());
     	String userName = user == null ? "" : (user.getRealname() + "(" + user.getName() + ")");
     	StringBuilder text = new StringBuilder();
     	text.append("餐厅经理：\n")
@@ -1280,7 +1281,7 @@ public class ExamServiceImpl implements IExamService {
 		return timeStr;
 	}
 
-	private String getExcelName(String timeStr, BShopInfo shopInfo,
+	private String getExcelName(String userName,String timeStr, BShopInfo shopInfo,
 			String examTypeName) {
 		return timeStr + shopInfo.getShopname() + examTypeName + "报告";
 	}

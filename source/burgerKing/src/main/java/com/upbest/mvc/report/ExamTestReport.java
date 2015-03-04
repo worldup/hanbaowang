@@ -66,16 +66,16 @@ public class ExamTestReport {
 	/**
 	 * 字段的权重
 	 */
-	public byte[] generateReport(int testPaperId) throws Exception{
+	public byte[] generateReport(String fullServerPath,int testPaperId) throws Exception{
 		ExamDetailInfoVO examDetailInfo = examService.findAfterTestExamDetaiInfo(testPaperId);
-		return generateExcel(examDetailInfo);
+		return generateExcel(fullServerPath,examDetailInfo);
 	}
 
 	/**
 	 * 生成excel
 	 * @throws Exception 
 	 */
-	protected byte[] generateExcel(ExamDetailInfoVO examDetailInfo) throws Exception {
+	protected byte[] generateExcel(String fullServerPath,ExamDetailInfoVO examDetailInfo) throws Exception {
 		 Map<String, CellStyle> styles = createStyles(wb);
 		 
 		 String examNam = examDetailInfo.getBasicInfo().getExamName();
@@ -91,7 +91,7 @@ public class ExamTestReport {
 		 Integer firstRow = 0;
 		 int lastRow = buildTitleInfo(sheet,styles,examNam,firstRow);
 		 lastRow = buildHeadInfo(examDetailInfo,sheet,styles,lastRow);
-		 lastRow = buildModulerInfo(examDetailInfo,sheet,styles,lastRow,wb.getCreationHelper());
+		 lastRow = buildModulerInfo(fullServerPath,examDetailInfo,sheet,styles,lastRow,wb.getCreationHelper());
 		 buildAdditionalModulerInfo(examDetailInfo,sheet,styles,lastRow);
 		 
 		 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -179,7 +179,7 @@ public class ExamTestReport {
 	 * @param firstRow
 	 * @param creationHelper 
 	 */
-	protected int buildModulerInfo(ExamDetailInfoVO examDetailInfo, Sheet sheet,
+	protected int buildModulerInfo(String fullServerPath,ExamDetailInfoVO examDetailInfo, Sheet sheet,
 			Map<String, CellStyle> styles,Integer firstRow, CreationHelper creationHelper) {
 		List<Module> modules = examDetailInfo.getModules();
 		if(!CollectionUtils.isEmpty(modules)){
@@ -271,42 +271,42 @@ public class ExamTestReport {
 								int deviceCol = col;
 								for (String ed : evidences) {
 									if(StringUtils.isNotEmpty(ed)){
-                                        /*****************************
+
 										Cell edCell = questionRow.createCell(col);
 										edCell.setCellValue(ed);
 										edCell.setCellStyle(styles.get(HTTP_HREF));
 										
 										Hyperlink link = creationHelper.createHyperlink(Hyperlink.LINK_URL);  
-										link.setAddress(ed);  
+										link.setAddress(fullServerPath+ed);
 										edCell.setHyperlink((org.apache.poi.ss.usermodel.Hyperlink) link); 
-										******************************/
-                                    try {
+
+                                   /* try {
                                         String questionPath = ConfigUtil.get("questionPicPath");
                                         int endIdx=ed.lastIndexOf("/");
                                         String picName=ed.substring(endIdx+1);
 
                                         InputStream my_banner_image = new FileInputStream(questionPath+picName);
-                                        /* Convert Image to byte array */
+                                        *//* Convert Image to byte array *//*
                                         byte[] bytes = IOUtils.toByteArray(my_banner_image);
-                                         /* Add Picture to workbook and get a index for the picture */
+                                         *//* Add Picture to workbook and get a index for the picture *//*
 
                                         int my_picture_id = sheet.getWorkbook().addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
-                                          /* Close Input Stream */
+                                          *//* Close Input Stream *//*
                                         my_banner_image.close();
-                                       /* Create the drawing container */
+                                       *//* Create the drawing container *//*
                                         Drawing drawing = sheet.createDrawingPatriarch();
-                                          /* Create an anchor point */
+                                          *//* Create an anchor point *//*
                                         ClientAnchor my_anchor = new XSSFClientAnchor();
-                                          /* Define top left corner, and we can resize picture suitable from there */
+                                          *//* Define top left corner, and we can resize picture suitable from there *//*
                                         my_anchor.setCol1(col);
                                         my_anchor.setRow1(firstRow-1);
-                                       /* Invoke createPicture and pass the anchor point and ID */
+                                       *//* Invoke createPicture and pass the anchor point and ID *//*
                                         Picture my_picture = drawing.createPicture(my_anchor, my_picture_id);
-                                          /* Call resize method, which resizes the image */
+                                          *//* Call resize method, which resizes the image *//*
                                         my_picture.resize();
                                     }catch(Exception e){
                                         e.printStackTrace();
-                                    }
+                                    }*/
                                         ///////////////////////////////////////////////
 										Cell deviceHeadCel = moduleHead.createCell(col);
 										deviceHeadCel.setCellValue(ENVICE_NAME + (col - deviceCol + 1));
