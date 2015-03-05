@@ -1,6 +1,7 @@
 package com.upbest.mvc.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,4 +27,7 @@ public interface IWorkService {
     int getMaxSortNum();
     
     void saveBWorkType(List<BWorkType> list);
+
+    List<Map<String,Object>> getAllWorkPlanByUserId(String userId,String month);
+    void sendWorkPlanMailByUserId(String userId,String month);
 }

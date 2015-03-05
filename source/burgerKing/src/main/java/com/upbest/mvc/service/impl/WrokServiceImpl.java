@@ -1,13 +1,24 @@
 package com.upbest.mvc.service.impl;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.upbest.mvc.entity.BWorkType;
@@ -30,7 +41,8 @@ public class WrokServiceImpl implements IWorkService{
     
     @Autowired
     private CommonDaoCustom<Object[]> common;
-
+    @Autowired
+    private NamedParameterJdbcTemplate jdbcTemplate;
 
     @Override
     public void saveBWorkType(BWorkType entity) {
@@ -136,7 +148,68 @@ public class WrokServiceImpl implements IWorkService{
         workRepository.save(list);
     }
     
-    
-    
-    
+    @Override
+    public  List<Map<String,Object>> getAllWorkPlanByUserId(String userId,String month){
+       String sql="SELECT\n" +
+               "\tDATE_FORMAT(w.start_time, '%Y-%m-%d') day,\n" +
+               "\tDATE_FORMAT(w.start_time, '%H:%i:%s') time,\n" +
+               "  s.shop_name shop, s.email shopEmail , u.name userEmail,\n" +
+               "\t(select PU.name from bk_user pu where PU.id=u.pid limit 1) puserEmail,\n" +
+               "  u.real_name userName,\n" +
+               "w.work_type_name taskName,\n" +
+               "w.content content\n" +
+               "FROM\n" +
+               "\tbk_work_info w LEFT JOIN bk_user u \n" +
+               "  on w.user_id=u.id\n" +
+               "  left join bk_shop_info s\n" +
+               "  on w.store_id=s.id\n" +
+               "  where w.user_id=:user_id and  start_time>=STR_TO_DATE(:month,'%Y-%m-%d')\n" +
+               "and start_time <DATE_ADD(STR_TO_DATE(:month,'%Y-%m-%d'),INTERVAL 1 month) ";
+        Map<String ,String> map=new HashMap();
+        map.put("user_id",userId);
+        map.put("month",month);
+      return  jdbcTemplate.queryForList(sql,map);
+    }
+
+   public void sendWorkPlanMailByUserId(String userId,String month){
+       List<Map<String,Object>>  mapList=getAllWorkPlanByUserId( userId,month);
+       if(CollectionUtils.isNotEmpty(mapList)){
+           //发送员工本人及上级工作计划
+           //发送餐厅工作计划
+       }
+    }
+    private void sendMail(List<Map<String,Object>> workList,String email){
+
+    }
+    private byte[] genExcelFromWorkPlanList(List<Map<String,Object>> workList){
+        Workbook wb=new XSSFWorkbook();
+        Sheet sheet=  wb.createSheet("任务排程");
+        Row title= sheet.createRow(0);
+        title.createCell(1).setCellValue("日期");
+        title.createCell(2).setCellValue("开始时间");
+        title.createCell(3).setCellValue("任务门店");
+        title.createCell(4).setCellValue("委派人");
+        title.createCell(5).setCellValue("任务名称");
+        title.createCell(6).setCellValue("任务详细");
+        if(CollectionUtils.isNotEmpty(workList)){
+            int i=1;
+            for(Map<String,Object> map:workList){
+                Row row=sheet.createRow(i);
+                row.createCell(1).setCellValue(map.get("day").toString());
+                row.createCell(2).setCellValue(map.get("time").toString());
+                row.createCell(3).setCellValue(map.get("shop").toString());
+                row.createCell(4).setCellValue(map.get("userName").toString());
+                row.createCell(5).setCellValue(map.get("taskName").toString());
+                row.createCell(6).setCellValue(map.get("content").toString());
+              i++;
+            }
+        }
+        ByteArrayOutputStream  byteArrayOutputStream=new ByteArrayOutputStream();
+        try {
+            wb.write(byteArrayOutputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return byteArrayOutputStream.toByteArray();
+    }
 }
