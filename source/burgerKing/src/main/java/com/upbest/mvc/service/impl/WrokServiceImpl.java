@@ -2,23 +2,25 @@ package com.upbest.mvc.service.impl;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.inject.Inject;
 
+import com.upbest.mvc.entity.BShopInfo;
+import com.upbest.utils.EmailUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
 import com.upbest.mvc.entity.BWorkType;
@@ -35,7 +37,8 @@ public class WrokServiceImpl implements IWorkService{
     
     @Inject
     protected WorkRespository workRepository;
-    
+    @Autowired
+    private JavaMailSenderImpl emailSender;
     @Inject
     protected UserRespository userRepository;
     
@@ -175,32 +178,122 @@ public class WrokServiceImpl implements IWorkService{
        List<Map<String,Object>>  mapList=getAllWorkPlanByUserId( userId,month);
        if(CollectionUtils.isNotEmpty(mapList)){
            //发送员工本人及上级工作计划
+           sendMail(mapList,"13636462617@163.com");
            //发送餐厅工作计划
+           sendMailRest(mapList);
        }
     }
-    private void sendMail(List<Map<String,Object>> workList,String email){
+    private  Map<String,List<Map<String,Object>>> listAllTaskGroupByRestName(List<Map<String,Object>>  mapList){
+        Map<String,List<Map<String,Object>>> result=new HashMap();
+        Set<String> showNameSet=new HashSet();
+        for(Map<String,Object> map:mapList){
+           String shop= MapUtils.getString(map,"shop");
+           if(shop!=null&&!shop.equalsIgnoreCase("null")){
+               showNameSet.add(shop);
+           }
+        }
+        for(String shop:showNameSet){
+            for(Map<String,Object> map:mapList){
+                String tempShopName= MapUtils.getString(map,"shop");
+                if(shop.equals(tempShopName)){
+                    if(result.containsKey(shop)){
+                        List<Map<String,Object>> shopList=  result.get(shop);
+                        shopList.add(map);
+                    }
+                    else{
+                        List<Map<String,Object>> shopList=new ArrayList();
+                        shopList.add(map);
+                        result.put(shop,shopList);
+                    }
+                }
 
+            }
+
+        }
+        return result;
+    }
+    private void sendMailRest( List<Map<String,Object>> allWorkList){
+        Map<String,List<Map<String,Object>>> map= listAllTaskGroupByRestName( allWorkList);
+        for(Map.Entry<String,List<Map<String,Object>>> entry:map.entrySet()){
+          List<Map<String,Object>> workList=  entry.getValue();
+            byte[] attachement=genExcelFromWorkPlanList(workList);
+            Map<String,Object> info=workList.get(0);
+            String userName= MapUtils.getString(info, "userName");
+            String day= MapUtils.getString(info,"day");
+            String shopEmail=MapUtils.getString(info,"shopEmail");
+            String year="";
+            String month="";
+            String[] dayStr= StringUtils.split(day,"-");
+            if(dayStr.length==3){
+                year=dayStr[0];
+                month=Integer.parseInt(dayStr[1])+"";
+            }
+            String fileName = userName + year + "年" + month + "月工作计划";
+            StringBuilder text = new StringBuilder();
+            text.append("餐厅经理：\n")
+                    .append("   你好，附件是" + userName + year + "年" + month + "月工作计划。\n" +
+                            "若有疑问请直接联系" + userName+"。\n")
+                    .append("===============请不要直接回复这个邮件，这是由系统生成的邮件===============");
+
+
+            ByteArrayResource resource = new ByteArrayResource(attachement);
+            try {
+                shopEmail="13636462617@163.com";
+                new EmailUtils(emailSender).sendEmailWithAttachment(shopEmail, fileName,text.toString(), fileName + ".xlsx", resource);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+    private void sendMail(List<Map<String,Object>> workList,String email){
+        byte[] attachement=genExcelFromWorkPlanList(workList);
+        Map<String,Object> info=workList.get(0);
+        String userName= MapUtils.getString(info, "userName");
+        String day= MapUtils.getString(info,"day");
+        String year="";
+        String month="";
+        String[] dayStr= StringUtils.split(day,"-");
+        if(dayStr.length==3){
+            year=dayStr[0];
+            month=Integer.parseInt(dayStr[1])+"";
+        }
+        String fileName = userName + year + "年" + month + "月工作计划";
+        StringBuilder text = new StringBuilder();
+        text.append("餐厅经理：\n")
+                .append("   你好，附件是" + userName + year + "年" + month + "月工作计划。\n" +
+                        "若有疑问请直接联系" + userName+"。\n")
+                .append("===============请不要直接回复这个邮件，这是由系统生成的邮件===============");
+
+
+        ByteArrayResource resource = new ByteArrayResource(attachement);
+        try {
+            new EmailUtils(emailSender).sendEmailWithAttachment(email, fileName,text.toString(), fileName + ".xlsx", resource);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     private byte[] genExcelFromWorkPlanList(List<Map<String,Object>> workList){
         Workbook wb=new XSSFWorkbook();
         Sheet sheet=  wb.createSheet("任务排程");
         Row title= sheet.createRow(0);
-        title.createCell(1).setCellValue("日期");
-        title.createCell(2).setCellValue("开始时间");
-        title.createCell(3).setCellValue("任务门店");
-        title.createCell(4).setCellValue("委派人");
-        title.createCell(5).setCellValue("任务名称");
-        title.createCell(6).setCellValue("任务详细");
+        title.createCell(0).setCellValue("日期");
+        title.createCell(1).setCellValue("开始时间");
+        title.createCell(2).setCellValue("任务门店");
+        title.createCell(3).setCellValue("委派人");
+        title.createCell(4).setCellValue("任务名称");
+        title.createCell(5).setCellValue("任务详细");
         if(CollectionUtils.isNotEmpty(workList)){
             int i=1;
             for(Map<String,Object> map:workList){
                 Row row=sheet.createRow(i);
-                row.createCell(1).setCellValue(map.get("day").toString());
-                row.createCell(2).setCellValue(map.get("time").toString());
-                row.createCell(3).setCellValue(map.get("shop").toString());
-                row.createCell(4).setCellValue(map.get("userName").toString());
-                row.createCell(5).setCellValue(map.get("taskName").toString());
-                row.createCell(6).setCellValue(map.get("content").toString());
+
+                row.createCell(0).setCellValue(MapUtils.getString(map, "day"));
+                row.createCell(1).setCellValue(MapUtils.getString(map,"time"));
+                row.createCell(2).setCellValue(MapUtils.getString(map,"shop"));
+                row.createCell(3).setCellValue(MapUtils.getString(map,"userName"));
+                row.createCell(4).setCellValue(MapUtils.getString(map,"taskName"));
+                row.createCell(5).setCellValue(MapUtils.getString(map,"content"));
               i++;
             }
         }
@@ -212,4 +305,5 @@ public class WrokServiceImpl implements IWorkService{
         }
         return byteArrayOutputStream.toByteArray();
     }
+
 }

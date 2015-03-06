@@ -168,5 +168,9 @@ public class WorkController {
          workService.saveBWorkType(list);
          outPrint("0", response);
     }
-
+    @ResponseBody
+    @RequestMapping("/sendMail")
+    public void sendMail(String userId,String month){
+        workService.sendWorkPlanMailByUserId(userId,month);
+    }
 }
