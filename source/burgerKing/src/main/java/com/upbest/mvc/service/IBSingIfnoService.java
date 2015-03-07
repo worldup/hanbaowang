@@ -12,6 +12,8 @@ public interface IBSingIfnoService {
     Page<Object[]> findSingList(String singName, Pageable requestPage);
 
 	void signIn(int shopId, int userid, String lng, String lat, String location) throws BurgerKingException;
+	void signIn(int shopId, int userid, String lng, String lat, String location,String serialNo) throws BurgerKingException;
+	void signOut(int shopId, int userid, String lng, String lat, String location,String serialNo) throws BurgerKingException;
 
 	void signOut(int shopId, int userid)  throws BurgerKingException;
 

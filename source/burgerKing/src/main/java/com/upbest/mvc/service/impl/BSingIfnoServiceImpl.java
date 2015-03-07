@@ -188,7 +188,32 @@ public class BSingIfnoServiceImpl implements IBSingIfnoService {
     	
     	singRepository.save(signInfo);
     }
-    
+    @Override
+    public void signIn(int shopId,int userid, String lng, String lat,String location,String serialNo) throws BurgerKingException {
+
+        BSignInfo signInfo = new BSignInfo();
+        signInfo.setUserid(userid);
+        signInfo.setShopId(shopId);
+        signInfo.setSignintime(new Date());
+        signInfo.setSigninlatitude(lat);
+        signInfo.setSigninlongitude(lng);
+        signInfo.setLocation(location);
+        signInfo.setSerialNo(serialNo);
+        singRepository.save(signInfo);
+    }
+    @Override
+    public void signOut(int shopId,int userid, String lng, String lat,String location,String serialNo) throws BurgerKingException {
+
+        BSignInfo signInfo = new BSignInfo();
+        signInfo.setUserid(userid);
+        signInfo.setShopId(shopId);
+        signInfo.setSignouttime(new Date());
+        signInfo.setSigninlatitude(lat);
+        signInfo.setSigninlongitude(lng);
+        signInfo.setLocation(location);
+        signInfo.setSerialNo(serialNo);
+        singRepository.save(signInfo);
+    }
     /**
      * 查询此用户最近一次签到的记录，然后作更新处理
      */

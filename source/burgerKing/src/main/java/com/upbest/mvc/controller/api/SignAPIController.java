@@ -52,9 +52,9 @@ public class SignAPIController {
 		String lng = o.getString("lng");
 		String lat = o.getString("lat");
 		String location = o.getString("location");
-		
+		String serialNo=o.getString("serialNo");
 		try {
-			singSeriver.signIn(shopId,userid, lng, lat, location);
+			singSeriver.signIn(shopId,userid, lng, lat, location,serialNo);
 			result.setCode(Code.SUCCESS_CODE);
 			result.setSuccess(true);
 			result.setMsg(SIGN_IN_SUCCESS);
@@ -84,8 +84,12 @@ public class SignAPIController {
 		JSONObject o = (JSONObject) j.getObj();
 		int userid = o.getIntValue("userid");
 		int shopId = o.getIntValue("shopId");
+        String lng = o.getString("lng");
+        String lat = o.getString("lat");
+        String location = o.getString("location");
+        String serialNo=o.getString("serialNo");
 		try {
-			singSeriver.signOut(shopId,userid);
+			singSeriver.signOut(shopId,userid,lng,lat,location,serialNo);
 			result.setCode(Code.SUCCESS_CODE);
 			result.setSuccess(true);
 			result.setMsg(SIGN_OUT_SUCCESS);

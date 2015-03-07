@@ -37,7 +37,29 @@ public class WorkAPIController {
     public static final String PARAM_ILLEGAL = "参数非法";
 
     private static final Logger logger = LoggerFactory.getLogger(WorkAPIController.class);
-    
+    @ResponseBody
+    @RequestMapping("/sendMail")
+    public Json sendMail(HttpServletRequest req){
+
+        Json result = new Json();
+        Json j = Constant.convertJson(req);
+        JSONObject o = (JSONObject) j.getObj();
+        String userId=o.getString("userId");
+        String month=o.getString("month");
+        if (StringUtils.isBlank(userId)) {
+            result.setCode(Code.NULL_CODE);
+            result.setMsg(VERIFY_NULL);
+            result.setSuccess(false);
+            result.setObj(null);
+            return result;
+        }
+        service.sendWorkPlanMailByUserId(userId,month);
+        result.setObj(service.findWork(userId));
+        result.setCode(Code.SUCCESS_CODE);
+        result.setSuccess(true);
+        result.setMsg(VERIFY_SUCCESS);
+        return result;
+    }
     @RequestMapping(value = "/securi_getwork")
     @ResponseBody
     public Json get(HttpServletRequest req) {

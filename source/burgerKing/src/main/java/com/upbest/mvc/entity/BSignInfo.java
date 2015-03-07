@@ -44,6 +44,17 @@ public class BSignInfo implements Serializable{
 	@Size(max=100)
 	private String location;
 
+   @Column(name="serial_no")
+   @Size(max=100)
+   private String serialNo;
+
+    public String getSerialNo() {
+        return serialNo;
+    }
+
+    public void setSerialNo(String serialNo) {
+        this.serialNo = serialNo;
+    }
 
     public Integer getId() {
         return id;
