@@ -47,8 +47,18 @@ public class BFacility implements Serializable{
 	
 	@Column(name="user_id")
 	private Integer userid;
+    @Column(name="need_user_match")
+    private Integer needUserMatch;
 
-	public Integer getId() {
+    public Integer getNeedUserMatch() {
+        return needUserMatch;
+    }
+
+    public void setNeedUserMatch(Integer needUserMatch) {
+        this.needUserMatch = needUserMatch;
+    }
+
+    public Integer getId() {
 		return id;
 	}
 

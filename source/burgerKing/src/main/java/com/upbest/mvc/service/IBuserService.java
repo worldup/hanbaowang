@@ -41,7 +41,7 @@ public interface IBuserService {
     List<TreeVO> getUrVOListMessage(Integer userid);
     
     Buser findByUsernameAndPassword(String username,String password);
-    
+    boolean isFacilityMatch(String facilityId,Integer userId);
     /**
      * 根据用户名查询门店信息
      * @param username

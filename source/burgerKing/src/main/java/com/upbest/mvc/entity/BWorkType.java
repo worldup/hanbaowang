@@ -32,14 +32,22 @@ public class BWorkType implements Serializable{
     
     @Column(name="is_exam_type")
     private Integer isExamType;
-    
+
     @Column(name="is_to_store")
     private Integer isToStore;
     
     @Column(name="sort_num")
     private Integer sortNum;
-    
-    
+    @Column(name="exam_type")
+    private Integer  examType;
+    public Integer getExamType() {
+        return examType;
+    }
+
+    public void setExamType(Integer examType) {
+        this.examType = examType;
+    }
+
     public Integer getSortNum() {
         return sortNum;
     }

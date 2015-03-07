@@ -71,7 +71,7 @@ public class WrokServiceImpl implements IWorkService{
         sql.append("         s.type_name,       ");
         sql.append("         s.type_role,       ");
         sql.append("         s.frequency,       ");
-        sql.append("         s.is_to_store ,s.is_exam_type      ");
+        sql.append("         s.is_to_store ,s.is_exam_type ,s.exam_type     ");
         sql.append("    FROM bk_work_type s  ");
         sql.append("   where 1=1                       ");
         if (StringUtils.isNotBlank(typeName)) {

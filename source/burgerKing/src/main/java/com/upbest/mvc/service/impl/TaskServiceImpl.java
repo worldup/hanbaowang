@@ -458,7 +458,7 @@ public class TaskServiceImpl implements ITaskService {
         sql.append("         t.is_self_create,                  ");
         sql.append("         t.quarter,                  ");
         sql.append("         shop.id as shopId,                  ");
-        sql.append("         t.id as taskTypeId,typ.is_to_store as isToStore ,                 ");
+        sql.append("         typ.id as taskTypeId,typ.is_to_store as isToStore ,                 ");
         sql.append("         t.useImg  ,               ");
         sql.append("         t.useText     ,         ");
         sql.append("         t.ishidden                 ");

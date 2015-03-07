@@ -50,7 +50,11 @@ public class FacilityLoginServiceImpl implements IFacilityLoginService {
 		if(user == null){
 			throw new UsernameAndPasswordNotMatchException();
 		}
-		/*BFacility facility = facilityService.queryByDevIdAndUser(facilityId, user);
+       boolean match=  userService.isFacilityMatch(facilityId,user.getId());
+        if(!match){
+            throw new FacilityNotMatchException();
+        }
+		/* BFacility facility = facilityService.queryByDevIdAndUser(facilityId, user);
 		if(facility == null){
 			throw new FacilityNotMatchException();
 		}*/

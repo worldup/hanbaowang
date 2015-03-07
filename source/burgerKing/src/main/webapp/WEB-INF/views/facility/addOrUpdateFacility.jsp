@@ -11,25 +11,28 @@
 			<td><input name="deviceid"  class="text" value="${facility.deviceid}"/></td> 
 		</tr>
 		<tr>
-			<td class="title"><b>*</b>品牌：</td><td><input name="devicebrand"  class="text" value="${facility.devicebrand}"/></td> 
+			<td class="title">品牌：</td><td><input name="devicebrand"  class="text" value="${facility.devicebrand}"/></td> 
 		</tr>
 		<tr>
-			<td class="title"><b>*</b>型号：</td><td><input name="devicemodel"  class="text"  value="${facility.devicemodel}"/></td> 
+			<td class="title">型号：</td><td><input name="devicemodel"  class="text"  value="${facility.devicemodel}"/></td> 
 		</tr>
 		<tr>
-			<td class="title"><b>*</b>版本：</td><td><input name="deviceversion"  class="text"  value="${facility.deviceversion}"/></td> 
+			<td class="title">版本：</td><td><input name="deviceversion"  class="text"  value="${facility.deviceversion}"/></td> 
 		</tr>
 		<tr>
-			<td class="title"><b>*</b>分辨率：</td><td><input name="deviceresolution"  class="text"  value="${facility.deviceresolution}"/></td> 
+			<td class="title">分辨率：</td><td><input name="deviceresolution"  class="text"  value="${facility.deviceresolution}"/></td> 
 		</tr>
 		<tr>
-			<td class="title"><b>*</b>操作系统：</td><td><input name="deviceos"  class="text" value="${facility.deviceos}"/></td> 
+			<td class="title">操作系统：</td><td><input name="deviceos"  class="text" value="${facility.deviceos}"/></td> 
 		</tr>
 		<tr>
-			<td class="title"><b>*</b>操作系统版本：</td><td><input name="deviceosversion" class="text"  value="${facility.deviceosversion}"/></td> 
+			<td class="title">操作系统版本：</td><td><input name="deviceosversion" class="text"  value="${facility.deviceosversion}"/></td> 
 		</tr>
+        <tr>
+            <td class="title">登陆限制：</td><td><input name="needUserMatch" class="text"  value="${facility.needUserMatch}"/></td>
+        </tr>
 		<tr>
-			<td class="title"><b>*</b>用户：</td>
+			<td class="title">用户：</td>
 			<td align="left">
 				<select name="userid" >
 					<option value="-1">---请选择---</option>
@@ -65,7 +68,7 @@ $("#submit").bind("click",function(){
 		alert('请输入标识号!');
 		return false;
 	}
-	if($.trim($('input[name=devicebrand]').val())==''){
+/*	if($.trim($('input[name=devicebrand]').val())==''){
 		alert('请输入品牌!');
 		return false;
 	}
@@ -88,7 +91,7 @@ $("#submit").bind("click",function(){
 	if($.trim($('input[name=deviceosversion]').val())==''){
 		alert('请输入操作系统版本!');
 		return false;
-	}
+	}*/
 	if($.trim($('select[name=userid]').val())=='-1'){
 		alert('请选择用户!');
 		return false;

@@ -10,7 +10,15 @@ public class WorkTypeVO implements Serializable {
     private String frequency;
     private Integer isExamType;
     private Integer isToStore;
-    
+    private Integer  examType;
+    public Integer getExamType() {
+        return examType;
+    }
+
+    public void setExamType(Integer examType) {
+        this.examType = examType;
+    }
+
     public Integer getIsToStore() {
         return isToStore;
     }

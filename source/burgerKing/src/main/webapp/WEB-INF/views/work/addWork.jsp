@@ -29,12 +29,22 @@
 	</tr>
 	<tr>
 		<td class="title"><b>*</b>是否问卷类型:</td>
-		<td align="left"><select id="isExamType" name="isExamType">
+		<td align="left">
+            <select id="isExamType" class="easyui-combobox"  name="isExamType" data-options="onSelect:function(rec){
+                if(rec.id==1){
+                    $('#examType').show();
+                }
+                else{
+                 $('#examType').hide();
+                }
+            }">
 				<option value="-1">---请选择---</option>
 				<option value="1">是</option>
 				<option value="0">否</option>
-				 
-		</select><input type="hidden" value="${work.isExamType}" id="isExamTypeHid" /></td>
+            </select>
+
+            <input id="examType" name="examType" class="easyui-combobox" data-options="valueField:'id',textField:'text'">
+            <input type="hidden" value="${work.isExamType}" id="isExamTypeHid" /></td>
 	</tr>
 	<tr>
 		<td class="title"><b>*</b>是否针对门店:</td>

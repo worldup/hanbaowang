@@ -542,6 +542,8 @@ public class MessageServiceImpl implements IMessageService{
         result.put("task", rw);
         int yc = getMessageCountByTypeAndUsrId("4", userId);
         result.put("exception", yc);
+        int um = getMessageCountByTypeAndUsrId("6", userId);
+        result.put("userMessage",um);
         Buser buser =buserRepository.findOne(userId);
         if(buser!=null){
             if(buser.getRole().equals("2")){

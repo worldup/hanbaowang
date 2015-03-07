@@ -82,6 +82,17 @@ $(function() {
 								sortable : false,
 								width : 200
 							},
+                             {
+                            label : "登陆限制",
+                            name : "needUserMatch",
+                            title : false,
+                            sortable : false,
+                             formatter : function(cellvalue, options,
+                                                  rowObject) {
+                                 return cellvalue==1?'是':'否';
+                             },
+                            width : 200
+                             },
 							{
 								label : "操作",
 								sortable : false,

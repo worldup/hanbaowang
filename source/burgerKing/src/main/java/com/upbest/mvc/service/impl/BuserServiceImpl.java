@@ -428,7 +428,16 @@ public class BuserServiceImpl implements IBuserService {
     public Buser findByUsernameAndPassword(String username, String password) {
         return buserRepository.findByNameAndPwdAndRoleNot(username, PasswordUtil.genPassword(password),"0");
     }
-
+    @Override
+    public boolean isFacilityMatch(String facilityId,Integer userId){
+       String sql=" select count(id) num from bk_facility where    device_id=:device_id " +
+               "        and ((need_user_match =1 and user_id=:user_id) or  (need_user_match=0))";
+        Map<String ,Object> map=new HashMap();
+        map.put("device_id",facilityId);
+        map.put("user_id",userId);
+        Integer size=  namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class);
+        return size>0?true:false;
+    }
     @Override
     public List<ShopVO> findShopInfosByUsername(String username) {
         Buser user = buserRepository.findByName(username);

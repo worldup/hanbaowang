@@ -70,20 +70,55 @@ public class FacilityController {
 
 	@RequestMapping("/add")
 	@ResponseBody
-	public void addFacility(BFacility facility) {
-		service.saveFacility(facility);
+	public void addFacility(BFacility facility,HttpServletResponse response) throws Exception{
+        Json json = new Json();
+        boolean result=true;
+        try{
+            service.saveFacility(facility);
+        }catch (Exception e){
+            e.printStackTrace();
+            result=false;
+        }
+        json.setSuccess(result);
+        PrintWriter writer = response.getWriter();
+        writer.print(CommonUtils.toJson(json));
+        writer.close();
+
 	}
 
 	@RequestMapping("/delete")
 	@ResponseBody
-	public void deleteFacility(@RequestParam("id") int facilityId) {
-		service.deleteFacility(facilityId);
+	public void deleteFacility(@RequestParam("id") int facilityId,HttpServletResponse response) throws  Exception{
+        Json json = new Json();
+        boolean result=true;
+        try{
+            service.deleteFacility(facilityId);
+        }catch (Exception e){
+            e.printStackTrace();
+            result=false;
+        }
+        json.setSuccess(result);
+        PrintWriter writer = response.getWriter();
+        writer.print(CommonUtils.toJson(json));
+        writer.close();
+
 	}
 
 	@RequestMapping("/update")
 	@ResponseBody
-	public void updateFacility(BFacility facility) {
-		service.saveFacility(facility);
+	public void updateFacility(BFacility facility,HttpServletResponse response) throws  Exception{
+        Json json = new Json();
+        boolean result=true;
+        try{
+            service.saveFacility(facility);
+        }catch (Exception e){
+            e.printStackTrace();
+            result=false;
+        }
+	    json.setSuccess(result);
+        PrintWriter writer = response.getWriter();
+        writer.print(CommonUtils.toJson(json));
+        writer.close();
 	}
 
 	@RequestMapping("/list")

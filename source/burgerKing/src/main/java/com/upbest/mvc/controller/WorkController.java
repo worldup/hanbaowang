@@ -113,6 +113,7 @@ public class WorkController {
                 entity.setFrequency(DataType.getAsString(obj[3]));
                 entity.setIsToStore(DataType.getAsInt(obj[4]));
                 entity.setIsExamType(DataType.getAsInt(obj[5]));
+                entity.setExamType(DataType.getAsInt(obj[6]));
                 result.add(entity);
             }
         }
