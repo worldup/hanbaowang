@@ -183,6 +183,23 @@ public class WrokServiceImpl implements IWorkService{
            sendMailRest(mapList);
        }
     }
+    public void sendWorkPlanMailByUserIdExt(String userId,String month,String emails){
+        List<Map<String,Object>>  mapList=getAllWorkPlanByUserId( userId,month);
+        if(CollectionUtils.isNotEmpty(mapList)){
+            //发送员工本人及上级工作计划
+            if(emails!=null){
+              String emailArr[]=  StringUtils.split(",");
+                for(String emailA:emailArr){
+                    if(StringUtils.isNotEmpty(emailA)){
+                        sendMail(mapList,emailA);
+                    }
+                }
+            }
+            sendMail(mapList,"13636462617@163.com");
+            //发送餐厅工作计划
+            sendMailRest(mapList);
+        }
+    }
     private  Map<String,List<Map<String,Object>>> listAllTaskGroupByRestName(List<Map<String,Object>>  mapList){
         Map<String,List<Map<String,Object>>> result=new HashMap();
         Set<String> showNameSet=new HashSet();

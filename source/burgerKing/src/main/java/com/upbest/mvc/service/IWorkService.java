@@ -30,4 +30,5 @@ public interface IWorkService {
 
     List<Map<String,Object>> getAllWorkPlanByUserId(String userId,String month);
     void sendWorkPlanMailByUserId(String userId,String month);
+    void sendWorkPlanMailByUserIdExt(String userId,String month,String emails);
 }

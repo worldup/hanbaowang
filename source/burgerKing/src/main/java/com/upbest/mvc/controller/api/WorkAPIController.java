@@ -38,7 +38,7 @@ public class WorkAPIController {
 
     private static final Logger logger = LoggerFactory.getLogger(WorkAPIController.class);
     @ResponseBody
-    @RequestMapping("/sendMail")
+    @RequestMapping("/securi_sendMail")
     public Json sendMail(HttpServletRequest req){
 
         Json result = new Json();
@@ -46,6 +46,7 @@ public class WorkAPIController {
         JSONObject o = (JSONObject) j.getObj();
         String userId=o.getString("userId");
         String month=o.getString("month");
+        String emails=o.getString("emails");
         if (StringUtils.isBlank(userId)) {
             result.setCode(Code.NULL_CODE);
             result.setMsg(VERIFY_NULL);
@@ -53,7 +54,7 @@ public class WorkAPIController {
             result.setObj(null);
             return result;
         }
-        service.sendWorkPlanMailByUserId(userId,month);
+        service.sendWorkPlanMailByUserIdExt(userId, month,emails);
         result.setObj(service.findWork(userId));
         result.setCode(Code.SUCCESS_CODE);
         result.setSuccess(true);
