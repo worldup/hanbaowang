@@ -336,7 +336,7 @@ public class TaskServiceImpl implements ITaskService {
         sql.append("         typ.id as taskTypeId, typ.is_to_store as isToStore   ,              ");
         sql.append("         t.useImg  ,               ");
         sql.append("         t.useText     ,         ");
-        sql.append("         t.ishidden                 ");
+        sql.append("         t.ishidden    ,typ.exam_type             ");
         sql.append("    from bk_work_info t                  ");
         sql.append("    left join bk_work_type typ           ");
         sql.append("      on t.work_type_id = typ.id         ");
@@ -431,7 +431,8 @@ public class TaskServiceImpl implements ITaskService {
                 vo.setUseText(DataType.getAsString(obj[19]));
                 vo.setUseImg(DataType.getAsString(obj[18]));
                 vo.setIshidden(DataType.getAsString(obj[20]));
-
+                vo.setStoreNum(DataType.getAsString(obj[21]));
+                vo.setExamType(DataType.getAsString(obj[22]));
                 result.add(vo);
             }
         }
@@ -461,7 +462,7 @@ public class TaskServiceImpl implements ITaskService {
         sql.append("         typ.id as taskTypeId,typ.is_to_store as isToStore ,                 ");
         sql.append("         t.useImg  ,               ");
         sql.append("         t.useText     ,         ");
-        sql.append("         t.ishidden                 ");
+        sql.append("         t.ishidden    ,shop.shop_num              ");
         sql.append("    from bk_work_info t                  ");
         sql.append("    left join bk_work_type typ           ");
         sql.append("      on t.work_type_id = typ.id         ");

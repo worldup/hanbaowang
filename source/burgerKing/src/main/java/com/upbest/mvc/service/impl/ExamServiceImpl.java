@@ -23,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -125,7 +126,8 @@ public class ExamServiceImpl implements IExamService {
     
     @Autowired
     private JavaMailSenderImpl emailSender;
-
+    @Autowired
+    private NamedParameterJdbcTemplate jdbcTemplate;
     @Autowired
     private IBuserService userService;
 
@@ -140,6 +142,9 @@ public class ExamServiceImpl implements IExamService {
 
     private static final Logger logger = LoggerFactory.getLogger(ExamServiceImpl.class);
 
+    public  List<BExaminationPaper>  getAllExamPaper(){
+      return       basicRespository.findAll();
+    }
     @Override
     public List<SelectionVO> queryExamType() {
         List<SelectionVO> result = new ArrayList<SelectionVO>();
@@ -1476,5 +1481,13 @@ public class ExamServiceImpl implements IExamService {
         common.upadteBySql(deleteTestPaperDetail, new ArrayList<>());
         //删除测评问卷
         testPaperRespository.delete(DataType.getAsInt(id));
+    }
+    @Override
+    public  int completeWorkInfo(Integer taskId,Integer testPaperId) {
+        Map<String ,Integer> map=new HashMap();
+        map.put("testPaperId",testPaperId);
+        map.put("taskId",taskId);
+       return  jdbcTemplate.update("update bk_work_info set state=1 , testPaperId=:testPaperId where id=:taskId",map);
+
     }
 }

@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -68,19 +70,30 @@ public class WorkController {
     @ResponseBody
     @RequestMapping("/add")
     public void list(@RequestParam(value = "jsons", required = false) String vo, Model model, HttpSession session, HttpServletResponse response) {
-        BWorkType worktype = new BWorkType();
-        JSONObject jso = JSONObject.parseObject(vo);
-        worktype = (BWorkType) JSONObject.toJavaObject(jso, BWorkType.class);
-        Integer maxSortNum = workService.getMaxSortNum();
-        if (worktype.getId() == null) {
-            // 添加
-            if (maxSortNum.intValue() != 0) {
-                worktype.setSortNum(workService.getMaxSortNum() + 1);
-            } else {
-                worktype.setSortNum(0);
+        Gson gson=new Gson();
+        boolean result=true;
+        try{
+            BWorkType worktype = new BWorkType();
+            JSONObject jso = JSONObject.parseObject(vo);
+            worktype = (BWorkType) JSONObject.toJavaObject(jso, BWorkType.class);
+            Integer maxSortNum = workService.getMaxSortNum();
+            if (worktype.getId() == null) {
+                // 添加
+                if (maxSortNum.intValue() != 0) {
+                    worktype.setSortNum(workService.getMaxSortNum() + 1);
+                } else {
+                    worktype.setSortNum(0);
+                }
             }
+            workService.saveBWorkType(worktype);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            result=false;
         }
-        workService.saveBWorkType(worktype);
+
+
+        outPrint(gson.toJson(result),response);
     }
 
     @ResponseBody

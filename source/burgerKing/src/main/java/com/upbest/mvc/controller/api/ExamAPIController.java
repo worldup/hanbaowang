@@ -396,7 +396,11 @@ public class ExamAPIController {
             testPaper.setTbegin(new Date(DataType.getAsLong(o.getString("beginTime"))));
             testPaper.setTend(new Date(DataType.getAsLong(o.getString("endTime"))));
             testPaper.setLevel(DataType.getAsInt(o.getString("level")));
-            
+            Integer taskId = o.getInteger("taskId");
+            if(taskId!=null){
+                testPaper.setTaskId(taskId);
+
+            }
             List<BTestPaperDetail> list = new ArrayList<BTestPaperDetail>();
             for (Map<String, Object> map : questionList) {
                 BTestPaperDetail testPaperDetail = new BTestPaperDetail();
@@ -414,6 +418,9 @@ public class ExamAPIController {
             }
             testPaperDetailService.saveTestPaperDetail(list, testPaper, exHeadingList, proAnaList, actionPlList);
             String emails = getShopEmail(testPaper.getId());
+            if(testPaper.getId()!=null){
+                service.completeWorkInfo(taskId,testPaper.getId());
+            }
             String fullServerPath=req.getScheme()+"://"+req.getServerName()+":"+req.getServerPort()+req.getContextPath();
             new SendEmailThread(fullServerPath,service, "13636462617@163.com", testPaper.getId()).start();
             result.setCode(Code.SUCCESS_CODE);

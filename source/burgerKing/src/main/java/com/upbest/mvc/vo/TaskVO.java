@@ -31,6 +31,24 @@ public class TaskVO implements Serializable {
     private String useText;
     private String useImg;
     private int isToStore;
+    private String storeNum;
+    private String examType;
+
+    public String getExamType() {
+        return examType;
+    }
+
+    public void setExamType(String examType) {
+        this.examType = examType;
+    }
+
+    public String getStoreNum() {
+        return storeNum;
+    }
+
+    public void setStoreNum(String storeNum) {
+        this.storeNum = storeNum;
+    }
 
     public String getIshidden() {
         return ishidden;

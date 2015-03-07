@@ -30,20 +30,16 @@
 	<tr>
 		<td class="title"><b>*</b>是否问卷类型:</td>
 		<td align="left">
-            <select id="isExamType" class="easyui-combobox"  name="isExamType" data-options="onSelect:function(rec){
-                if(rec.id==1){
-                    $('#examType').show();
-                }
-                else{
-                 $('#examType').hide();
-                }
-            }">
+            <select id="isExamType" class="easyui-combobox"  name="isExamType"  onchange="showExamType(this.value)">
 				<option value="-1">---请选择---</option>
 				<option value="1">是</option>
 				<option value="0">否</option>
             </select>
+            <select id="examType"  style="display:none;width:200px"  name="examType"  >
+                <option value="-1">---请选择---</option>
 
-            <input id="examType" name="examType" class="easyui-combobox" data-options="valueField:'id',textField:'text'">
+            </select>
+
             <input type="hidden" value="${work.isExamType}" id="isExamTypeHid" /></td>
 	</tr>
 	<tr>
@@ -66,8 +62,23 @@
 			</tr>
 		</table>
 <script type="text/javascript">
+    function showExamType(val){
+        if(val==1){
+            $("#examType").show();
+        }
+        else{
+            $("#examType").val("-1");
+            $("#examType").hide();
+        }
+    }
 var typerole='${work.typerole}';
 $(document).ready(function(){
+    $.post("${basePath}"+"/exam/listAllExamPaper",{},function(data){
+        var jsonResult=$.parseJSON(data);
+        $.each(jsonResult,function(i, value) {
+            $("#examType").append("<option value='"+ value.id+"'>"+ value.name+"</option>");
+        });
+    })
 	var arr = typerole.split(",");
 	for(var i = 0;i<arr.length;i++){
 		$("input[value='"+arr[i]+"']").prop("checked",true);
@@ -115,8 +126,12 @@ $(document).ready(function(){
 	}
 	var isExamTypeHid = $("#isExamTypeHid").val();
 	if(isExamTypeHid!=null&&isExamTypeHid!=""){
-		$("#isExamType option[value="+isExamTypeHid+"]").prop("selected",true);
-	}
+        $("#isExamType option[value="+isExamTypeHid+"]").prop("selected",true);
+    }
+    if("${work.examType}"!="null"&&"${work.examType}"!=""){
+        $("#examType").show();
+        $("#examType").val("${work.examType}");;
+    }
 	var isToStoreHid = $("#isToStoreHid").val();
 	if(isToStoreHid!=null&&isToStoreHid!=""){
 		$("#isToStore option[value="+isToStoreHid+"]").prop("selected",true);
@@ -176,11 +191,13 @@ $("#btn_save").bind("click",function(){
 	vo.typerole=typeRole.join(',');
 	vo.frequency=$.trim($('select[name=frequency]').val());
 	vo.isExamType = $.trim($('#isExamType').val());
+    if(vo.isExamType=='1'){
+        vo.examType=$("#examType").val();
+    }
 	vo.isToStore = $.trim($('#isToStore').val());
 	
 	var url = "${basePath}/work/add";
 	_obj.addClass("big_ddd").removeClass("big_green");
-	
 	$.ajax({
 		type : 'post',
 		url : url,

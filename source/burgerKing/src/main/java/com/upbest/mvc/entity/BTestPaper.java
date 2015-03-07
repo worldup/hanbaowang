@@ -60,8 +60,18 @@ private static final long serialVersionUID = 1L;
 	
 	@Column(name="level")
 	private Integer level;
+    @Column(name="taskId")
+    private Integer taskId;
 
-	public Integer getId() {
+    public Integer getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(Integer taskId) {
+        this.taskId = taskId;
+    }
+
+    public Integer getId() {
 		return id;
 	}
 

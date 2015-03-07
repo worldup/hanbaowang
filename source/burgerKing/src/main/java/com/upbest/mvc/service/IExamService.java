@@ -2,7 +2,9 @@ package com.upbest.mvc.service;
 
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Map;
 
+import com.upbest.mvc.entity.BExaminationPaper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -16,6 +18,10 @@ import com.upbest.mvc.vo.SelectionVO;
 import com.upbest.utils.PageModel;
 
 public interface IExamService {
+    /****
+     * 获取所有问卷
+     */
+    public  List<BExaminationPaper> getAllExamPaper();
 	/**
 	 * 查询问卷类型
 	 * @return
@@ -129,5 +135,6 @@ public interface IExamService {
     void addEaxmToExcelLoseDetail(String id,String ids, OutputStream out) throws Exception;
     
     void delExamResult(String id);
+    int completeWorkInfo (Integer taskId,Integer testPaperId);
 }
 

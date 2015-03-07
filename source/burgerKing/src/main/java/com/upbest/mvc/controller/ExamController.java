@@ -3,13 +3,19 @@ package com.upbest.mvc.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import com.google.gson.Gson;
+import com.upbest.mvc.entity.BExaminationPaper;
 import com.upbest.pageModel.Json;
 import com.upbest.utils.Constant;
 import org.apache.commons.lang.ObjectUtils;
@@ -32,8 +38,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.upbest.mvc.entity.BExamRefer;
-import com.upbest.mvc.entity.BWorkType;
-import com.upbest.mvc.repository.factory.ExamRespository;
+
 import com.upbest.mvc.service.IExamSerivce;
 import com.upbest.mvc.vo.ExamVO;
 import com.upbest.utils.DataType;
@@ -48,12 +53,27 @@ public class ExamController {
     IExamSerivce examService;
     @Autowired
     com.upbest.mvc.service.IExamService iExamSerivce;
-    @Inject
-    protected ExamRespository examRespository;
+
     @RequestMapping(value = "/index")
     public String index(Model model) {
         model.addAttribute("current","exam");
         return "/bexam/examList";
+    }
+    @ResponseBody
+    @RequestMapping("/listAllExamPaper")
+    public void  listAllExamPaper(HttpServletResponse response){
+        Gson gson=new Gson();
+        List<BExaminationPaper>  paperList= iExamSerivce.getAllExamPaper();
+        List<Map<String,Object>> mapResult=Lists.transform(paperList, new Function<BExaminationPaper, Map<String,Object>>() {
+            @Override
+            public Map<String, Object> apply(BExaminationPaper bExaminationPaper) {
+                Map<String,Object> result=new HashMap ();
+                result.put("id",bExaminationPaper.getId());
+                result.put("name",bExaminationPaper.getEname());
+                return result;
+            }
+        });
+        outPrint(gson.toJson(mapResult),response);
     }
     @ResponseBody
     @RequestMapping("/list")
