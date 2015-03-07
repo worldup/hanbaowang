@@ -7,6 +7,7 @@ import cn.jpush.api.push.PushResult;
 import cn.jpush.api.push.model.Platform;
 import cn.jpush.api.push.model.PushPayload;
 import cn.jpush.api.push.model.audience.Audience;
+import cn.jpush.api.push.model.notification.Notification;
 import com.upbest.mvc.controller.PushMessageController;
 import com.upbest.mvc.entity.BMessage;
 import com.upbest.mvc.entity.Buser;
@@ -57,7 +58,7 @@ public class PushMessageServiceImpl implements PushMessageServiceI {
               String[] empArray = new String[idsArray.length];
 //              String[] empArray = {"xubin"};
               for(int i=0; i<idsArray.length; i++){
-                  empArray[i] = buserRepository.findOne(Integer.parseInt(idsArray[i])).getEmp();
+                  empArray[i] = buserRepository.findOne(Integer.parseInt(idsArray[i])).getId()+"";
               }
               String appKey = ConfigUtil.get("Appkey");
               String MasterSecret = ConfigUtil.get("MasterSecret");
@@ -76,9 +77,9 @@ public class PushMessageServiceImpl implements PushMessageServiceI {
       //              JPushClient jPushClient = new JPushClient(secret[i], keys[i]);  
                     if(jPushClient != null){
                         PushPayload pushPayload=   PushPayload.newBuilder()
-                                .setPlatform(Platform.android())
-                                .setAudience(Audience.tag(empArray[i])).setMessage(cn.jpush.api.push.model.Message.newBuilder().setMsgContent(pushContent).setTitle(pushTitle).addExtras(extra).build())
-                                  .build();
+                                .setPlatform(Platform.android()).setAudience(Audience.alias(empArray[i])).setNotification(Notification.android(pushContent, pushTitle,extra))
+                              //  .setAudience(Audience.tag(empArray[i])).setMessage(cn.jpush.api.push.model.Message.newBuilder().setMsgContent(pushContent).setTitle(pushTitle).addExtras(extra).build())
+                                .build();
 
                         try {
                             PushResult result= jPushClient.sendPush(pushPayload);

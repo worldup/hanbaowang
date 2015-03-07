@@ -88,8 +88,10 @@ public class EmailUtils {
         messageHelper.setFrom(mailSender.getUsername());
         messageHelper.setSubject(subject);
         messageHelper.setText(text);
-        messageHelper.addAttachment(attachmentFileName, resource);
-        
+        if(attachmentFileName!=null&&resource!=null){
+            messageHelper.addAttachment(attachmentFileName, resource);
+        }
+
         // 传送邮件
         mailSender.send(mimeMessage);
 	}

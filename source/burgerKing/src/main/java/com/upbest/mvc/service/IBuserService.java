@@ -16,6 +16,8 @@ import com.upbest.mvc.vo.ShopVO;
 import com.upbest.mvc.vo.TreeVO;
 
 public interface IBuserService {
+    //重置密码
+    void resetPwd(String name  );
     //获取消息发送用户
     List<Map<String,Object>> getMessageUserList(Integer userId);
     Buser findByName(String userName);

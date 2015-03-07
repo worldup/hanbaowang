@@ -1,19 +1,19 @@
 package com.upbest.mvc.service.impl;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.inject.Inject;
 
+import com.upbest.utils.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -26,10 +26,6 @@ import com.upbest.mvc.vo.BuserVO;
 import com.upbest.mvc.vo.SelectionVO;
 import com.upbest.mvc.vo.ShopVO;
 import com.upbest.mvc.vo.TreeVO;
-import com.upbest.utils.DataType;
-import com.upbest.utils.ExcelUtils;
-import com.upbest.utils.PasswordUtil;
-import com.upbest.utils.RoleFactory;
 
 @Service
 public class BuserServiceImpl implements IBuserService {
@@ -40,7 +36,8 @@ public class BuserServiceImpl implements IBuserService {
     private CommonDaoCustom<Object[]> common;
     @Autowired
     private UserHandler userHandler;
-    
+    @Autowired
+    private JavaMailSenderImpl emailSender;
     /*@Autowired
     private IBuserService userService;*/
 
@@ -687,5 +684,44 @@ public class BuserServiceImpl implements IBuserService {
         map.put("userId",userId);
         return  namedParameterJdbcTemplate.queryForList(sql,map);
 
+    }
+    @Override
+    public void resetPwd(String name  ){
+        Random random = new Random();
+        //六位密码
+        String password="";
+        for(int i=0;i<6;i++){
+            password+=random.nextInt(10);
+        }
+        String sql= "update bk_user set pwd=:pwd where id=:user_id";
+        Map map=new HashMap();
+        Buser user =findByName(name);
+        if(user==null){
+            throw  new RuntimeException("用户不存在");
+        }
+        map.put("pwd",PasswordUtil.genPassword(password));
+        map.put("user_id",user.getId());
+        namedParameterJdbcTemplate.update(sql,map);
+        sendRestPwdMail(user,password);
+    }
+    private void sendRestPwdMail(Buser user,String password){
+        if(user!=null){
+          String email=  user.getName();
+            email="13636462617@163.com";
+
+            StringBuilder text = new StringBuilder();
+            text.append(user.getRealname()+"：\n")
+                    .append("   你好，你的密码是 "+password+"\n")
+                    .append("===============请不要直接回复这个邮件，这是由系统生成的邮件===============");
+
+
+
+            try {
+                new EmailUtils(emailSender).sendEmailWithAttachment(email, "汉堡王密码重置",text.toString(), null, null);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

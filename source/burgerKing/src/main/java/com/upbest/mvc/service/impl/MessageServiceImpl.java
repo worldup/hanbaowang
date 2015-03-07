@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import com.upbest.mvc.service.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +23,14 @@ import com.upbest.mvc.entity.NoticeReadInfo;
 import com.upbest.mvc.repository.factory.MessageRespository;
 import com.upbest.mvc.repository.factory.NoticeReadRespository;
 import com.upbest.mvc.repository.factory.UserRespository;
-import com.upbest.mvc.service.CommonDaoCustom;
-import com.upbest.mvc.service.IBuserService;
-import com.upbest.mvc.service.IMessageService;
-import com.upbest.mvc.service.IStoreUserService;
 import com.upbest.utils.DataType;
 
 @Service
 public class MessageServiceImpl implements IMessageService{
     
     private static Logger logger = Logger.getLogger(PushMessageController.class);
-
+    @Autowired
+    PushMessageServiceI pushMessageServiceI;
     @Inject
     MessageRespository messageRespository;
     
@@ -204,7 +202,7 @@ public class MessageServiceImpl implements IMessageService{
         sql.append("         m.state,               ");
         sql.append("         m.create_time,             ");
         sql.append("         m.push_time,                ");
-        sql.append("         is_read = 0 is_read,           ");
+        sql.append("           0 is_read,           ");
         sql.append("         t1.real_name as creater,                 ");
         sql.append("         t2.real_name as sender,                 ");
         sql.append("         t3.real_name as receiver,                ");
@@ -235,7 +233,7 @@ public class MessageServiceImpl implements IMessageService{
         sql.append("         m.state,               ");
         sql.append("         m.create_time,             ");
         sql.append("         m.push_time,                ");
-        sql.append("         is_read = 1 is_read,           ");
+        sql.append("           1 is_read,           ");
         sql.append("         t1.real_name as creater,                 ");
         sql.append("         t2.real_name as sender,                 ");
         sql.append("         t3.real_name as receiver,                ");
@@ -375,7 +373,16 @@ public class MessageServiceImpl implements IMessageService{
 
     @Override
     public BMessage saveBMessage(BMessage message) {
-        return    messageRespository.save(message);
+        BMessage bMessage=    messageRespository.save(message);
+        if("6".equals(bMessage.getMessageType())){
+            Buser bUser= userService.findById(bMessage.getSenderId());
+            try {
+                pushMessageServiceI.push(bMessage.getId()+"",bMessage.getReceiverId()+"",bUser,bMessage.getPushTitle(),bMessage.getPushContent(),null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return bMessage;
     }
 
     @Override

@@ -186,4 +186,49 @@ public class UserAPIController {
         }
         return result;
     }
+
+    @RequestMapping(value="/securi_resetPwd")
+    @ResponseBody
+    public Json resetPwd(HttpServletRequest req)
+    {
+        Json result = new Json();
+        Json j = Constant.convertJson(req);
+        JSONObject o = (JSONObject) j.getObj();
+        String name = o.getString("name");
+         try{
+             service.resetPwd(name);
+         }catch (Exception e){
+             result.setObj(null);
+             result.setCode(1003);
+             result.setSuccess(false);
+             result.setMsg("密码重置失败!");
+             return result;
+         }
+            result.setCode(Code.SUCCESS_CODE);
+            result.setSuccess(true);
+            result.setMsg("密码重置成功！");
+
+        return result;
+    }
+    @RequestMapping(value="/securi_resetPwdNoSign")
+    @ResponseBody
+    public Json securi_resetPwdNoSign(HttpServletRequest req)
+    {
+        String name=req.getParameter("name");
+        Json result = new Json();
+        try{
+            service.resetPwd(name);
+        }catch (Exception e){
+            result.setObj(null);
+            result.setCode(1003);
+            result.setSuccess(false);
+            result.setMsg("密码重置失败!");
+            return result;
+        }
+        result.setCode(Code.SUCCESS_CODE);
+        result.setSuccess(true);
+        result.setMsg("密码重置成功！");
+
+        return result;
+    }
 }
