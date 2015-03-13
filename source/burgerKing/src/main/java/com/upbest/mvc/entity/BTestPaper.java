@@ -60,7 +60,7 @@ private static final long serialVersionUID = 1L;
 	
 	@Column(name="level")
 	private Integer level;
-    @Column(name="taskId")
+    @Column(name="task_Id")
     private Integer taskId;
 
     public Integer getTaskId() {

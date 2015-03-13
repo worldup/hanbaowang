@@ -434,18 +434,35 @@ public class ExamServiceImpl implements IExamService {
 
     @Override
     public double findLastExamScore(Integer shopId, Integer examType) {
-        List<Integer> examIds = getExamIds(examType);
 
-        Pageable pageable = new PageRequest(0, 1, Direction.DESC,"tend");
-        Page<BTestPaper> result = testPaperRespository.findByEidInAndStoreid(examIds, shopId, pageable);
-        List<BTestPaper> testPapers = result.getContent();
-        
-        if(!CollectionUtils.isEmpty(testPapers)){
-        	return testPapers.get(0).getTtotal();
-        }
+
+      Integer result=   getLastScoreByShopIdAndExamType(examType,shopId);
+      if(result!=null){
+          return  result.intValue();
+      }
         return 0;
     }
-
+    public Integer getLastScoreByShopIdAndExamType(Integer eType,Integer shopId){
+        Integer result=null;
+        Map map=new HashMap();
+        map.put("eType",eType);
+        map.put("shopId",shopId);
+       String sql="SELECT\n" +
+               "\tpaper.t_total\n" +
+               "FROM\n" +
+               "\tbk_test_paper paper,\n" +
+               "\tbk_examitnation_paper type\n" +
+               "WHERE\n" +
+               "\ttype.e_type=:eType\n" +
+               "and \n" +
+               "\ttype.id=paper.e_id\n" +
+               "AND paper.store_id = :shopId\n" +
+               "ORDER BY\n" +
+               "\tpaper.t_end DESC\n" +
+               "LIMIT 1;\n";
+      result=  jdbcTemplate.queryForObject(sql,map,Integer.class);
+        return result;
+    }
     @Override
     public List<String> findRepeatLostScoreItem(Integer shopId) {
         List<String> result = new ArrayList<String>();
