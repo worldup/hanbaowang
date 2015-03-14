@@ -1174,7 +1174,10 @@ public class CashAuditExamTestReport extends ExamTestReport {
 		
 		for(int i = 13;i < 17;i++){
 			Cell scoreValCell = scoreRow.getCell(i);
-			scoreValCell.setCellStyle(style);
+            if(scoreValCell!=null){
+                scoreValCell.setCellStyle(style);
+            }
+
 		}
 		
 	}

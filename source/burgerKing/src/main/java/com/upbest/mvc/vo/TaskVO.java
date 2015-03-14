@@ -33,6 +33,15 @@ public class TaskVO implements Serializable {
     private int isToStore;
     private String storeNum;
     private String examType;
+    private int testPaperId;
+
+    public int getTestPaperId() {
+        return testPaperId;
+    }
+
+    public void setTestPaperId(int testPaperId) {
+        this.testPaperId = testPaperId;
+    }
 
     public String getExamType() {
         return examType;
