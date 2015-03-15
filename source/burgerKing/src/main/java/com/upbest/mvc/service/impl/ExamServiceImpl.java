@@ -1305,7 +1305,7 @@ public class ExamServiceImpl implements IExamService {
 
 	private String getExcelName(String userName,String timeStr, BShopInfo shopInfo,
 			String examTypeName) {
-		return timeStr + shopInfo.getShopname() + examTypeName + "报告";
+		return userName+" "+ timeStr + shopInfo.getShopname() + examTypeName + "报告";
 	}
 
 	public void addEaxmToExcelLose(String examid, OutputStream out) throws Exception {

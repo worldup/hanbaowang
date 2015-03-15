@@ -257,8 +257,8 @@ public class StoreAPIController {
         String sortField = "";
         if (o != null) {
             // 获取考卷的类型
-            if (o.get("examType") != null) {
-            	String examTypeStr = (String)o.get("examType");
+            if (StringUtils.isNotEmpty(o.getString("examType"))) {
+            	String examTypeStr = o.getString("examType");
             	if(!StringUtils.isEmpty(examTypeStr)){
             		String[] strAry = examTypeStr.split(",");
             		examType = new Integer[strAry.length];

@@ -140,16 +140,16 @@ public class CashAuditExamTestReport extends ExamTestReport {
 	/**
 	 * 字段的权重
 	 */
-	public byte[] generateReport(int testPaperId) throws Exception{
+	public byte[] generateReport(String fullServerPath, int testPaperId) throws Exception{
 		ExamDetailInfoVO examDetailInfo = examService.findAfterTestExamDetaiInfo(testPaperId);
-		return generateExcel(examDetailInfo);
+		return generateExcel( fullServerPath,examDetailInfo);
 	}
 
 	/**
 	 * 生成excel
 	 * @throws Exception 
 	 */
-	protected byte[] generateExcel(ExamDetailInfoVO examDetailInfo) throws Exception {
+	protected byte[] generateExcel(String fullServerPath,ExamDetailInfoVO examDetailInfo) throws Exception {
 		 Map<String, CellStyle> styles = createStyles(wb);
 		 
 		 String examNam = examDetailInfo.getBasicInfo().getExamName();
@@ -171,7 +171,7 @@ public class CashAuditExamTestReport extends ExamTestReport {
 //		 lastRow = setSpace(sheet,lastRow);
 		 lastRow = buildHeadInfo(examDetailInfo,sheet,styles,lastRow,fieldCellInfoMap);
 		 lastRow = setSpace(sheet,lastRow);
-		 lastRow = buildModulerInfo(examDetailInfo,sheet,styles,lastRow,wb.getCreationHelper(),fieldCellInfoMap);
+		 lastRow = buildModulerInfo(fullServerPath,examDetailInfo,sheet,styles,lastRow,wb.getCreationHelper(),fieldCellInfoMap);
 		 buildAdditionalModulerInfo(examDetailInfo,sheet,styles,lastRow,fieldCellInfoMap);
 		 
 		 //如果问卷需要统计信息，则再创建个sheet
@@ -597,7 +597,7 @@ public class CashAuditExamTestReport extends ExamTestReport {
 	 * @param creationHelper 
 	 * @param fieldCellInfoMap 
 	 */
-	protected int buildModulerInfo(ExamDetailInfoVO examDetailInfo, Sheet sheet,
+	protected int buildModulerInfo(String fullServerPath,ExamDetailInfoVO examDetailInfo, Sheet sheet,
 			Map<String, CellStyle> styles,Integer firstRow, CreationHelper creationHelper, Map<String, CellInfo> fieldCellInfoMap) {
 		Integer nextRow = firstRow;
 				
@@ -677,14 +677,16 @@ public class CashAuditExamTestReport extends ExamTestReport {
 							if(!ArrayUtils.isEmpty(evidences)){
 								int deviceCol = col;
 								Row curRow = questionRow;
+                                int imageIdx=0;
 								for (String ed : evidences) {
 									if(StringUtils.isNotEmpty(ed)){
 										Cell edCell = curRow.createCell(col);
-										edCell.setCellValue(ed);
+										//edCell.setCellValue(ed);
+										edCell.setCellValue("图片"+(++imageIdx));
 										edCell.setCellStyle(styles.get(HTTP_HREF));
 										
 										Hyperlink link = creationHelper.createHyperlink(Hyperlink.LINK_URL);  
-										link.setAddress(ed);  
+										link.setAddress(fullServerPath+ed);
 										edCell.setHyperlink((org.apache.poi.ss.usermodel.Hyperlink) link); 
 										
 										int startCol = edCell.getColumnIndex();

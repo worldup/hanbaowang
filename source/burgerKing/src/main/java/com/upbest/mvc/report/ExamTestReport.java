@@ -269,11 +269,13 @@ public class ExamTestReport {
 							String[] evidences = evidence.split(",");
 							if(!ArrayUtils.isEmpty(evidences)){
 								int deviceCol = col;
+                                int imageIdx=0;
 								for (String ed : evidences) {
 									if(StringUtils.isNotEmpty(ed)){
 
 										Cell edCell = questionRow.createCell(col);
-										edCell.setCellValue(ed);
+										//edCell.setCellValue(ed);
+                                        edCell.setCellValue("图片"+(++imageIdx));
 										edCell.setCellStyle(styles.get(HTTP_HREF));
 										
 										Hyperlink link = creationHelper.createHyperlink(Hyperlink.LINK_URL);  
