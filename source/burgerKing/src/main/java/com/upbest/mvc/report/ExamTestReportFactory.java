@@ -16,7 +16,7 @@ public class ExamTestReportFactory {
 			report = new RevSelfExamTestReport(service);
 		}else if(type.contains("肩并肩")){
 			report = new SideBySideExamTestReport(service);
-		}else if(type.contains("半宿") || type.contains("整宿")){
+		}else if(type.contains("打烊")){
 			report = new DayangExamTestReport(service);
 		}
 		

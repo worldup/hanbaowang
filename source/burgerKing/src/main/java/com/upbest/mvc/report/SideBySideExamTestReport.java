@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
@@ -141,7 +142,7 @@ public class SideBySideExamTestReport extends ExamTestReport {
 		String val = super.getAdditionalCellValue(value, cellInfo);
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		if("beginTime".equals(cellInfo.getFieldName())){
+		if("beginTime".equals(cellInfo.getFieldName())&& StringUtils.isNotEmpty(val)){
 			Date date = new Date();
 			date.setTime(Long.valueOf(val));
 			val = sdf.format(date);
