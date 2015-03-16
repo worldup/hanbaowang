@@ -371,7 +371,23 @@
 			<artifactId>mail</artifactId>
 			<version>1.4.7</version>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-jexl</artifactId>
+            <version>2.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.jxls</groupId>
+            <artifactId>jxls-core</artifactId>
+            <version>1.0.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-digester3</artifactId>
+            <version>3.2</version>
+            <classifier>with-deps</classifier>
+        </dependency>
+    </dependencies>
 	<properties>
 		<cglib.version>2.2.2</cglib.version>
 		<commons-dbcp.version>1.2.2</commons-dbcp.version>
@@ -399,6 +415,7 @@
 		<poi.version>3.9</poi.version>
 		<spring.batch.version>2.2.2.RELEASE</spring.batch.version>
 		<jpush.client.version>3.2.3</jpush.client.version>
+        <jexl.version>2.1.1</jexl.version>
 	</properties>
 
 
