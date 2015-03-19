@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.upbest.mvc.vo.ShopRankVO;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -75,4 +76,6 @@ public interface IStoreService {
     Map<String ,Object > findStoreMapBaseInfo(String shopId);
     //构造门店下拉列表
     List<Map<String,Object>> listShop4Combobox();
+    //门店排行
+    List<ShopRankVO> getShopRank(Integer userId,String province,String region,String fields ,String orderFiled,String month);
 }

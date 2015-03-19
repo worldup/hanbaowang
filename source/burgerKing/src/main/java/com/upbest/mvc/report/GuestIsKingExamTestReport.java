@@ -3,6 +3,7 @@ package com.upbest.mvc.report;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.upbest.mvc.vo.ExamDetailInfoVO;
 import org.springframework.stereotype.Component;
 
 import com.upbest.mvc.service.IExamService;
@@ -14,7 +15,9 @@ import com.upbest.mvc.vo.ExamDetailInfoVO.Field;
  *
  */
 public class GuestIsKingExamTestReport extends ExamTestReport {
-	
+    public byte[]   generateExcel(String fullServerPath,ExamDetailInfoVO examDetailInfo){
+    return null;
+    }
 	public static final String FIELD_ADAPT = "不适用";
 	public static final String FIELD_SCORE = "分值";
 	

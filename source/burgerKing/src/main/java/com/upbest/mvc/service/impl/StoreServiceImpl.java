@@ -16,6 +16,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import com.google.common.collect.Maps;
+import com.upbest.mvc.vo.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SqlOutParameter;
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.simple.ParameterizedBeanPropertyRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,11 +62,6 @@ import com.upbest.mvc.service.CommonDaoCustom;
 import com.upbest.mvc.service.DBChooser;
 import com.upbest.mvc.service.IBuserService;
 import com.upbest.mvc.service.IStoreService;
-import com.upbest.mvc.vo.BShopInfoVO;
-import com.upbest.mvc.vo.BshopStatisticVO;
-import com.upbest.mvc.vo.BuserVO;
-import com.upbest.mvc.vo.SimpleSignInfoVO;
-import com.upbest.mvc.vo.TaskDetailVO;
 import com.upbest.utils.DataType;
 import com.upbest.utils.ExcelUtils;
 
@@ -1347,5 +1344,48 @@ public class StoreServiceImpl implements IStoreService {
     public List<Map<String,Object>> listShop4Combobox(){
       String sql="select id,shop_name,shop_num  from bk_shop_info  ";
       return  namedParameterJdbcTemplate.queryForList(sql,new HashMap());
+    }
+    @Override
+
+    public List<ShopRankVO> getShopRank(Integer userId,String province,String region,String fields ,String orderFiled,String month){
+        SimpleJdbcCall simpleJdbcCall = new SimpleJdbcCall(coreJdbcTemplate);
+        Map<String, Object> map = new HashMap<>();
+        map.put("i_userid", userId);
+        map.put("in_province", province);
+        map.put("in_regional", region);
+        map.put("i_fields", fields);
+        map.put("i_orderby", orderFiled);
+        map.put("i_yearmonth", month);
+        simpleJdbcCall=simpleJdbcCall.withProcedureName("get_shop_rank").returningResultSet("results",new BeanPropertyRowMapper(ShopRankVO.class));
+        if("*".equals(fields)){
+            simpleJdbcCall.declareParameters( new SqlParameter("i_shop_num", Types.VARCHAR),
+                    new SqlOutParameter("shop_num", Types.VARCHAR),
+                    new SqlOutParameter("chinese_name", Types.VARCHAR),
+                    new SqlOutParameter("province", Types.VARCHAR),
+                    new SqlOutParameter("regional", Types.VARCHAR),
+                    new SqlOutParameter("sales", Types.VARCHAR),
+                    new SqlOutParameter("tc", Types.VARCHAR),
+                    new SqlOutParameter("sales_ytd", Types.VARCHAR),
+                    new SqlOutParameter("tc_ytd", Types.VARCHAR),
+                    new SqlOutParameter("comp_sales_ytd", Types.VARCHAR),
+                    new SqlOutParameter("comp_tc_ytd", Types.VARCHAR),
+                    new SqlOutParameter("guest_trac_nps", Types.VARCHAR),
+                    new SqlOutParameter("REV_BS", Types.VARCHAR),
+                    new SqlOutParameter("REV_FS", Types.VARCHAR),
+                    new SqlOutParameter("oc", Types.VARCHAR),
+                    new SqlOutParameter("om", Types.VARCHAR),
+                    new SqlOutParameter("rev_over_grade", Types.VARCHAR),
+                    new SqlOutParameter("CASH_AUDIT", Types.VARCHAR));
+        }else{
+           String showFieldsArr[]= StringUtils.split(",",fields);
+            SqlOutParameter [] sqlOutParameters=new SqlOutParameter[showFieldsArr.length];
+           for(int i=0;i<sqlOutParameters.length;i++){
+               sqlOutParameters[i]=new SqlOutParameter(showFieldsArr[i],Types.VARCHAR);
+           }
+            simpleJdbcCall.declareParameters(sqlOutParameters);
+        }
+        Map<String, Object> outValues =simpleJdbcCall.execute(map);
+        List<ShopRankVO> shopRankVOs=(List) outValues.get("results");
+        return shopRankVOs;
     }
 }

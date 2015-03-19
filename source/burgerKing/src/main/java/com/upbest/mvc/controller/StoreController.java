@@ -109,7 +109,11 @@ public class StoreController {
         model.addAttribute("current", "store");
         return "/store/storeList";
     }
-
+    @RequestMapping(value="/shopRank")
+    public String shopRand(Integer userId,String province,String region,String fields ,String orderFiled,String month){
+        storeService.getShopRank(userId, province, region, fields, orderFiled, month);
+        return "1";
+    }
     /**
      * 
      * @Title 		   	函数名称：	mapIndex
