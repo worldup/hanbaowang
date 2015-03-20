@@ -540,6 +540,7 @@ public class StoreAPIController {
     }
     //添加门店排行
     @RequestMapping(value="/securi_getShopRank")
+    @ResponseBody
     public Json shopRank(HttpServletRequest req){
         Json result = new Json();
         Json j = Constant.convertJson(req);
