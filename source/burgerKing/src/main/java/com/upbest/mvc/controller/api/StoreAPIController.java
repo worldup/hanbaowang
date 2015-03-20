@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.upbest.mvc.vo.ShopRankVO;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -45,7 +46,8 @@ public class StoreAPIController {
 
     @Autowired
     private IShopStatisticService shopStatisticService;
-
+    @Autowired
+    private IStoreService storeService;
     public static final String VERIFY_SUCCESS = "OK";
     public static final String VERIFY_NULL = "相关参数为空";
     public static final String PARAM_ILLEGAL = "参数非法";
@@ -531,6 +533,26 @@ public class StoreAPIController {
         String shopId = o.getString("shopId");
         Map<String ,Object > map= getStoreMapBaseInfo(shopId);
         result.setObj(map);
+        result.setCode(Code.SUCCESS_CODE);
+        result.setSuccess(true);
+        result.setMsg(VERIFY_SUCCESS);
+        return result;
+    }
+    //添加门店排行
+    @RequestMapping(value="/securi_getShopRank")
+    public Json shopRank(HttpServletRequest req){
+        Json result = new Json();
+        Json j = Constant.convertJson(req);
+
+        JSONObject o = (JSONObject) j.getObj();
+        Integer userId=o.getInteger("i_userid");
+        String province=o.getString("in_province");
+        String region=o.getString("in_regional");
+        String fields=o.getString("i_fields");
+        String orderFiled=o.getString("i_orderby");
+        String month=o.getString("i_yearmonth");
+        List<ShopRankVO> list= storeService.getShopRank(userId, province, region, fields, orderFiled, month);
+        result.setObj(list);
         result.setCode(Code.SUCCESS_CODE);
         result.setSuccess(true);
         result.setMsg(VERIFY_SUCCESS);

@@ -60,7 +60,7 @@ public class CheckTodayTask implements SchedulerTask {
     public void scheduler() throws Exception {
         StringBuffer sql = new StringBuffer();
         List<Object> params = new ArrayList<Object>();
-        sql.append("select * from bk_work_info where ");
+        sql.append("select * from bk_work_info w where ");
         if(dbChooser.isSQLServer()){
             sql.append(" DATEDIFF(dd, w.start_time, GETDATE()) = 0 ");
         }
