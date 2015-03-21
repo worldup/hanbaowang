@@ -134,7 +134,7 @@ public class GuestIsKingExamTestReport extends ExamTestReport {
         if(CollectionUtils.isNotEmpty(moduleList)){
             Map<String,String> moduleMaps=moduleMaps();
             for(ExamDetailInfoVO.Module module:moduleList){
-                    module.getFields();
+                   // module.getFields();
                     Map qingjiewaibu=new HashMap();
                     modules.put(moduleMaps.get(module.getName()),qingjiewaibu);
                     Map qingjiewaibuquestions=new HashMap();
@@ -143,7 +143,17 @@ public class GuestIsKingExamTestReport extends ExamTestReport {
                     if(CollectionUtils.isNotEmpty(questions)){
                         for(ExamDetailInfoVO.Question question:questions){
                                 Map C01=new HashMap();
-                                qingjiewaibuquestions.put(question.getSerialNumber(),C01);
+                                if("评估总结".equals(module.getName())){
+                                    if("我最欣赏这家餐厅".equals(question.getQuesDesc())){
+                                        qingjiewaibuquestions.put("pg_xinshang",C01);
+                                    }
+                                    else if("最需关注的问题点".equals(question.getQuesDesc())){
+                                        qingjiewaibuquestions.put("pg_guanzhu",C01);
+                                    }
+
+                                }else{
+                                    qingjiewaibuquestions.put(question.getSerialNumber(),C01);
+                                }
                                 C01.put("score",question.getScore());
                                 ExamDetailInfoVO.QuestionTestDetailInfo questionTestDetailInfo= question.getTestDetailInfo();
                                 Map testDetailInfoMap=new HashMap();
@@ -184,7 +194,7 @@ public class GuestIsKingExamTestReport extends ExamTestReport {
                                         else if("分值".equals(field.getFieldName())){
                                             boolean isNa=false;
                                             for(Field temp:fieldList){
-                                                 if("不适用".equals(temp.getFieldName())&&"1".equals(temp.getFieldValue())){
+                                                 if("不适用".equals(temp.getFieldName()) && "1".equals(temp.getFieldValue())){
                                                      isNa=true;
                                                  }
                                             }
