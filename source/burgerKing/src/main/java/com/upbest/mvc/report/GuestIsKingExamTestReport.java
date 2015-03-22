@@ -1,16 +1,18 @@
 package com.upbest.mvc.report;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.upbest.mvc.vo.ExamDetailInfoVO;
+import net.sf.jett.transform.ExcelTransformer;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.jexl2.*;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
-import net.sf.jxls.transformer.XLSTransformer;
+
 import org.springframework.core.io.ClassPathResource;
 import com.upbest.mvc.service.IExamService;
 import com.upbest.mvc.vo.ExamDetailInfoVO.Field;
@@ -24,13 +26,13 @@ public class GuestIsKingExamTestReport extends ExamTestReport {
     public byte[]   generateExcel(String fullServerPath,ExamDetailInfoVO examDetailInfo){
         ClassPathResource classPathResource=new ClassPathResource("template\\Guest Is King.xlsx");
 
-        Map beans=transJXlsMap(examDetailInfo);
-        XLSTransformer transformer = new XLSTransformer();
+        Map beans=transJXlsMap(fullServerPath,examDetailInfo);
+        ExcelTransformer transformer = new ExcelTransformer();
+      //  XLSTransformer transformer = new XLSTransformer();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try{
 
-            transformer.registerCellProcessor(new ReportCellProcessor());
-            Workbook workbook= transformer.transformXLS(classPathResource.getInputStream(), beans);
+            Workbook workbook= transformer.transform(classPathResource.getInputStream(), beans);
 
 //		 FileOutputStream outputStream = new FileOutputStream("c:/poi/side_by_side.xlsx");
             workbook.write(outputStream);
@@ -97,7 +99,7 @@ public class GuestIsKingExamTestReport extends ExamTestReport {
         moduleMap.put("评估总结","pingguzongjie");
         return moduleMap;
     }
-    private Map transJXlsMap(ExamDetailInfoVO vo){
+    private Map transJXlsMap(String fullServerPath,ExamDetailInfoVO vo){
         Map jxlsMap=new HashMap();
         Map heads=new HashMap();
         Map modules=new HashMap();
@@ -159,7 +161,20 @@ public class GuestIsKingExamTestReport extends ExamTestReport {
                                 Map testDetailInfoMap=new HashMap();
                                 C01.put("testDetailInfo",testDetailInfoMap);
                                 testDetailInfoMap.put("score",questionTestDetailInfo.getScore());
-                                testDetailInfoMap.put("evidence",questionTestDetailInfo.getEvidence());
+                                List<Map<String,String>> evidenceList=new ArrayList();
+                                String evidenceStr=questionTestDetailInfo.getEvidence();
+                                 testDetailInfoMap.put("evidence", evidenceList);
+                                 if(StringUtils.isNotEmpty(evidenceStr)){
+                                  String[] evidenceStrArr=     StringUtils.split(evidenceStr,",");
+                                     int tempIdx=0;
+                                     for(String tempEv:evidenceStrArr){
+                                         Map<String,String> temMap=new HashMap();
+                                         temMap.put("address", fullServerPath + tempEv);
+                                         temMap.put("value","图片"+(++tempIdx));
+                                         evidenceList.add(temMap);
+                                     }
+                                 }
+
                                 Map fieldInfosMap=new HashMap();
                                 testDetailInfoMap.put("fieldInfos",fieldInfosMap);
                                 List<Field> fieldList= questionTestDetailInfo.getFieldInfos();
