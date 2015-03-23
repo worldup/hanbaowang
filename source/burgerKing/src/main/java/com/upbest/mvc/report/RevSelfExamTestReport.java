@@ -10,6 +10,7 @@ import java.util.Set;
 import com.upbest.mvc.vo.ExamDetailInfoVO;
 import net.sf.jett.transform.ExcelTransformer;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.CollectionUtils;
@@ -178,7 +179,11 @@ public class RevSelfExamTestReport extends ExamTestReport {
         if(org.apache.commons.collections.CollectionUtils.isNotEmpty(headList)){
             for(Field item:headList){
                 if("日期".equals(item.getFieldName())){
-                    heads.put("date", item.getFieldValue()) ;
+                    String datestr=item.getFieldValue();
+                    if (StringUtils.isNotEmpty(datestr)) {
+                        datestr= DateFormatUtils.format(Long.parseLong(datestr), "yyyy-MM-dd");
+                    }
+                    heads.put("date", datestr) ;
                 }
                 else if("值班经理".equals(item.getFieldName())){
                     heads.put("manager", item.getFieldValue()) ;
