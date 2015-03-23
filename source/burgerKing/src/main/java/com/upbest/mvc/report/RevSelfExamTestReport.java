@@ -265,7 +265,7 @@ public class RevSelfExamTestReport extends ExamTestReport {
                                 }else if("描述问题".equals(field.getFieldName())){
                                     fieldInfosMap.put("DESC",field.getFieldValue());
                                 }
-                                else if("分值".equals(field.getFieldName())){
+                                else if("得分".equals(field.getFieldName())){
                                     boolean isNa=false;
                                     for(Field temp:fieldList){
                                         if("不适用".equals(temp.getFieldName()) && "1".equals(temp.getFieldValue())){
