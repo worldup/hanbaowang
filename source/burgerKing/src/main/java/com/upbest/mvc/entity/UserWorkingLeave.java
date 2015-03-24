@@ -23,6 +23,24 @@ public class UserWorkingLeave {
     @Column(name = "startTime")
     private Date startTime;
 
+    @Column (name="day")
+    private String day;
+
+    public Integer getNonworkingType() {
+        return nonworkingType;
+    }
+
+    public void setNonworkingType(Integer nonworkingType) {
+        this.nonworkingType = nonworkingType;
+    }
+
+    public String getDay() {
+        return day;
+    }
+
+    public void setDay(String day) {
+        this.day = day;
+    }
 
     @Column(name = "endTime")
     private Date endTime;

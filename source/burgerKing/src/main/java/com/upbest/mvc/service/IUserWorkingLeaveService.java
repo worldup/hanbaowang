@@ -14,5 +14,6 @@ public interface IUserWorkingLeaveService {
     public  void updateUserWorkingLeave(UserWorkingLeave userWorkingLeave);
     public void delUserWorkingLeave(Integer id);
     public void delUserWorkingLeaveBatch(List<Integer> id);
-
+    public void deleteUserWorkingLeave(final List<UserWorkingLeave> list);
+    public void addUserWorkingLeave(final List<UserWorkingLeave> list);
 }

@@ -33,10 +33,28 @@ public class UserWorkingLeaveAPIController {
         Json j = Constant.convertJson(req);
         JSONObject o = (JSONObject) j.getObj();
         try{
-            String entity= o.getString("entity");
-            Gson gson=new Gson();
-            UserWorkingLeave workingLeave= gson.fromJson(entity, UserWorkingLeave.class);
-            iUserWorkingTimeService.addUserWorkingLeave(workingLeave);
+            Integer userId=  o.getInteger("userId");
+            Integer nonworkingtype=o.getInteger("nonworkingType");
+            String date=o.getString("date");
+            String action=o.getString("action");
+            String dateArr[]=StringUtils.split(date,";");
+            List<UserWorkingLeave> list=new ArrayList();
+            for(String tempDate:dateArr){
+              UserWorkingLeave leave=new UserWorkingLeave();
+                leave.setUserId(userId);
+                leave.setDay(tempDate);
+                leave.setNonworkingType(nonworkingtype);
+                list.add(leave);
+            }
+            //取消
+            if("0".equals(action)){
+                iUserWorkingTimeService.deleteUserWorkingLeave(list);
+            }
+            //添加
+            else if("1".equals(action)){
+            iUserWorkingTimeService.addUserWorkingLeave(list);
+            }
+
             result.setCode(com.upbest.mvc.constant.Constant.Code.SUCCESS_CODE);
             result.setMsg("保存成功");
             result.setSuccess(true);
