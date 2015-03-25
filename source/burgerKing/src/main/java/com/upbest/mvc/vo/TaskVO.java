@@ -34,6 +34,24 @@ public class TaskVO implements Serializable {
     private String storeNum;
     private String examType;
     private int testPaperId;
+    private int executeId;
+    private int userId;
+
+    public int getExecuteId() {
+        return executeId;
+    }
+
+    public void setExecuteId(int executeId) {
+        this.executeId = executeId;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
     public int getTestPaperId() {
         return testPaperId;
