@@ -1126,6 +1126,9 @@ public class CashAuditExamTestReport extends ExamTestReport {
 			date.setTime(Long.valueOf(value));
 			value = sdf.format(date);
 		}
+        else if(5==field.getFieldType()){
+            value= getShopNumByShopId(value);
+        }
 		return (null == value || "null".equals(value)) ? "" : value;
 	}
 	

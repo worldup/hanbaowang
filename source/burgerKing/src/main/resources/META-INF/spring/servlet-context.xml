@@ -30,6 +30,7 @@
 	<tx:annotation-driven />
 
 	<context:component-scan base-package="com.upbest.mvc" />
+    <beans:bean id="springContextUtil" class="com.upbest.utils.SpringContextUtils" scope="singleton" />
 	<beans:bean id="multipartResolver"
 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<beans:property name="defaultEncoding" value="UTF-8" />

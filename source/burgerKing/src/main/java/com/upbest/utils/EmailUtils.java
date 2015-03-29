@@ -72,27 +72,32 @@ public class EmailUtils {
 			for (String email : eamils) {
 				if(!StringUtils.isEmpty(email) && email.matches("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}")){
 					sendEmailWithAttachment(email, subject,text,attachmentFileName, resource);
-				}
+				}else{
+                    if(StringUtils.isNotEmpty(email)&&StringUtils.split(email,";").length>1){
+                        sendEmailWithAttachment(email, subject,text,attachmentFileName, resource);
+                    }
+                }
 			}
 		}
 	}
 
 	public void sendEmailWithAttachment(String email, String subject,
 			String text, String attachmentFileName, InputStreamSource resource) throws Exception {
-		// 建立邮件讯息
-        MimeMessage mimeMessage = mailSender.createMimeMessage();
-        MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage,true);
-        
-        // 设定收件人、寄件人、主题与内文
-        messageHelper.setTo(email);
-        messageHelper.setFrom(mailSender.getUsername());
-        messageHelper.setSubject(subject);
-        messageHelper.setText(text);
-        if(attachmentFileName!=null&&resource!=null){
-            messageHelper.addAttachment(attachmentFileName, resource);
-        }
+            String[] emailArr=StringUtils.split(email,";");
+            // 建立邮件讯息
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage,true);
+            // 设定收件人、寄件人、主题与内文
+            messageHelper.setTo(emailArr);
+            messageHelper.setFrom(mailSender.getUsername());
+            messageHelper.setSubject(subject);
+            messageHelper.setText(text);
+            if(attachmentFileName!=null&&resource!=null){
+                messageHelper.addAttachment(attachmentFileName, resource);
+            }
+            // 传送邮件
+            mailSender.send(mimeMessage);
 
-        // 传送邮件
-        mailSender.send(mimeMessage);
+
 	}
 }
