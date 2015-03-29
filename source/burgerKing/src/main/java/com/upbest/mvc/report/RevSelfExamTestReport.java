@@ -7,7 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.upbest.mvc.service.IStoreService;
+import com.upbest.mvc.vo.BShopInfoVO;
 import com.upbest.mvc.vo.ExamDetailInfoVO;
+import com.upbest.utils.SpringContextUtils;
 import net.sf.jett.transform.ExcelTransformer;
 import org.apache.commons.jexl2.Expression;
 import org.apache.commons.jexl2.JexlContext;
@@ -24,6 +27,7 @@ import com.upbest.mvc.vo.ExamDetailInfoVO.Field;
 import com.upbest.mvc.vo.ExamDetailInfoVO.Module;
 import com.upbest.mvc.vo.ExamDetailInfoVO.Question;
 import com.upbest.mvc.vo.ExamDetailInfoVO.QuestionTestDetailInfo;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  * Rev Self生成 excel
@@ -31,7 +35,7 @@ import com.upbest.mvc.vo.ExamDetailInfoVO.QuestionTestDetailInfo;
  *
  */
 public class RevSelfExamTestReport extends ExamTestReport {
-	
+
 	public RevSelfExamTestReport(IExamService service) {
 		super(service);
 		// TODO Auto-generated constructor stub
@@ -147,7 +151,9 @@ public class RevSelfExamTestReport extends ExamTestReport {
 	protected String getCellValue(Field field,int score) {
 		String fieldName = field.getFieldName();
 		String fieldValue = field.getFieldValue();
-		
+		if(5==field.getFieldType()){
+            fieldValue=getShopNumByShopId(fieldValue);
+        }
 		String cellValue = "";
 		if(FIELD_ADAPT.equals(fieldName) || FIELD_Y.equals(fieldName) || FIELD_N.equals(fieldName)){
 			cellValue = "1".equals(fieldValue) ? "√" : "";
@@ -196,7 +202,10 @@ public class RevSelfExamTestReport extends ExamTestReport {
                     heads.put("feedback", item.getFieldValue()) ;
                 }
                 else if("餐厅编号".equals(item.getFieldName())){
-                    heads.put("restName", item.getFieldValue()) ;
+                    String shopIdStr=item.getFieldValue();
+                    String shopNum=getShopNumByShopId(shopIdStr);
+                        heads.put("restName", shopNum) ;
+
                 }
             }
         }
@@ -297,7 +306,7 @@ public class RevSelfExamTestReport extends ExamTestReport {
     public byte[]   generateExcel(String fullServerPath,ExamDetailInfoVO examDetailInfo){
         ClassPathResource classPathResource=new ClassPathResource("template\\REV.xlsx");
 
-        Map beans=transJXlsMap(fullServerPath,examDetailInfo);
+        Map beans=transJXlsMap(fullServerPath, examDetailInfo);
         setStatisticMap(beans);
         ExcelTransformer transformer = new ExcelTransformer();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -453,7 +462,7 @@ public class RevSelfExamTestReport extends ExamTestReport {
         Map map=new HashMap();
         beans.put("statis",map);
         map.put("resultStr",resultStr);
-        map.put("resultP",resultP);
+        map.put("resultP",resultP/100);
         map.put("safeScore",safeScore);
         map.put("safeStr",safeStr);
         map.put("safeP",safeP);

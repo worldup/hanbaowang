@@ -86,7 +86,9 @@ public class SideBySideExamTestReport extends ExamTestReport {
                     heads.put("mumName", item.getFieldValue()) ;
                 }
                 else if("BK#".equals(item.getFieldName())){
-                    heads.put("restName", item.getFieldValue()) ;
+                    String shopIdStr=item.getFieldValue();
+                    String shopNumStr=getShopNumByShopId(shopIdStr);
+                    heads.put("restName", shopNumStr) ;
                 }
             }
         }

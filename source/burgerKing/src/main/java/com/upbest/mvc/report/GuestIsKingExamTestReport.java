@@ -75,7 +75,9 @@ public class GuestIsKingExamTestReport extends ExamTestReport {
 	protected String getCellValue(Field field,int score) {
 		String fieldName = field.getFieldName();
 		String fieldValue = field.getFieldValue();
-		
+        if(5==field.getFieldType()){
+            fieldValue=   getShopNumByShopId(fieldValue);
+        }
 		String cellValue = "";
 		if(FIELD_ADAPT.equals(fieldName)){
 			cellValue = "1".equals(fieldValue) ? "√" : "";
@@ -128,7 +130,9 @@ public class GuestIsKingExamTestReport extends ExamTestReport {
                     heads.put("time", item.getFieldValue()) ;
                 }
                else if("餐厅名字".equals(item.getFieldName())){
-                    heads.put("restName", item.getFieldValue()) ;
+                    String shopIdStr=item.getFieldValue();
+                    String shopNum=getShopNumByShopId(shopIdStr);
+                    heads.put("restName",shopNum) ;
                 }
             }
         }

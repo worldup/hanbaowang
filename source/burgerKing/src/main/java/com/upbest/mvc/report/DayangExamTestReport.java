@@ -90,7 +90,9 @@ public class DayangExamTestReport extends ExamTestReport {
 	protected String getCellValue(Field field,int score) {
 		String fieldName = field.getFieldName();
 		String fieldValue = field.getFieldValue();
-		
+		if(5==field.getFieldType()){
+            fieldValue=getShopNumByShopId(fieldValue);
+        }
 		String cellValue = "";
 		if(FIELD_Y.equals(fieldName) || FIELD_N.equals(fieldName)){
 			cellValue = "1".equals(fieldValue) ? "√" : "";

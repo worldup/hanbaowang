@@ -14,7 +14,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.upbest.mvc.service.IStoreService;
+import com.upbest.mvc.vo.BShopInfoVO;
 import com.upbest.utils.ConfigUtil;
+import com.upbest.utils.SpringContextUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
@@ -649,8 +652,21 @@ public class ExamTestReport {
 		return null;
 	}
 
-	
-	protected boolean contains(Set<Field> results, String fieldName) {
+    public String getShopNumByShopId(String shopIdStr) {
+        String shopNum = "";
+        try {
+            Integer shopIdInt = Integer.parseInt(shopIdStr);
+            IStoreService storeService = SpringContextUtils.getBean(IStoreService.class);
+            BShopInfoVO shopInfoVO = storeService.findById(shopIdInt);
+            shopNum = shopInfoVO.getShopnum();
+        } catch (Exception e) {
+            e.printStackTrace();
+            shopNum=shopIdStr;
+        }
+        return shopNum;
+    }
+
+    protected boolean contains(Set<Field> results, String fieldName) {
 		if(!CollectionUtils.isEmpty(results)){
 			for (Field field : results) {
 				if(fieldName.equals(field.getFieldName())){

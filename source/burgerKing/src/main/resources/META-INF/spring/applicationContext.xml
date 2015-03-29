@@ -64,7 +64,7 @@
 				value="/images/**,/css/**,/js/**,/toLogin,/login,/easyui/**,/img/**,/staticjs/**,/favicon.ico" />
 		</bean>
 	</mvc:interceptors>
-
+    <bean id="springContextUtil" class="com.upbest.utils.SpringContextUtils" scope="singleton" />
 	<jpa:repositories base-package="com.upbest.mvc.repository" repository-impl-postfix="Impl"
                       entity-manager-factory-ref="entityManagerFactory"
                       transaction-manager-ref="transactionManager" />
