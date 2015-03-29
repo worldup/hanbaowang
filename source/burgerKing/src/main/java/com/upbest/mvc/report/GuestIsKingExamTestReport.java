@@ -1,10 +1,8 @@
 package com.upbest.mvc.report;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import com.upbest.mvc.vo.ExamDetailInfoVO;
 import net.sf.jett.transform.ExcelTransformer;
@@ -112,7 +110,11 @@ public class GuestIsKingExamTestReport extends ExamTestReport {
         if(CollectionUtils.isNotEmpty(headList)){
             for(Field item:headList){
                 if("日期".equals(item.getFieldName())){
-                    heads.put("date", item.getFieldValue()) ;
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    Date date = new Date();
+                    date.setTime(Long.valueOf(item.getFieldValue()));
+                    String  value = sdf.format(date);
+                    heads.put("date",value) ;
                 }
                 else if("值班经理".equals(item.getFieldName())){
                     heads.put("manager", item.getFieldValue()) ;
