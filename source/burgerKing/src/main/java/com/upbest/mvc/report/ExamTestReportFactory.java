@@ -19,6 +19,8 @@ public class ExamTestReportFactory {
 		}else if(type.contains("打烊")){
 			report = new DayangExamTestReport(service);
 		}
+		else
+		report=new DayangExamTestReport(service);
 		
 		return report;
 	}
