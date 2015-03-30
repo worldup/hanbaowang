@@ -167,7 +167,7 @@ public class WrokServiceImpl implements IWorkService{
                "  left join bk_shop_info s\n" +
                "  on w.store_id=s.id\n" +
                "  where w.user_id=:user_id and  start_time>=STR_TO_DATE(:month,'%Y-%m-%d')\n" +
-               "and start_time <DATE_ADD(STR_TO_DATE(:month,'%Y-%m-%d'),INTERVAL 1 month) ";
+               "and start_time <DATE_ADD(STR_TO_DATE(:month,'%Y-%m-%d'),INTERVAL 1 month) order by w.start_time  ";
         Map<String ,String> map=new HashMap();
         map.put("user_id",userId);
         map.put("month",month);
