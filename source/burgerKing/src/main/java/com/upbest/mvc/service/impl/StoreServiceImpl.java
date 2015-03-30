@@ -1374,8 +1374,11 @@ public class StoreServiceImpl implements IStoreService {
                     new SqlOutParameter("REV_FS", Types.VARCHAR),
                     new SqlOutParameter("oc", Types.VARCHAR),
                     new SqlOutParameter("om", Types.VARCHAR),
-                    new SqlOutParameter("rev_over_grade", Types.VARCHAR),
-                    new SqlOutParameter("CASH_AUDIT", Types.VARCHAR));
+                    new SqlOutParameter("REV_Overall_Grade ", Types.VARCHAR),
+                    new SqlOutParameter("CASH_AUDIT", Types.VARCHAR),
+                    new SqlOutParameter("Comp_sales", Types.VARCHAR),
+                    new SqlOutParameter("Comp_TC", Types.VARCHAR),
+                    new SqlOutParameter("shop_id", Types.VARCHAR));
         }else{
            String showFieldsArr[]= StringUtils.split(",",fields);
             SqlOutParameter [] sqlOutParameters=new SqlOutParameter[showFieldsArr.length];

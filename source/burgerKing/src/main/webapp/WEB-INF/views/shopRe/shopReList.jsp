@@ -19,6 +19,9 @@
 				<select name="reportType">
 					<option value="Restaurant P&L">Restaurant P&L</option>
 					<option value="Restaurant Benchmark">Restaurant Benchmark</option>
+					<option value="Restaurant REV">Restaurant REV</option>
+					<option value="Restaurant ROIP">Restaurant ROIP</option>
+					<option value="Restaurant Guest Trac">Restaurant Guest Trac</option>
 				</select>
 			</td>
 		<tr>

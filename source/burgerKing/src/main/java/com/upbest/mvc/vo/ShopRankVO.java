@@ -19,8 +19,43 @@ public class ShopRankVO {
    private String REV_FS;
    private String oc;
    private String om;
-   private String rev_over_grade;
+   private String REV_Overall_Grade ;
    private String CASH_AUDIT;
+   private String Comp_sales;
+   private String Comp_TC;
+   private String shop_id;
+
+    public String getREV_Overall_Grade() {
+        return REV_Overall_Grade;
+    }
+
+    public void setREV_Overall_Grade(String REV_Overall_Grade) {
+        this.REV_Overall_Grade = REV_Overall_Grade;
+    }
+
+    public String getComp_sales() {
+        return Comp_sales;
+    }
+
+    public void setComp_sales(String comp_sales) {
+        Comp_sales = comp_sales;
+    }
+
+    public String getComp_TC() {
+        return Comp_TC;
+    }
+
+    public void setComp_TC(String comp_TC) {
+        Comp_TC = comp_TC;
+    }
+
+    public String getShop_id() {
+        return shop_id;
+    }
+
+    public void setShop_id(String shop_id) {
+        this.shop_id = shop_id;
+    }
 
     public String getShop_num() {
         return shop_num;
@@ -142,13 +177,7 @@ public class ShopRankVO {
         this.om = om;
     }
 
-    public String getRev_over_grade() {
-        return rev_over_grade;
-    }
 
-    public void setRev_over_grade(String rev_over_grade) {
-        this.rev_over_grade = rev_over_grade;
-    }
 
     public String getCASH_AUDIT() {
         return CASH_AUDIT;

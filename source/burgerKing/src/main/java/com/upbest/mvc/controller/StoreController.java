@@ -751,7 +751,7 @@ private ISpringJdbcService jdbcService;
                 entity.setUserId(buser.getId());
                 entity.setCreateTime(new Date());
                 entity.setMon(DataType.getAsDate(req.getParameter("mon"), "yyyy-MM"));
-                String sFile = sfile[i].substring(0, sfile[i].lastIndexOf("_")) + "_" + DataType.formatDate(DataType.getAsDate(req.getParameter("mon"), "yyyy-MM"), "yyyyMM")
+                String sFile = sfile[i].substring(0, sfile[i].lastIndexOf("_")) + "_" + DataType.formatDate(DataType.getAsDate(req.getParameter("mon"), "yyyy-MM"), "yyyyMM")+"_"+reportType
                         + sfile[i].substring(sfile[i].indexOf("."));
                 entity.setReport(sFile);
                 entity.setReportType(reportType);
