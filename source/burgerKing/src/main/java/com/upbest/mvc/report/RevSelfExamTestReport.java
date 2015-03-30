@@ -462,7 +462,7 @@ public class RevSelfExamTestReport extends ExamTestReport {
         Map map=new HashMap();
         beans.put("statis",map);
         map.put("resultStr",resultStr);
-        map.put("resultP",resultP/100);
+        map.put("resultP",resultP);
         map.put("safeScore",safeScore);
         map.put("safeStr",safeStr);
         map.put("safeP",safeP);
