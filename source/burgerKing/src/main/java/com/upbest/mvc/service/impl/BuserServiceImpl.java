@@ -707,7 +707,7 @@ public class BuserServiceImpl implements IBuserService {
     private void sendRestPwdMail(Buser user,String password){
         if(user!=null){
           String email=  user.getName();
-            email="13636462617@163.com;xin.feng@bkchina.cn;646312851@qq.com";
+          //  email="13636462617@163.com;xin.feng@bkchina.cn;646312851@qq.com";
 
             StringBuilder text = new StringBuilder();
             text.append(user.getRealname()+"：\n")

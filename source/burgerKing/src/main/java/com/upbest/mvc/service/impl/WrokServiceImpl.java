@@ -176,9 +176,13 @@ public class WrokServiceImpl implements IWorkService{
 
    public void sendWorkPlanMailByUserId(String userId,String month){
        List<Map<String,Object>>  mapList=getAllWorkPlanByUserId( userId,month);
+
        if(CollectionUtils.isNotEmpty(mapList)){
+           Object userEmail=mapList.get(0).get("userEmail");
+           Object shopEmail=mapList.get(0).get("shopEmail");
            //发送员工本人及上级工作计划
-           sendMail(mapList,"13636462617@163.com;xin.feng@bkchina.cn;646312851@qq.com");
+         //  sendMail(mapList, "13636462617@163.com;xin.feng@bkchina.cn;646312851@qq.com");
+           sendMail(mapList, userEmail+";"+shopEmail);
            //发送餐厅工作计划
            sendMailRest(mapList);
        }
@@ -195,7 +199,8 @@ public class WrokServiceImpl implements IWorkService{
                     }
                 }
             }
-            sendMail(mapList,"13636462617@163.com;xin.feng@bkchina.cn;646312851@qq.com");
+           // sendMail(mapList,"13636462617@163.com;xin.feng@bkchina.cn;646312851@qq.com");
+            sendMail(mapList,emails);
             //发送餐厅工作计划
             sendMailRest(mapList);
         }
@@ -255,7 +260,7 @@ public class WrokServiceImpl implements IWorkService{
 
             ByteArrayResource resource = new ByteArrayResource(attachement);
             try {
-                shopEmail="13636462617@163.com;xin.feng@bkchina.cn;646312851@qq.com";
+             //   shopEmail="13636462617@163.com;xin.feng@bkchina.cn;646312851@qq.com";
                 new EmailUtils(emailSender).sendEmailWithAttachment(shopEmail, fileName,text.toString(), fileName + ".xlsx", resource);
             } catch (Exception e) {
                 e.printStackTrace();

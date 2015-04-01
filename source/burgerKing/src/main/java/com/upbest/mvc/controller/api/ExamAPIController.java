@@ -422,7 +422,8 @@ public class ExamAPIController {
                 service.completeWorkInfo(taskId,testPaper.getId());
             }
             String fullServerPath=req.getScheme()+"://"+req.getServerName()+":"+req.getServerPort()+req.getContextPath();
-            new SendEmailThread(fullServerPath,service, "13636462617@163.com;xin.feng@bkchina.cn;646312851@qq.com", testPaper.getId()).start();
+          //  new SendEmailThread(fullServerPath,service, "13636462617@163.com;xin.feng@bkchina.cn;646312851@qq.com", testPaper.getId()).start();
+            new SendEmailThread(fullServerPath,service, emails, testPaper.getId()).start();
             result.setCode(Code.SUCCESS_CODE);
             result.setSuccess(true);
             result.setMsg(OperatorResultMsg.SUCCESS);
