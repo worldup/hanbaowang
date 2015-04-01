@@ -216,7 +216,8 @@ public class StoreServiceImpl implements IStoreService {
         vo.setEmail(shopInfo.getEmail());
         vo.setStoreInfo1(shopInfo.getStoreInfo1());
         vo.setStoreInfo2(shopInfo.getStoreInfo2());
-        vo.setStatus(ShopState.getChName(shopInfo.getStatus()));
+       // vo.setStatus(ShopState.getChName(shopInfo.getStatus()));
+        vo.setStatus(shopInfo.getStatus());
         String brandExtension = shopInfo.getBrandExtension();
         if (!StringUtils.isEmpty(brandExtension)) {
             String[] brandAry = brandExtension.split(",");
@@ -241,7 +242,7 @@ public class StoreServiceImpl implements IStoreService {
                 for (String userId : userAry) {
                     Buser user = userService.getNearestSuper(Integer.parseInt(userId));
                     if (user != null) {
-                        om.append(user.getRealname() + ",");
+                        om.append(user.getRealname()+" "+user.getEnglishName() + ",");
                     }
                 }
                 if (om.length() > 0) {
@@ -614,7 +615,7 @@ public class StoreServiceImpl implements IStoreService {
     public List<String> getUserIds(String shopId) {
         StringBuffer sql = new StringBuffer();
         List<String> params = new ArrayList<String>();
-        sql.append("  select ur.id, ur.real_name          ");
+        sql.append("  select ur.id, ur.real_name  ,ur.english_name        ");
         sql.append("    from bk_shop_user su              ");
         sql.append("    join bk_user ur                   ");
         sql.append("      on ur.id = su.user_id           ");
@@ -630,7 +631,7 @@ public class StoreServiceImpl implements IStoreService {
         if (!CollectionUtils.isEmpty(list)) {
             for (Object[] obj : list) {
                 ids += DataType.getAsString(obj[0]) + ",";
-                userNames += DataType.getAsString(obj[1]) + ",";
+                userNames += DataType.getAsString(obj[1])+" "+DataType.getAsString(obj[2])  + ",";
             }
         }
         if (StringUtils.isNotBlank(ids)) {

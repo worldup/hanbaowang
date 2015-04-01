@@ -76,7 +76,12 @@ $(document).ready(function(){
     $.post("${basePath}"+"/exam/listAllExamPaper",{},function(data){
         var jsonResult=$.parseJSON(data);
         $.each(jsonResult,function(i, value) {
-            $("#examType").append("<option value='"+ value.id+"'>"+ value.name+"</option>");
+			if(value.id=='${work.examType}'){
+				$("#examType").append("<option selected value='"+ value.id+"'>"+ value.name+"</option>");
+			}else{
+				$("#examType").append("<option value='"+ value.id+"'>"+ value.name+"</option>");
+			}
+
         });
     })
 	var arr = typerole.split(",");

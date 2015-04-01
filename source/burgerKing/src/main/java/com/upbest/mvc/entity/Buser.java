@@ -61,6 +61,16 @@ public class Buser implements Serializable{
 	 
 	 @Column(name="area_id")
 	 private Integer areaId;
+	@Column(name="english_name")
+	private String englishName;
+
+	public String getEnglishName() {
+		return englishName;
+	}
+
+	public void setEnglishName(String englishName) {
+		this.englishName = englishName;
+	}
 
 	public Integer getAreaId() {
 		return areaId;

@@ -160,7 +160,7 @@ public class WrokServiceImpl implements IWorkService{
                "\t(select PU.name from bk_user pu where PU.id=u.pid limit 1) puserEmail,\n" +
                "  u.real_name userName,\n" +
                "w.work_type_name taskName,\n" +
-               "w.content content\n" +
+               "w.content content ,w.ishidden ishidden \n" +
                "FROM\n" +
                "\tbk_work_info w LEFT JOIN bk_user u \n" +
                "  on w.user_id=u.id\n" +
@@ -192,12 +192,7 @@ public class WrokServiceImpl implements IWorkService{
         if(CollectionUtils.isNotEmpty(mapList)){
             //发送员工本人及上级工作计划
             if(emails!=null){
-              String emailArr[]=  StringUtils.split(",");
-                for(String emailA:emailArr){
-                    if(StringUtils.isNotEmpty(emailA)){
-                        sendMail(mapList,emailA);
-                    }
-                }
+              emails=emails.replace(",",";");
             }
            // sendMail(mapList,"13636462617@163.com;xin.feng@bkchina.cn;646312851@qq.com");
             sendMail(mapList,emails);
@@ -220,7 +215,10 @@ public class WrokServiceImpl implements IWorkService{
                 if(shop.equals(tempShopName)){
                     if(result.containsKey(shop)){
                         List<Map<String,Object>> shopList=  result.get(shop);
-                        shopList.add(map);
+                        //如果非隐藏
+                        if(!"1".equals(MapUtils.getString(map, "ishidden"))){
+                            shopList.add(map);
+                        }
                     }
                     else{
                         List<Map<String,Object>> shopList=new ArrayList();
@@ -229,8 +227,17 @@ public class WrokServiceImpl implements IWorkService{
                     }
                 }
 
+
             }
 
+        }
+        for(List<Map<String,Object>> values:result.values()){
+            for(Map<String,Object> map:mapList){
+                String shop= MapUtils.getString(map,"shop");
+                if(StringUtils.isEmpty(shop)){
+                    values.add(map);
+                }
+            }
         }
         return result;
     }
