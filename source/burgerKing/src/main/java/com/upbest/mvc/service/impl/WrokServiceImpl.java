@@ -170,7 +170,7 @@ public class WrokServiceImpl implements IWorkService{
                "and start_time <DATE_ADD(STR_TO_DATE(:month,'%Y-%m-%d'),INTERVAL 1 month) order by w.start_time  ";
         Map<String ,String> map=new HashMap();
         map.put("user_id",userId);
-        map.put("month",month);
+        map.put("month", month);
       return  jdbcTemplate.queryForList(sql,map);
     }
 
@@ -190,10 +190,20 @@ public class WrokServiceImpl implements IWorkService{
     public void sendWorkPlanMailByUserIdExt(String userId,String month,String emails){
         List<Map<String,Object>>  mapList=getAllWorkPlanByUserId( userId,month);
         if(CollectionUtils.isNotEmpty(mapList)){
+
             //发送员工本人及上级工作计划
+            Object userEmail=mapList.get(0).get("userEmail");
+            Object puserEmail=mapList.get(0).get("puserEmail");
             if(emails!=null){
               emails=emails.replace(",",";");
             }
+            if(emails==null){
+                emails="";
+            }else
+            {
+                emails+=";";
+            }
+            emails=(emails+userEmail+";"+puserEmail);
            // sendMail(mapList,"13636462617@163.com;xin.feng@bkchina.cn;646312851@qq.com");
             sendMail(mapList,emails);
             //发送餐厅工作计划
@@ -222,7 +232,9 @@ public class WrokServiceImpl implements IWorkService{
                     }
                     else{
                         List<Map<String,Object>> shopList=new ArrayList();
-                        shopList.add(map);
+                        if(!"1".equals(MapUtils.getString(map, "ishidden"))){
+                            shopList.add(map);
+                        }
                         result.put(shop,shopList);
                     }
                 }

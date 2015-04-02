@@ -190,7 +190,7 @@ public class ExamServiceImpl implements IExamService {
             sql.append(" and  tp.store_id = '" + storeId + "'  ");
         }
         sql.append("             group by tt.b_value) rr                                             ");
-        sql.append("        on rr.maxTime = tpr.t_begin                                              ");
+        sql.append("        on rr.maxTime = tpr.t_begin  and    tpr.store_id ='"+storeId+"'                                         ");
 
         List<Object[]> list = common.queryBySql(sql.toString(), new ArrayList<Object>());
         if (!CollectionUtils.isEmpty(list)) {
