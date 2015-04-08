@@ -246,7 +246,7 @@ public class WrokServiceImpl implements IWorkService{
         for(List<Map<String,Object>> values:result.values()){
             for(Map<String,Object> map:mapList){
                 String shop= MapUtils.getString(map,"shop");
-                if(StringUtils.isEmpty(shop)){
+                if(StringUtils.isEmpty(shop)&&!"1".equals(MapUtils.getString(map, "ishidden"))){
                     values.add(map);
                 }
             }

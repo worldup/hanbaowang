@@ -2,15 +2,8 @@ package com.upbest.mvc.controller.api;
 
 import com.upbest.mvc.constant.Constant.Code;
 import com.upbest.mvc.constant.Constant.OperatorResultMsg;
-import com.upbest.mvc.entity.BActionPlan;
-import com.upbest.mvc.entity.BProblemAnalysis;
-import com.upbest.mvc.entity.BTestHeadingRela;
-import com.upbest.mvc.entity.BTestPaper;
-import com.upbest.mvc.entity.BTestPaperDetail;
-import com.upbest.mvc.service.IExamService;
-import com.upbest.mvc.service.IStoreService;
-import com.upbest.mvc.service.ITestPaperDetailService;
-import com.upbest.mvc.service.ITestPaperService;
+import com.upbest.mvc.entity.*;
+import com.upbest.mvc.service.*;
 import com.upbest.mvc.statistic.ExamStatistic;
 import com.upbest.mvc.thread.SendEmailThread;
 import com.upbest.mvc.vo.BShopInfoVO;
@@ -75,7 +68,8 @@ public class ExamAPIController {
     
     @Autowired
     private IStoreService shopService;
-
+    @Autowired
+    private IBuserService buserService;
     @RequestMapping(value = "/securi_examtype")
     @ResponseBody
     public Json findExamType() {
@@ -423,6 +417,22 @@ public class ExamAPIController {
             }
             String fullServerPath=req.getScheme()+"://"+req.getServerName()+":"+req.getServerPort()+req.getContextPath();
           //  new SendEmailThread(fullServerPath,service, "13636462617@163.com;xin.feng@bkchina.cn;646312851@qq.com", testPaper.getId()).start();
+           try {
+             Buser buser=  buserService.findById(Integer.valueOf(userId));
+               if(buser!=null){
+                   String userEmail=buser.getName();
+                   emails=(emails+";"+userEmail);
+                   if(buser.getPid()!=null&&buser.getPid()!=0){
+                       Buser pUser= buserService.findById(buser.getPid());
+                       if(pUser!=null){
+                           emails=(emails+";"+pUser.getName());
+                       }
+                   }
+               }
+
+           }catch (Exception e){
+               e.printStackTrace();
+           }
             new SendEmailThread(fullServerPath,service, emails, testPaper.getId()).start();
             result.setCode(Code.SUCCESS_CODE);
             result.setSuccess(true);
