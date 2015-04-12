@@ -160,7 +160,7 @@ public class WrokServiceImpl implements IWorkService{
                "\t(select PU.name from bk_user pu where PU.id=u.pid limit 1) puserEmail,\n" +
                "  u.real_name userName,\n" +
                "w.work_type_name taskName,\n" +
-               "w.content content ,w.ishidden ishidden \n" +
+               "w.content content ,w.ishidden ishidden ,w.is_self_create isSelfCreate \n" +
                "FROM\n" +
                "\tbk_work_info w LEFT JOIN bk_user u \n" +
                "  on w.user_id=u.id\n" +
@@ -226,13 +226,13 @@ public class WrokServiceImpl implements IWorkService{
                     if(result.containsKey(shop)){
                         List<Map<String,Object>> shopList=  result.get(shop);
                         //如果非隐藏
-                        if(!"1".equals(MapUtils.getString(map, "ishidden"))){
+                        if(!"1".equals(MapUtils.getString(map, "ishidden"))&&!"1".equals(MapUtils.getString(map,"isSelfCreate"))){
                             shopList.add(map);
                         }
                     }
                     else{
                         List<Map<String,Object>> shopList=new ArrayList();
-                        if(!"1".equals(MapUtils.getString(map, "ishidden"))){
+                        if(!"1".equals(MapUtils.getString(map, "ishidden"))&&!"1".equals(MapUtils.getString(map,"isSelfCreate"))){
                             shopList.add(map);
                         }
                         result.put(shop,shopList);

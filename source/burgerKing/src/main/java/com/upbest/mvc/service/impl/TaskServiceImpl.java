@@ -359,6 +359,7 @@ public class TaskServiceImpl implements ITaskService {
                 sql.append(" and date(t.start_time)=date('" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(DataType.getAsDate(date)) + "') ");
             }
         }
+        sql.append(" order by t.start_time");
         Page<Object[]> pageResult = common.queryBySql(sql.toString(), params, pageable);
         PageModel<Object> result = new PageModel<Object>();
         result.setPage(pageResult.getNumber() + 1);
