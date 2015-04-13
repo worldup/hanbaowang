@@ -187,4 +187,9 @@ public class WorkController {
     public void sendMail(String userId,String month){
         workService.sendWorkPlanMailByUserId(userId,month);
     }
+    @ResponseBody
+    @RequestMapping("/workplan2Excel")
+    public void genWorkplan2Excel(String userId,String month){
+        workService.getWorkPlan4Excel(userId,month);
+    }
 }

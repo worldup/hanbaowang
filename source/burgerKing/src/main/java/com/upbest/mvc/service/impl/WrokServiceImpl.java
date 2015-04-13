@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import com.upbest.mvc.entity.BShopInfo;
 import com.upbest.utils.EmailUtils;
+import net.sf.jett.transform.ExcelTransformer;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
@@ -17,6 +18,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -150,7 +152,30 @@ public class WrokServiceImpl implements IWorkService{
     public void saveBWorkType(List<BWorkType> list) {
         workRepository.save(list);
     }
-    
+    public List<Map<String,Object>>  getWorkPlan4Excel(String userId,String month){
+        String sql="SELECT\n" +
+                "\tbu.real_name,weekday(wi.start_time)+1 weekidx, DATE_FORMAT(wi.start_time,'%Y-%m-%d') w_day,DATE_FORMAT(wi.start_time,'%H:%i') w_time,CONCAT(DATE_FORMAT(wi.start_time,'%H:%i') ,' ',ifnull(si.shop_num,''),' ',wi.work_type_name,' ',wi.content) w_content,0 is_nowork\n" +
+                "FROM\n" +
+                "\tbk_work_info wi left join bk_shop_info  si\n" +
+                "\ton wi.store_id=si.id\n" +
+                "\tleft join bk_user bu on wi.execute_id=bu.id\n" +
+                "WHERE\n" +
+                "\twi.start_time >= STR_TO_DATE(:month,'%Y-%m-%d')\n" +
+                "AND wi.start_time < DATE_ADD(STR_TO_DATE(:month,'%Y-%m-%d'),INTERVAL 1 month)\n" +
+                "and wi.execute_id=:user_id\n" +
+                "union all \n" +
+                "select bu.real_name,weekday(wl.day)+1 weekidx,DATE_FORMAT(wl.day,'%Y-%m-%d') w_day ,DATE_FORMAT(wl.day,'%H:%i') w_time,wl.nonworkingtype w_content,1 is_nowork from bk_user_working_leave  wl left join bk_user bu\n" +
+                "on wl.userId=bu.id\n" +
+                " where wl.day>=STR_TO_DATE(:month,'%Y-%m-%d')\n" +
+                "and wl.day<DATE_ADD(STR_TO_DATE(:month,'%Y-%m-%d'),INTERVAL 1 month) \n" +
+                "and wl.userId=:user_id\n";
+        Map<String ,String> map=new HashMap();
+        map.put("user_id",userId);
+        map.put("month", month);
+        List<Map<String,Object>> lists=  jdbcTemplate.queryForList(sql,map);
+        genWorkplan2Excel(lists);
+        return lists;
+    }
     @Override
     public  List<Map<String,Object>> getAllWorkPlanByUserId(String userId,String month){
        String sql="SELECT\n" +
@@ -346,5 +371,29 @@ public class WrokServiceImpl implements IWorkService{
         }
         return byteArrayOutputStream.toByteArray();
     }
+        private byte[] genWorkplan2Excel(List<Map<String,Object>> mapList){
+            ClassPathResource classPathResource=new ClassPathResource("template\\workplan.xls");
+            Map beans=new HashMap();
+            beans.put("w1",mapList);
+            Map title=new HashMap();
+            title.put("userName","测试");
+            title.put("month","2015/4/2");
+            beans.put("w",title);
+            ExcelTransformer transformer = new ExcelTransformer();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            try{
+                Workbook workbook= transformer.transform(classPathResource.getInputStream(), beans);
+                workbook.write(outputStream);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            ByteArrayResource resource = new ByteArrayResource(outputStream.toByteArray());
+            try {
+                new EmailUtils(emailSender).sendEmailWithAttachment("13636462617@163.com", "日程","日历", "日程" + ".xlsx", resource);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return outputStream.toByteArray();
+        }
 
 }
