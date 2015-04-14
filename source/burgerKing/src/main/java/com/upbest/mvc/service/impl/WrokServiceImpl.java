@@ -154,7 +154,7 @@ public class WrokServiceImpl implements IWorkService{
     }
     public List<Map<String,Object>>  getWorkPlan4Excel(String userId,String month){
         String sql="SELECT\n" +
-                "\tbu.real_name,weekday(wi.start_time)+1 weekidx, DATE_FORMAT(wi.start_time,'%Y-%m-%d') w_day,DATE_FORMAT(wi.start_time,'%H:%i') w_time,CONCAT(DATE_FORMAT(wi.start_time,'%H:%i') ,' ',ifnull(si.shop_num,''),' ',wi.work_type_name,' ',wi.content) w_content,0 is_nowork\n" +
+                "\tbu.real_name,wi.start_time start_time,weekday(wi.start_time)+1 weekidx, DATE_FORMAT(wi.start_time,'%Y-%m-%d') w_day,DATE_FORMAT(wi.start_time,'%H:%i') w_time,CONCAT(DATE_FORMAT(wi.start_time,'%H:%i') ,' ',ifnull(si.shop_num,''),' ',wi.work_type_name,' ',wi.content) w_content,0 is_nowork\n" +
                 "FROM\n" +
                 "\tbk_work_info wi left join bk_shop_info  si\n" +
                 "\ton wi.store_id=si.id\n" +
@@ -164,11 +164,11 @@ public class WrokServiceImpl implements IWorkService{
                 "AND wi.start_time < DATE_ADD(STR_TO_DATE(:month,'%Y-%m-%d'),INTERVAL 1 month)\n" +
                 "and wi.execute_id=:user_id\n" +
                 "union all \n" +
-                "select bu.real_name,weekday(wl.day)+1 weekidx,DATE_FORMAT(wl.day,'%Y-%m-%d') w_day ,DATE_FORMAT(wl.day,'%H:%i') w_time,wl.nonworkingtype w_content,1 is_nowork from bk_user_working_leave  wl left join bk_user bu\n" +
+                "select bu.real_name,wl.day start_time,weekday(wl.day)+1 weekidx,DATE_FORMAT(wl.day,'%Y-%m-%d') w_day ,DATE_FORMAT(wl.day,'%H:%i') w_time,wl.nonworkingtype w_content,1 is_nowork from bk_user_working_leave  wl left join bk_user bu\n" +
                 "on wl.userId=bu.id\n" +
                 " where wl.day>=STR_TO_DATE(:month,'%Y-%m-%d')\n" +
                 "and wl.day<DATE_ADD(STR_TO_DATE(:month,'%Y-%m-%d'),INTERVAL 1 month) \n" +
-                "and wl.userId=:user_id\n";
+                "and wl.userId=:user_id ORDER  by start_time\n";
         Map<String ,String> map=new HashMap();
         map.put("user_id",userId);
         map.put("month", month);
