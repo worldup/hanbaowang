@@ -1,7 +1,9 @@
 package com.upbest.mvc.service.impl;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.*;
 
 import javax.inject.Inject;
@@ -11,7 +13,10 @@ import com.upbest.utils.EmailUtils;
 import net.sf.jett.transform.ExcelTransformer;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -154,7 +159,7 @@ public class WrokServiceImpl implements IWorkService{
     }
     public List<Map<String,Object>>  getWorkPlan4Excel(String userId,String month){
         String sql="SELECT\n" +
-                "\tbu.real_name,wi.start_time start_time,weekday(wi.start_time)+1 weekidx, DATE_FORMAT(wi.start_time,'%Y-%m-%d') w_day,DATE_FORMAT(wi.start_time,'%H:%i') w_time,CONCAT(DATE_FORMAT(wi.start_time,'%H:%i') ,' ',ifnull(si.shop_num,''),' ',wi.work_type_name,' ',wi.content) w_content,0 is_nowork\n" +
+                "\tbu.real_name,wi.work_type_name work_type_name,wi.start_time start_time,weekday(wi.start_time)+1 weekidx,DAYOFMONTH(wi.start_time) dayidx, DATE_FORMAT(wi.start_time,'%Y-%m-%d') w_day,DATE_FORMAT(wi.start_time,'%H:%i') w_time,CONCAT(DATE_FORMAT(wi.start_time,'%H:%i') ,' ',ifnull(si.shop_num,''),' ',wi.work_type_name,' ',wi.content) w_content,0 is_nowork\n" +
                 "FROM\n" +
                 "\tbk_work_info wi left join bk_shop_info  si\n" +
                 "\ton wi.store_id=si.id\n" +
@@ -164,7 +169,7 @@ public class WrokServiceImpl implements IWorkService{
                 "AND wi.start_time < DATE_ADD(STR_TO_DATE(:month,'%Y-%m-%d'),INTERVAL 1 month)\n" +
                 "and wi.execute_id=:user_id\n" +
                 "union all \n" +
-                "select bu.real_name,wl.day start_time,weekday(wl.day)+1 weekidx,DATE_FORMAT(wl.day,'%Y-%m-%d') w_day ,DATE_FORMAT(wl.day,'%H:%i') w_time,wl.nonworkingtype w_content,1 is_nowork from bk_user_working_leave  wl left join bk_user bu\n" +
+                "select bu.real_name,''work_type_name,wl.day start_time,weekday(wl.day)+1 weekidx,DAYOFMONTH(wl.day) dayidx,DATE_FORMAT(wl.day,'%Y-%m-%d') w_day ,DATE_FORMAT(wl.day,'%H:%i') w_time,wl.nonworkingtype w_content,1 is_nowork from bk_user_working_leave  wl left join bk_user bu\n" +
                 "on wl.userId=bu.id\n" +
                 " where wl.day>=STR_TO_DATE(:month,'%Y-%m-%d')\n" +
                 "and wl.day<DATE_ADD(STR_TO_DATE(:month,'%Y-%m-%d'),INTERVAL 1 month) \n" +
@@ -173,7 +178,7 @@ public class WrokServiceImpl implements IWorkService{
         map.put("user_id",userId);
         map.put("month", month);
         List<Map<String,Object>> lists=  jdbcTemplate.queryForList(sql,map);
-        genWorkplan2Excel(lists);
+        genWorkplan2Excel(lists, userId, month);
         return lists;
     }
     @Override
@@ -328,13 +333,13 @@ public class WrokServiceImpl implements IWorkService{
         StringBuilder text = new StringBuilder();
         text.append("餐厅经理：\n")
                 .append("   你好，附件是" + userName + year + "年" + month + "月工作计划。\n" +
-                        "若有疑问请直接联系" + userName+"。\n")
+                        "若有疑问请直接联系" + userName + "。\n")
                 .append("===============请不要直接回复这个邮件，这是由系统生成的邮件===============");
 
 
         ByteArrayResource resource = new ByteArrayResource(attachement);
         try {
-            new EmailUtils(emailSender).sendEmailWithAttachment(email, fileName,text.toString(), fileName + ".xlsx", resource);
+            new EmailUtils(emailSender).sendEmailWithAttachment(email, fileName, text.toString(), fileName + ".xlsx", resource);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -371,13 +376,65 @@ public class WrokServiceImpl implements IWorkService{
         }
         return byteArrayOutputStream.toByteArray();
     }
-        private byte[] genWorkplan2Excel(List<Map<String,Object>> mapList){
+        static final String[] weekstr={"Sunday 星期日","Monday  星期一","Tuesday   星期二","Wednesday星期三","Thursday 星期四","Friday  星期五","Saturday 星期六"};
+        static final String [] leaveStr={"","节假日","周末" ,"病假","事假"};
+        private byte[] genWorkplan2Excel(List<Map<String,Object>> mapList,String userId,String month ){
+            Buser buser=userRepository.findOne(DataType.getAsInt(userId));
+            String userName=buser.getRealname();
             ClassPathResource classPathResource=new ClassPathResource("template\\workplan.xls");
             Map beans=new HashMap();
             beans.put("w1",mapList);
             Map title=new HashMap();
-            title.put("userName","测试");
-            title.put("month","2015/4/2");
+            title.put("userName",userName);
+            try {
+                Date date=DateUtils.parseDate(month,new String[]{"yyyy-MM-dd"});
+                Calendar calendar=GregorianCalendar.getInstance();
+                calendar.setTime(date);
+                int weekIdx= calendar.get(Calendar.DAY_OF_WEEK);
+                //设置星期标头
+                for(int i=1;i<=7;i++){
+                    title.put("w"+i,weekstr[((weekIdx+i-1)>7?(weekIdx+i-1-7):(weekIdx+i-1))-1]);
+                }
+                //设置天数
+                int maxDay=calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+                for(int i=1;i<=maxDay;i++){
+                    Map map=new HashMap();
+                    if(CollectionUtils.isNotEmpty(mapList)){
+                        int contentIdx=0;
+                        for(Map<String,Object> dayWorkMap:mapList){
+                            if(MapUtils.getIntValue(dayWorkMap,"dayidx")==i){
+                                contentIdx+=1;
+                                int is_nowork= MapUtils.getIntValue(dayWorkMap,"is_nowork",0);
+                                //设置每日的标头
+                                 if(is_nowork!=0){
+                                     map.put("title",leaveStr[is_nowork]);
+                                 }else if(is_nowork==0&&!map.containsKey("title")){
+                                     map.put("title",MapUtils.getString(dayWorkMap,"w_time"));
+                                 }
+                                //设置每日内容
+                                if(is_nowork==0){
+                                    String w_time=MapUtils.getString(dayWorkMap,"w_time","");
+                                    String work_type_name=MapUtils.getString(dayWorkMap,"work_type_name","");
+                                    String w_content=MapUtils.getString(dayWorkMap,"w_content","");
+                                    if(w_content.length()>10){
+                                       w_content=w_content.substring(0,9);
+                                    }
+                                    map.put("content"+contentIdx,new StringBuilder().append(w_time).append(" ").append(work_type_name).append(" ").append(w_content));
+
+                                }
+                            }
+                        }
+                    }
+
+                    map.put("no",String.valueOf(i));
+                    title.put("d"+i,map);
+                }
+                String titleMonth=  DateFormatUtils.format(date,"yyyy/MM");
+                title.put("month",titleMonth);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
             beans.put("w",title);
             ExcelTransformer transformer = new ExcelTransformer();
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -389,7 +446,9 @@ public class WrokServiceImpl implements IWorkService{
             }
             ByteArrayResource resource = new ByteArrayResource(outputStream.toByteArray());
             try {
-                new EmailUtils(emailSender).sendEmailWithAttachment("13636462617@163.com", "日程","日历", "日程" + ".xlsx", resource);
+
+                FileUtils.writeByteArrayToFile(new File("d:\\rili.xls"), resource.getByteArray());
+             //   new EmailUtils(emailSender).sendEmailWithAttachment("13636462617@163.com", "日程","日历", "日程" + ".xlsx", resource);
             } catch (Exception e) {
                 e.printStackTrace();
             }
