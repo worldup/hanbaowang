@@ -376,14 +376,13 @@ public class WrokServiceImpl implements IWorkService{
         }
         return byteArrayOutputStream.toByteArray();
     }
-        static final String[] weekstr={"Sunday 星期日","Monday  星期一","Tuesday   星期二","Wednesday星期三","Thursday 星期四","Friday  星期五","Saturday 星期六"};
+//        static final String[] weekstr={"Sunday 星期日","Monday  星期一","Tuesday   星期二","Wednesday星期三","Thursday 星期四","Friday  星期五","Saturday 星期六"};
         static final String [] leaveStr={"","节假日","周末" ,"病假","事假"};
         private byte[] genWorkplan2Excel(List<Map<String,Object>> mapList,String userId,String month ){
             Buser buser=userRepository.findOne(DataType.getAsInt(userId));
             String userName=buser.getRealname();
             ClassPathResource classPathResource=new ClassPathResource("template\\workplan.xls");
             Map beans=new HashMap();
-            beans.put("w1",mapList);
             Map title=new HashMap();
             title.put("userName",userName);
             try {
@@ -391,10 +390,6 @@ public class WrokServiceImpl implements IWorkService{
                 Calendar calendar=GregorianCalendar.getInstance();
                 calendar.setTime(date);
                 int weekIdx= calendar.get(Calendar.DAY_OF_WEEK);
-                //设置星期标头
-                for(int i=1;i<=7;i++){
-                    title.put("w"+i,weekstr[((weekIdx+i-1)>7?(weekIdx+i-1-7):(weekIdx+i-1))-1]);
-                }
                 //设置天数
                 int maxDay=calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
                 for(int i=1;i<=maxDay;i++){
@@ -427,7 +422,7 @@ public class WrokServiceImpl implements IWorkService{
                     }
 
                     map.put("no",String.valueOf(i));
-                    title.put("d"+i,map);
+                    title.put("d"+(i+weekIdx-1),map);
                 }
                 String titleMonth=  DateFormatUtils.format(date,"yyyy/MM");
                 title.put("month",titleMonth);
