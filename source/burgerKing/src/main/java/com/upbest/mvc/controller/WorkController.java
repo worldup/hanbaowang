@@ -189,7 +189,7 @@ public class WorkController {
     }
     @ResponseBody
     @RequestMapping("/workplan2Excel")
-    public void genWorkplan2Excel(String userId,String month){
-        workService.getWorkPlan4Excel(userId,month);
+    public String genWorkplan2Excel(String omUserId,String ocUserId,String month){
+      return   workService.getWorkPlan4Excel(omUserId,ocUserId,month);
     }
 }

@@ -27,7 +27,7 @@ public interface IWorkService {
     int getMaxSortNum();
     
     void saveBWorkType(List<BWorkType> list);
-    public List<Map<String,Object>>  getWorkPlan4Excel(String userId,String month);
+    String  getWorkPlan4Excel(String omUserId,String ocUserId,String month);
     List<Map<String,Object>> getAllWorkPlanByUserId(String userId,String month);
     void sendWorkPlanMailByUserId(String userId,String month);
     void sendWorkPlanMailByUserIdExt(String userId,String month,String emails);

@@ -81,6 +81,29 @@ public class WorkAPIController {
         result.setMsg(VERIFY_SUCCESS);
         return result;
     }
-    
+    @RequestMapping(value = "/securi_getMonthlyWork")
+    @ResponseBody
+    public Json getMonthlyWork(HttpServletRequest req) {
+        Json result = new Json();
+        Json j = Constant.convertJson(req);
+        JSONObject o = (JSONObject) j.getObj();
+        String omUserId=o.getString("omUserId");
+        String ocUserId=o.getString("ocUserId");
+        //month 2015-04-01
+        String month=o.getString("month");
+        if (StringUtils.isBlank(ocUserId)||StringUtils.isBlank(omUserId)||StringUtils.isBlank(month) ){
+            result.setCode(Code.NULL_CODE);
+            result.setMsg(VERIFY_NULL);
+            result.setSuccess(false);
+            result.setObj(null);
+            return result;
+        }
+       String fileName= service.getWorkPlan4Excel(omUserId,ocUserId,month);
+        result.setObj(fileName);
+        result.setCode(Code.SUCCESS_CODE);
+        result.setSuccess(true);
+        result.setMsg(VERIFY_SUCCESS);
+        return result;
+    }
     
 }

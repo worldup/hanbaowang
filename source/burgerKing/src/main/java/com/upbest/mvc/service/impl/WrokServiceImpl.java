@@ -1,16 +1,15 @@
 package com.upbest.mvc.service.impl;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.text.ParseException;
 import java.util.*;
 
 import javax.inject.Inject;
 
 import com.upbest.mvc.entity.BShopInfo;
+import com.upbest.utils.ConfigUtil;
 import com.upbest.utils.EmailUtils;
 import net.sf.jett.transform.ExcelTransformer;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.FileUtils;
@@ -157,7 +156,8 @@ public class WrokServiceImpl implements IWorkService{
     public void saveBWorkType(List<BWorkType> list) {
         workRepository.save(list);
     }
-    public List<Map<String,Object>>  getWorkPlan4Excel(String userId,String month){
+    public String  getWorkPlan4Excel(String omUserId,String ocUserId,String month){
+        String result=null;
         String sql="SELECT\n" +
                 "\tbu.real_name,wi.work_type_name work_type_name,wi.start_time start_time,weekday(wi.start_time)+1 weekidx,DAYOFMONTH(wi.start_time) dayidx, DATE_FORMAT(wi.start_time,'%Y-%m-%d') w_day,DATE_FORMAT(wi.start_time,'%H:%i') w_time,CONCAT(DATE_FORMAT(wi.start_time,'%H:%i') ,' ',ifnull(si.shop_num,''),' ',wi.work_type_name,' ',wi.content) w_content,0 is_nowork\n" +
                 "FROM\n" +
@@ -175,11 +175,45 @@ public class WrokServiceImpl implements IWorkService{
                 "and wl.day<DATE_ADD(STR_TO_DATE(:month,'%Y-%m-%d'),INTERVAL 1 month) \n" +
                 "and wl.userId=:user_id ORDER  by start_time\n";
         Map<String ,String> map=new HashMap();
-        map.put("user_id",userId);
+        map.put("user_id",ocUserId);
         map.put("month", month);
         List<Map<String,Object>> lists=  jdbcTemplate.queryForList(sql,map);
-        genWorkplan2Excel(lists, userId, month);
-        return lists;
+        Buser ocUser=userRepository.findOne(DataType.getAsInt(ocUserId));
+        Buser omUser=userRepository.findOne(DataType.getAsInt(omUserId));
+        String userName=ocUser.getRealname();
+        byte[] excelBytes=genWorkplan2Excel(lists, userName, month);
+        ByteArrayResource resource = new ByteArrayResource(excelBytes);
+           try {
+//
+//                FileUtils.writeByteArrayToFile(new File("d:\\rili.xls"), resource.getByteArray());
+               String y="";
+               String m="";
+               String[] dayStr= StringUtils.split(month,"-");
+               if(dayStr.length==3){
+                   y=dayStr[0];
+                   m=Integer.parseInt(dayStr[1])+"";
+               }
+               String subject = userName + y + "年" + m + "月工作计划";
+               StringBuilder text = new StringBuilder();
+               text.append(omUser.getRealname()+"：\n")
+                       .append("   你好，附件是" + userName + y + "年" + m + "月工作计划。\n" +
+                               "若有疑问请直接联系" + userName+"。\n")
+                       .append("===============请不要直接回复这个邮件，这是由系统生成的邮件===============");
+               String filePath = ConfigUtil.get("filePath")+"yueli";
+               File picSaveDir = new File(filePath);
+               if (!picSaveDir.exists())
+                   picSaveDir.mkdirs();
+
+               new EmailUtils(emailSender).sendEmailWithAttachment(omUser.getName(), subject,subject, subject + ".xls", resource);
+               result="/"+ DigestUtils.md5Hex(subject)+".xls";
+               FileOutputStream fileOutputStream=new FileOutputStream(  new File(filePath+result) );
+               fileOutputStream.write(excelBytes);
+               fileOutputStream.close();
+
+            } catch (Exception e) {
+               e.printStackTrace();
+            }
+        return "yueli"+ result;
     }
     @Override
     public  List<Map<String,Object>> getAllWorkPlanByUserId(String userId,String month){
@@ -378,9 +412,8 @@ public class WrokServiceImpl implements IWorkService{
     }
 //        static final String[] weekstr={"Sunday 星期日","Monday  星期一","Tuesday   星期二","Wednesday星期三","Thursday 星期四","Friday  星期五","Saturday 星期六"};
         static final String [] leaveStr={"","节假日","周末" ,"病假","事假"};
-        private byte[] genWorkplan2Excel(List<Map<String,Object>> mapList,String userId,String month ){
-            Buser buser=userRepository.findOne(DataType.getAsInt(userId));
-            String userName=buser.getRealname();
+        private byte[] genWorkplan2Excel(List<Map<String,Object>> mapList,String userName,String month ){
+
             ClassPathResource classPathResource=new ClassPathResource("template\\workplan.xls");
             Map beans=new HashMap();
             Map title=new HashMap();
@@ -439,14 +472,14 @@ public class WrokServiceImpl implements IWorkService{
             }catch (Exception e){
                 e.printStackTrace();
             }
-            ByteArrayResource resource = new ByteArrayResource(outputStream.toByteArray());
-            try {
-
-                FileUtils.writeByteArrayToFile(new File("d:\\rili.xls"), resource.getByteArray());
-             //   new EmailUtils(emailSender).sendEmailWithAttachment("13636462617@163.com", "日程","日历", "日程" + ".xlsx", resource);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            ByteArrayResource resource = new ByteArrayResource(outputStream.toByteArray());
+//            try {
+//
+//                FileUtils.writeByteArrayToFile(new File("d:\\rili.xls"), resource.getByteArray());
+//             //   new EmailUtils(emailSender).sendEmailWithAttachment("13636462617@163.com", "日程","日历", "日程" + ".xlsx", resource);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
             return outputStream.toByteArray();
         }
 
