@@ -444,10 +444,11 @@ public class WrokServiceImpl implements IWorkService{
                                     String w_time=MapUtils.getString(dayWorkMap,"w_time","");
                                     String work_type_name=MapUtils.getString(dayWorkMap,"work_type_name","");
                                     String w_content=MapUtils.getString(dayWorkMap,"w_content","");
+                                    String shop_num=MapUtils.getString(dayWorkMap,"shop_num","");
                                     if(w_content.length()>10){
                                        w_content=w_content.substring(0,9);
                                     }
-                                    map.put("content"+contentIdx,new StringBuilder().append(w_time).append(" ").append(work_type_name).append(" ").append(w_content));
+                                    map.put("content" + contentIdx, new StringBuilder().append(w_time).append(" ").append(shop_num).append(" ").append(work_type_name).append(" ").append(w_content));
 
                                 }
                             }
