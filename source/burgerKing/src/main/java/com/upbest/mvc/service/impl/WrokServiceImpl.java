@@ -159,7 +159,7 @@ public class WrokServiceImpl implements IWorkService{
     public String  getWorkPlan4Excel(String omUserId,String ocUserId,String month){
         String result=null;
         String sql="SELECT\n" +
-                "\tbu.real_name,wi.work_type_name work_type_name,wi.start_time start_time,weekday(wi.start_time)+1 weekidx,DAYOFMONTH(wi.start_time) dayidx, DATE_FORMAT(wi.start_time,'%Y-%m-%d') w_day,DATE_FORMAT(wi.start_time,'%H:%i') w_time,CONCAT(DATE_FORMAT(wi.start_time,'%H:%i') ,' ',ifnull(si.shop_num,''),' ',wi.work_type_name,' ',wi.content) w_content,0 is_nowork\n" +
+                "\tbu.real_name,wi.work_type_name work_type_name,wi.start_time start_time,weekday(wi.start_time)+1 weekidx,DAYOFMONTH(wi.start_time) dayidx, DATE_FORMAT(wi.start_time,'%Y-%m-%d') w_day,DATE_FORMAT(wi.start_time,'%H:%i') w_time,CONCAT(DATE_FORMAT(wi.start_time,'%H:%i') ,' ',ifnull(si.shop_num,''),' ',wi.work_type_name,' ',substr(wi.content,1,10)) w_content,0 is_nowork\n" +
                 "FROM\n" +
                 "\tbk_work_info wi left join bk_shop_info  si\n" +
                 "\ton wi.store_id=si.id\n" +
@@ -445,10 +445,11 @@ public class WrokServiceImpl implements IWorkService{
                                     String work_type_name=MapUtils.getString(dayWorkMap,"work_type_name","");
                                     String w_content=MapUtils.getString(dayWorkMap,"w_content","");
                                     String shop_num=MapUtils.getString(dayWorkMap,"shop_num","");
-                                    if(w_content.length()>10){
+                                   /* if(w_content.length()>10){
                                        w_content=w_content.substring(0,9);
-                                    }
-                                    map.put("content" + contentIdx, new StringBuilder().append(w_time).append(" ").append(shop_num).append(" ").append(work_type_name).append(" ").append(w_content));
+                                    }*/
+                                  //  map.put("content" + contentIdx, new StringBuilder().append(w_time).append(" ").append(shop_num).append(" ").append(work_type_name).append(" ").append(w_content));
+                                    map.put("content" + contentIdx,  w_content);
 
                                 }
                             }
