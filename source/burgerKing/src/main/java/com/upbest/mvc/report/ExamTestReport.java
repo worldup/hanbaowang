@@ -235,7 +235,19 @@ public class ExamTestReport {
 						numCell.setCellStyle(styles.get(QUESTION_NUM));
 						
 						Cell quesDescCell = questionRow.createCell(quesCol++);
-						quesDescCell.setCellValue(ques.getQuesDesc());
+						String quesDescValue="";
+						QuestionTestDetailInfo questionTestDetailInfo=ques.getTestDetailInfo();
+						if(questionTestDetailInfo!=null){
+							List<Field> fieldList=questionTestDetailInfo.getFieldInfos();
+							if(fieldList!=null){
+								for(Field f:fieldList){
+									if("描述问题".equals(f.getFieldName())){
+										quesDescValue=f.getFieldValue();
+									}
+								}
+							}
+						}
+						quesDescCell.setCellValue(ques.getQuesDesc()+":  "+quesDescValue);
 						sheet.addMergedRegion(new CellRangeAddress(questionRow.getRowNum(), questionRow.getRowNum(), quesDescCell.getColumnIndex(), colSpan));
 						quesDescCell.setCellStyle(styles.get(QUESTION_DESC));
 						for(int j = quesDescCell.getColumnIndex() + 1;j<=colSpan;j++){

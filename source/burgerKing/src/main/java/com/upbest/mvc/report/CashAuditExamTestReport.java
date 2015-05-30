@@ -790,10 +790,15 @@ public class CashAuditExamTestReport extends ExamTestReport {
 							
 							if(curCell == null){
 								Cell fieldCell = questionRow.createCell(fieldIndex);
-								
-								//为分数字段设置值
-								if(FIELD_SCORE.equals(headFieldCell.getStringCellValue())){
-									fieldCell.setCellValue(ques.getScore());
+								try {
+									//为分数字段设置值
+									if (FIELD_SCORE.equals(headFieldCell.getStringCellValue())) {
+										fieldCell.setCellValue(ques.getScore());
+									} else if (FIELD_GETSCORE.equals(headFieldCell.getStringCellValue())) {
+										fieldCell.setCellValue(ques.getTestDetailInfo().getScore());
+									}
+								}catch(Exception ex){
+
 								}
 								fieldCell.setCellStyle(styles.get(FIELD_VALUE));
 								int startCol = fieldCell.getColumnIndex(),

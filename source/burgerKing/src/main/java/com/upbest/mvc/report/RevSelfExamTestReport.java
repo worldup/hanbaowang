@@ -430,13 +430,13 @@ public class RevSelfExamTestReport extends ExamTestReport {
         int weihuScore=getScore(jexl,jc,B37_Score)+getScore(jexl,jc,B38_Score)+getScore(jexl,jc,B39_Score)+getScore(jexl,jc,B40_Score)+getScore(jexl,jc,B41_Score);
         int totalScore=youhaoScore+sosScore+qingjieScore+pinzhiScore+yingliScore+xunlianScore+weihuScore;
 
-        int weihuTScore=getScore(jexl,jc,B37_TScore)+getScore(jexl,jc,B38_TScore)+getScore(jexl,jc,B39_TScore)+getScore(jexl,jc,B40_TScore)+getScore(jexl,jc,B41_TScore);
-        int xunlianTScore=getScore(jexl,jc,B32_TScore)+getScore(jexl,jc,B33_TScore)+getScore(jexl,jc,B34_TScore)+getScore(jexl,jc,B35_TScore)+getScore(jexl,jc,B36_TScore);
-        int yingliTScore=getScore(jexl,jc,B27_TScore)+getScore(jexl,jc,B28_TScore)+getScore(jexl,jc,B29_TScore)+getScore(jexl,jc,B30_TScore)+getScore(jexl,jc,B31_TScore);
-        int pinzhiTScore=getScore(jexl,jc,B19_TScore)+getScore(jexl,jc,B20_TScore)+getScore(jexl,jc,B21_TScore)+getScore(jexl,jc,B22_TScore)+getScore(jexl,jc,B23_TScore)+getScore(jexl,jc,B24_TScore)+getScore(jexl,jc,B25_TScore)+getScore(jexl,jc,B26_TScore);
-        int qingjieTScore=getScore(jexl,jc,B13_TScore)+getScore(jexl,jc,B14_TScore)+getScore(jexl,jc,B15_TScore)+getScore(jexl,jc,B16_TScore)+getScore(jexl,jc,B17_TScore)+getScore(jexl,jc,B18_TScore);
-        int sosTScore=getScore(jexl,jc,B08_TScore)+getScore(jexl,jc,B09_TScore)+getScore(jexl,jc,B10_TScore)+getScore(jexl,jc,B11_TScore)+getScore(jexl,jc,B12_TScore);
-        int youhaoTScore=getScore(jexl,jc,B01_TScore)+getScore(jexl,jc,B02_TScore)+getScore(jexl,jc,B03_TScore)+getScore(jexl,jc,B04_TScore)+getScore(jexl,jc,B05_TScore)+getScore(jexl,jc,B06_TScore)+getScore(jexl,jc,B07_TScore);
+        int weihuTScore=getScoreNATotal(jexl, jc, B37_TScore,B37_Score)+getScoreNATotal(jexl, jc, B38_TScore,B38_Score)+getScoreNATotal(jexl, jc, B39_TScore,B39_Score)+getScoreNATotal(jexl, jc, B40_TScore,B40_Score)+getScoreNATotal(jexl, jc, B41_TScore,B41_Score);
+        int xunlianTScore=getScoreNATotal(jexl, jc, B32_TScore,B32_Score)+getScoreNATotal(jexl, jc, B33_TScore,B33_Score)+getScoreNATotal(jexl, jc, B34_TScore,B34_Score)+getScoreNATotal(jexl, jc, B35_TScore,B35_Score)+getScoreNATotal(jexl, jc, B36_TScore,B36_Score);
+        int yingliTScore=getScoreNATotal(jexl, jc, B27_TScore,B27_Score)+getScoreNATotal(jexl, jc, B28_TScore,B28_Score)+getScoreNATotal(jexl, jc, B29_TScore,B29_Score)+getScoreNATotal(jexl, jc, B30_TScore,B30_Score)+getScoreNATotal(jexl, jc, B31_TScore,B31_Score);
+        int pinzhiTScore=getScoreNATotal(jexl, jc, B19_TScore,B19_Score)+getScoreNATotal(jexl, jc, B20_TScore,B20_Score)+getScoreNATotal(jexl, jc, B21_TScore,B21_Score)+getScoreNATotal(jexl, jc, B22_TScore,B22_Score)+getScoreNATotal(jexl, jc, B23_TScore,B23_Score)+getScoreNATotal(jexl, jc, B24_TScore,B24_Score)+getScoreNATotal(jexl, jc, B25_TScore,B25_Score)+getScoreNATotal(jexl, jc, B26_TScore,B26_Score);
+        int qingjieTScore=getScoreNATotal(jexl, jc, B13_TScore,B13_Score)+getScoreNATotal(jexl, jc, B14_TScore,B14_Score)+getScoreNATotal(jexl, jc, B15_TScore,B15_Score)+getScoreNATotal(jexl, jc, B16_TScore,B16_Score)+getScoreNATotal(jexl, jc, B17_TScore,B17_Score)+getScoreNATotal(jexl, jc, B18_TScore,B18_Score);
+        int sosTScore=getScoreNATotal(jexl, jc, B08_TScore,B08_Score)+getScoreNATotal(jexl, jc, B09_TScore,B09_Score)+getScoreNATotal(jexl, jc, B10_TScore,B10_Score)+getScoreNATotal(jexl, jc, B11_TScore,B11_Score)+getScoreNATotal(jexl, jc, B12_TScore,B12_Score);
+        int youhaoTScore=getScoreNATotal(jexl, jc, B01_TScore,B01_Score)+getScoreNATotal(jexl, jc, B02_TScore,B02_Score)+getScoreNATotal(jexl, jc, B03_TScore,B03_Score)+getScoreNATotal(jexl, jc, B04_TScore,B04_Score)+getScoreNATotal(jexl, jc, B05_TScore,B05_Score)+getScoreNATotal(jexl, jc, B06_TScore,B06_Score)+getScoreNATotal(jexl, jc, B07_TScore,B07_Score);
         int totalTScore=youhaoTScore+sosTScore+qingjieTScore+pinzhiTScore+yingliTScore+xunlianTScore+weihuTScore;
         int youhaoP=100*youhaoScore/youhaoTScore;
         int sosP=100*sosScore/sosTScore;
@@ -512,6 +512,32 @@ public class RevSelfExamTestReport extends ExamTestReport {
         Expression e = jexl.createExpression( jexlExp );
         // Now evaluate the expression, getting the result
         Object o = e.evaluate(jc);
-        return o==null?0:Integer.parseInt(o.toString());
+        int result=0;
+        try{
+            result=((o==null||"N/A".equals(o))?0:Integer.parseInt(o.toString()));
+        }catch(Exception exp ){
+
+        }
+        return result ;
+    }
+    private int getScoreNATotal(JexlEngine jexl, JexlContext jc,String jexlExp,String oJexlExp){
+
+
+      try{
+          Expression oe = jexl.createExpression(oJexlExp);
+          Object or=oe.evaluate(jc);
+          if ("N/A".equals(or)){
+              return 0;
+          }
+          Expression e = jexl.createExpression(jexlExp);
+          // Now evaluate the expression, getting the result
+          Object o = e.evaluate(jc);
+          return Integer.parseInt(o.toString());
+      }catch (Exception e){
+
+      }
+       return 0;
+
+
     }
 }

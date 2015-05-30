@@ -220,17 +220,18 @@ public class WrokServiceImpl implements IWorkService{
        String sql="SELECT\n" +
                "\tDATE_FORMAT(w.start_time, '%Y-%m-%d') day,\n" +
                "\tDATE_FORMAT(w.start_time, '%H:%i:%s') time,\n" +
-               "  s.shop_name shop, s.email shopEmail , u.name userEmail,\n" +
-               "\t(select PU.name from bk_user pu where PU.id=u.pid limit 1) puserEmail,\n" +
-               "  u.real_name userName,\n" +
+               "  s.shop_name shop, s.email shopEmail ,( select  u.name from bk_user u where u.id=w.execute_id)userEmail,\n" +
+               "               (select PU.name from bk_user pu where PU.id=(select pid from bk_user where id=w.execute_id)  ) puserEmail,\n" +
+               "               ( select  u.real_name from bk_user u where u.id=w.execute_id) executeName,\n" +
+               "               ( select  u.real_name from bk_user u where u.id=w.user_id) userName," +
                "w.work_type_name taskName,\n" +
                "w.content content ,w.ishidden ishidden ,w.is_self_create isSelfCreate \n" +
                "FROM\n" +
                "\tbk_work_info w LEFT JOIN bk_user u \n" +
-               "  on w.user_id=u.id\n" +
+               "  on w.execute_id=u.id\n" +
                "  left join bk_shop_info s\n" +
                "  on w.store_id=s.id\n" +
-               "  where w.user_id=:user_id and  start_time>=STR_TO_DATE(:month,'%Y-%m-%d')\n" +
+               "  where  w.execute_id=:user_id and  start_time>=STR_TO_DATE(:month,'%Y-%m-%d')\n" +
                "and start_time <DATE_ADD(STR_TO_DATE(:month,'%Y-%m-%d'),INTERVAL 1 month) order by w.start_time  ";
         Map<String ,String> map=new HashMap();
         map.put("user_id",userId);
@@ -248,7 +249,7 @@ public class WrokServiceImpl implements IWorkService{
          //  sendMail(mapList, "13636462617@163.com;xin.feng@bkchina.cn;646312851@qq.com");
            sendMail(mapList, userEmail+";"+shopEmail);
            //发送餐厅工作计划
-           sendMailRest(mapList);
+           sendMailRest(month,userId);
        }
     }
     public void sendWorkPlanMailByUserIdExt(String userId,String month,String emails){
@@ -271,10 +272,144 @@ public class WrokServiceImpl implements IWorkService{
            // sendMail(mapList,"13636462617@163.com;xin.feng@bkchina.cn;646312851@qq.com");
             sendMail(mapList,emails);
             //发送餐厅工作计划
-            sendMailRest(mapList);
+            sendMailRest(month,userId);
         }
     }
-    private  Map<String,List<Map<String,Object>>> listAllTaskGroupByRestName(List<Map<String,Object>>  mapList){
+    private  Map<String,List<Map<String,Object>>> listAllTaskGroupByRestName(String month, String userId ){
+         String shopTaskSql=  "SELECT  " +
+                 " DATE_FORMAT(w.start_time, '%Y-%m-%d') DAY,  " +
+                 " DATE_FORMAT(w.start_time, '%H:%i:%s') time,  " +
+                 " s.shop_name shop,  " +
+                 " s.email shopEmail,  " +
+                 " (  " +
+                 "  SELECT  " +
+                 "   u. NAME  " +
+                 "  FROM  " +
+                 "   bk_user u  " +
+                 "  WHERE  " +
+                 "   u.id = w.user_id  " +
+                 " ) userEmail,  " +
+                 " (  " +
+                 "  SELECT  " +
+                 "   PU. NAME  " +
+                 "  FROM  " +
+                 "   bk_user pu  " +
+                 "  WHERE  " +
+                 "   PU.id = (  " +
+                 "    SELECT  " +
+                 "     pid  " +
+                 "    FROM  " +
+                 "     bk_user  " +
+                 "    WHERE  " +
+                 "     id = w.user_id  " +
+                 "   )  " +
+                 " ) puserEmail,  " +
+                 " (  " +
+                 "  SELECT  " +
+                 "   u.real_name  " +
+                 "  FROM  " +
+                 "   bk_user u  " +
+                 "  WHERE  " +
+                 "   u.id = w.execute_id  " +
+                 " ) executeName,  " +
+                 " w.execute_id,  " +
+                 " (  " +
+                 "  SELECT  " +
+                 "   u.real_name  " +
+                 "  FROM  " +
+                 "   bk_user u  " +
+                 "  WHERE  " +
+                 "   u.id = w.user_id  " +
+                 " ) userName,  " +
+                 " w.work_type_name taskName,  " +
+                 " w.content content,  " +
+                 " w.ishidden ishidden,  " +
+                 " w.is_self_create isSelfCreate  " +
+                 "FROM  " +
+                 " bk_work_info w  " +
+                 "LEFT JOIN bk_user u ON w.execute_id = u.id  " +
+                 "left JOIN bk_shop_info s ON w.store_id = s.id  " +
+                 "WHERE  " +
+                 " w.store_id<>0 and s.shop_name<>'其他餐厅' and   " +
+                 " w.execute_id = :user_id  " +
+                 "AND start_time >= STR_TO_DATE(:month, '%Y-%m-%d')  " +
+                 "AND start_time < DATE_ADD(  " +
+                 " STR_TO_DATE(:month, '%Y-%m-%d'),  " +
+                 " INTERVAL 1 MONTH  " +
+                 ")  " +
+                 "UNION ALL  " +
+                 " SELECT  " +
+                 "  DATE_FORMAT(w.start_time, '%Y-%m-%d') DAY,  " +
+                 "  DATE_FORMAT(w.start_time, '%H:%i:%s') time,  " +
+                 "  s.shop_name shop,  " +
+                 "  s.email shopEmail,  " +
+                 "  (  " +
+                 "   SELECT  " +
+                 "    u. NAME  " +
+                 "   FROM  " +
+                 "    bk_user u  " +
+                 "   WHERE  " +
+                 "    u.id = w.user_id  " +
+                 "  ) userEmail,  " +
+                 "  (  " +
+                 "   SELECT  " +
+                 "    PU. NAME  " +
+                 "   FROM  " +
+                 "    bk_user pu  " +
+                 "   WHERE  " +
+                 "    PU.id = (  " +
+                 "     SELECT  " +
+                 "      pid  " +
+                 "     FROM  " +
+                 "      bk_user  " +
+                 "     WHERE  " +
+                 "      id = w.user_id  " +
+                 "    )  " +
+                 "  ) puserEmail,  " +
+                 "  (  " +
+                 "   SELECT  " +
+                 "    u.real_name  " +
+                 "   FROM  " +
+                 "    bk_user u  " +
+                 "   WHERE  " +
+                 "    u.id = w.execute_id  " +
+                 "  ) executeName,  " +
+                 "  w.execute_id,  " +
+                 "  (  " +
+                 "   SELECT  " +
+                 "    u.real_name  " +
+                 "   FROM  " +
+                 "    bk_user u  " +
+                 "   WHERE  " +
+                 "    u.id = w.user_id  " +
+                 "  ) userName,  " +
+                 "  w.work_type_name taskName,  " +
+                 "  w.content content,  " +
+                 "  w.ishidden ishidden,  " +
+                 "  w.is_self_create isSelfCreate  " +
+                 " FROM  " +
+                 "  bk_work_info w  " +
+                 " LEFT JOIN bk_user u ON w.execute_id = u.id  " +
+                 "  JOIN bk_shop_info s ON s.id IN (  " +
+                 "  SELECT  " +
+                 "   u.shop_id  " +
+                 "  FROM  " +
+                 "   bk_shop_user u  " +
+                 "  WHERE  " +
+                 "   u.user_id = :user_id  " +
+                 " )  " +
+                 " WHERE  " +
+                 "  w.execute_id = :user_id  " +
+                 " AND start_time >= STR_TO_DATE(:month, '%Y-%m-%d')  " +
+                 " AND start_time < DATE_ADD(  " +
+                 "  STR_TO_DATE(:month, '%Y-%m-%d'),  " +
+                 "  INTERVAL 1 MONTH  " +
+                 " )  " +
+                 " AND ( w.store_id in (select id from bk_shop_info where shop_name='其他餐厅') or w.store_id=0)  ";
+        Map<String ,String> queryMap=new HashMap();
+        queryMap.put("user_id",userId);
+        queryMap.put("month", month);
+        List<Map<String,Object> >  mapList=  jdbcTemplate.queryForList(shopTaskSql, queryMap);
         Map<String,List<Map<String,Object>>> result=new HashMap();
         Set<String> showNameSet=new HashSet();
         for(Map<String,Object> map:mapList){
@@ -283,6 +418,8 @@ public class WrokServiceImpl implements IWorkService{
                showNameSet.add(shop);
            }
         }
+
+
         for(String shop:showNameSet){
             for(Map<String,Object> map:mapList){
                 String tempShopName= MapUtils.getString(map,"shop");
@@ -307,23 +444,23 @@ public class WrokServiceImpl implements IWorkService{
             }
 
         }
-        for(List<Map<String,Object>> values:result.values()){
+       /* for(List<Map<String,Object>> values:result.values()){
             for(Map<String,Object> map:mapList){
                 String shop= MapUtils.getString(map,"shop");
-                if(StringUtils.isEmpty(shop)&&!"1".equals(MapUtils.getString(map, "ishidden"))){
+                if((StringUtils.isEmpty(shop)||"其他餐厅".equals(shop))&&!"1".equals(MapUtils.getString(map, "ishidden"))){
                     values.add(map);
                 }
             }
-        }
+        }*/
         return result;
     }
-    private void sendMailRest( List<Map<String,Object>> allWorkList){
-        Map<String,List<Map<String,Object>>> map= listAllTaskGroupByRestName( allWorkList);
+    private void sendMailRest( String _month,String user_id){
+        Map<String,List<Map<String,Object>>> map= listAllTaskGroupByRestName( _month,user_id);
         for(Map.Entry<String,List<Map<String,Object>>> entry:map.entrySet()){
           List<Map<String,Object>> workList=  entry.getValue();
             byte[] attachement=genExcelFromWorkPlanList(workList);
             Map<String,Object> info=workList.get(0);
-            String userName= MapUtils.getString(info, "userName");
+            String userName= MapUtils.getString(info, "executeName");
             String day= MapUtils.getString(info,"day");
             String shopEmail=MapUtils.getString(info,"shopEmail");
             String year="";
@@ -344,6 +481,7 @@ public class WrokServiceImpl implements IWorkService{
             ByteArrayResource resource = new ByteArrayResource(attachement);
             try {
              //   shopEmail="13636462617@163.com;xin.feng@bkchina.cn;646312851@qq.com";
+                System.out.println("---->"+shopEmail);
                 new EmailUtils(emailSender).sendEmailWithAttachment(shopEmail, fileName,text.toString(), fileName + ".xlsx", resource);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -354,7 +492,7 @@ public class WrokServiceImpl implements IWorkService{
     private void sendMail(List<Map<String,Object>> workList,String email){
         byte[] attachement=genExcelFromWorkPlanList(workList);
         Map<String,Object> info=workList.get(0);
-        String userName= MapUtils.getString(info, "userName");
+        String executeName= MapUtils.getString(info, "executeName");
         String day= MapUtils.getString(info,"day");
         String year="";
         String month="";
@@ -363,11 +501,11 @@ public class WrokServiceImpl implements IWorkService{
             year=dayStr[0];
             month=Integer.parseInt(dayStr[1])+"";
         }
-        String fileName = userName + year + "年" + month + "月工作计划";
+        String fileName = executeName + year + "年" + month + "月工作计划";
         StringBuilder text = new StringBuilder();
         text.append("餐厅经理：\n")
-                .append("   你好，附件是" + userName + year + "年" + month + "月工作计划。\n" +
-                        "若有疑问请直接联系" + userName + "。\n")
+                .append("   你好，附件是" + executeName + year + "年" + month + "月工作计划。\n" +
+                        "若有疑问请直接联系" + executeName + "。\n")
                 .append("===============请不要直接回复这个邮件，这是由系统生成的邮件===============");
 
 
