@@ -456,35 +456,41 @@ public class WrokServiceImpl implements IWorkService{
     }
     private void sendMailRest( String _month,String user_id){
         Map<String,List<Map<String,Object>>> map= listAllTaskGroupByRestName( _month,user_id);
-        for(Map.Entry<String,List<Map<String,Object>>> entry:map.entrySet()){
-          List<Map<String,Object>> workList=  entry.getValue();
-            byte[] attachement=genExcelFromWorkPlanList(workList);
-            Map<String,Object> info=workList.get(0);
-            String userName= MapUtils.getString(info, "executeName");
-            String day= MapUtils.getString(info,"day");
-            String shopEmail=MapUtils.getString(info,"shopEmail");
-            String year="";
-            String month="";
-            String[] dayStr= StringUtils.split(day,"-");
-            if(dayStr.length==3){
-                year=dayStr[0];
-                month=Integer.parseInt(dayStr[1])+"";
-            }
-            String fileName = userName + year + "年" + month + "月工作计划";
-            StringBuilder text = new StringBuilder();
-            text.append("餐厅经理：\n")
-                    .append("   你好，附件是" + userName + year + "年" + month + "月工作计划。\n" +
-                            "若有疑问请直接联系" + userName+"。\n")
-                    .append("===============请不要直接回复这个邮件，这是由系统生成的邮件===============");
+        int i=0;
+        for(String _shopNamekey:map.keySet()) {
+
+            List<Map<String, Object>> workList = map.get(_shopNamekey);
+            System.out.println(i++ +"-->"+_shopNamekey);
+         if (CollectionUtils.isNotEmpty(workList)) {
+             System.out.println(i +"-->"+_shopNamekey);
+                byte[] attachement = genExcelFromWorkPlanList(workList);
+                Map<String, Object> info = workList.get(0);
+                String userName = MapUtils.getString(info, "executeName");
+                String day = MapUtils.getString(info, "day");
+                String shopEmail = MapUtils.getString(info, "shopEmail");
+                String year = "";
+                String month = "";
+                String[] dayStr = StringUtils.split(day, "-");
+                if (dayStr.length == 3) {
+                    year = dayStr[0];
+                    month = Integer.parseInt(dayStr[1]) + "";
+                }
+                String fileName = userName + year + "年" + month + "月工作计划";
+                StringBuilder text = new StringBuilder();
+                text.append("餐厅经理：\n")
+                        .append("   你好，附件是" + userName + year + "年" + month + "月工作计划。\n" +
+                                "若有疑问请直接联系" + userName + "。\n")
+                        .append("===============请不要直接回复这个邮件，这是由系统生成的邮件===============");
 
 
-            ByteArrayResource resource = new ByteArrayResource(attachement);
-            try {
-             //   shopEmail="13636462617@163.com;xin.feng@bkchina.cn;646312851@qq.com";
-                System.out.println("---->"+shopEmail);
-                new EmailUtils(emailSender).sendEmailWithAttachment(shopEmail, fileName,text.toString(), fileName + ".xlsx", resource);
-            } catch (Exception e) {
-                e.printStackTrace();
+                ByteArrayResource resource = new ByteArrayResource(attachement);
+                try {
+                    //   shopEmail="13636462617@163.com;xin.feng@bkchina.cn;646312851@qq.com";
+                    System.out.println("---->" + shopEmail);
+                    new EmailUtils(emailSender).sendEmailWithAttachment(shopEmail, fileName, text.toString(), fileName + ".xlsx", resource);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
 
